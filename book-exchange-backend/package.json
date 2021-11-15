@@ -1,0 +1,15 @@
+{
+  "name": "book-exchange-backend",
+  "version": "1.0.0",
+  "description": "server pro Kepler-exchange",
+  "main": "server.js",
+  "scripts": {
+    "test": "start",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
