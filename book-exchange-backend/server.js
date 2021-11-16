@@ -14,7 +14,13 @@ const db = knex({
     }
   });
 
-app.use(cors())
+const corsConfig = {
+    origin: ['http://localhost:3000', 'https://kepler-x.vercel.app'],   
+    optionsSuccessStatus: 200
+}
+
+app.use(cors(corsConfig))
+
 app.use(
     express.json() 
 );
@@ -24,19 +30,18 @@ app.listen(port, () => {
 
 console.log('Listening on port', port)
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => {    
     res.sendStatus(200)
 })
 
 app.post('/auth/google/login', async (req, res) => {
     
-    const { token } = req.body
+    const { token } = req.body   
     if (token) {
         const ticket = await googleClient.verifyIdToken({
             idToken: token,
             audience: googleClientId
-        });
-           
+        });           
         res.sendStatus(200)
     } else {
         res.sendStatus(400)

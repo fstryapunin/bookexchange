@@ -9,7 +9,17 @@ const GoogleAuth = () => {
     const onLoginSuccess = (res) => {
         console.log('Login response')
         console.log(res)
-        fetch(`${apiAdress}/`).then(res=> res.json()).then(data=>{console.log(data)})
+        fetch(`${apiAdress}/auth/google/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'                
+            },
+            body: JSON.stringify(
+                {
+                    token: res.tokenId
+                }
+            )
+        })
     }
 
     const onLoginFailure = (res) => {
