@@ -7,7 +7,7 @@
     "test": "start",
     "start": "node server.js"
   },
-  "author": "",
+  "author": "Fedor Stryapunin",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.15"
