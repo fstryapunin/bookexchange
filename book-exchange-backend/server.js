@@ -41,10 +41,47 @@ app.post('/auth/google/login', async (req, res) => {
         const ticket = await googleClient.verifyIdToken({
             idToken: token,
             audience: googleClientId
-        });           
-        res.sendStatus(200)
+        });
+        
+        const payload = ticket.getPayload()
+
+        const firstName = payload.given_name
+        const lastName = payload.family_name
+        const email = payload.email
+        const imageLink = payload.picture
+
+        const exists = await db.select('*').from('users').where('email', email)
+        if (exists.length === 0) {
+            const newUserId = await db('users').insert({
+                email: email,
+                first_name: firstName,
+                last_name: lastName,
+                img_link: imageLink
+            }, 'id')
+            res.json({
+                id: parseInt(newUserId[0]),
+                firstName: firstName,
+                lastName: lastName,
+                img: imageLink
+            })
+        } else {
+            const userId = await db('users').where('email', email).update({
+                email: email,
+                first_name: firstName,
+                last_name: lastName,
+                img_link: imageLink
+            }, 'id')
+
+            res.json({
+                id: parseInt(userId[0]),
+                firstName: firstName,
+                lastName: lastName,
+                img: imageLink
+            })
+        }
+        
+        
     } else {
         res.sendStatus(400)
     }
-
 })
