@@ -2,13 +2,12 @@ import React from "react";
 import { GoogleLogin, GoogleLogout } from 'react-google-login'
 import { apiAdress } from "./Variables";
 
-const clientId = '1028693232863-ahvojojs4rkgl1qv1op7q5010mk6hilk.apps.googleusercontent.com'
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
+console.log(clientId)
 
 const GoogleAuth = () => {
 
-    const onLoginSuccess = (res) => {
-        console.log('Login response')
-        console.log(res)
+    const onLoginSuccess = (res) => {       
         fetch(`${apiAdress}/auth/google/login`, {
             method: 'POST',
             headers: {
