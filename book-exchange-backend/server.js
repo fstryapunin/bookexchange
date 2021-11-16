@@ -1,5 +1,6 @@
 const express = require('express');
 const knex = require('knex')
+const cors = require('cors')
 const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl } = require('./config');
 
@@ -13,6 +14,7 @@ const db = knex({
     }
   });
 
+app.use(cors())
 app.use(
     express.json() 
 );
