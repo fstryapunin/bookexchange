@@ -1,10 +1,17 @@
 const express = require('express');
+const knex = require('knex')
 const { OAuth2Client } = require('google-auth-library')
-const { port, googleClientId } = require('./config');
+const { port, googleClientId, dbUrl } = require('./config');
 
 
 const app = express();
 const googleClient = new OAuth2Client(googleClientId)
+const db = knex({
+    client: 'pg',
+    connection: {
+       connectionString : dbUrl,      
+    }
+  });
 
 app.use(
     express.json() 
