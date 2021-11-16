@@ -5,7 +5,7 @@ import './index.css'
 
 ReactDOM.render(
   <React.StrictMode>
-    <Exchange/>
+      <Exchange/>  
   </React.StrictMode>,
   document.getElementById('root')
 );

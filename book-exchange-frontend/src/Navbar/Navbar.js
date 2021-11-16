@@ -22,5 +22,3 @@ const Navbar = ({ isLogged, onLogin, onLogout }) => {
 }
 
 export default Navbar
-
-/* <GoogleAuth isLogged={isLogged} onLogin={onLogin} onLogout={onLogout}/>*/

@@ -1,6 +1,10 @@
 import React, {useState} from "react";
 import Navbar from "./Navbar/Navbar";
-
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route
+  } from "react-router-dom";
 const Exchange = () => {
     const [user, updateUser] = useState({
         isLogged: false
@@ -19,7 +23,13 @@ const Exchange = () => {
 
     return (
         <div>
-            <Navbar isLogged={user.isLogged} onLogin={onLogin} onLogout={onLogout}/>
+            
+            <Router>
+                <Navbar isLogged={user.isLogged} onLogin={onLogin} onLogout={onLogout}/>
+                <Routes>                    
+                    <Route path='/profil' element={<h1>Profil</h1>} />                 
+                </Routes>          
+            </Router>           
         </div>
     )
 }
