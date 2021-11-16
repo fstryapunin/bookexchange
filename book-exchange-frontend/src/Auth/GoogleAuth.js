@@ -1,14 +1,13 @@
 import React from "react";
 import { GoogleLogin, GoogleLogout } from 'react-google-login'
-import { apiAdress } from "./Variables";
+import { apiAdress } from "../Variables";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
-console.log(clientId)
 
-const GoogleAuth = () => {
+const GoogleAuth = ({isLogged, onLogin, onLogout}) => {
 
-    const onLoginSuccess = (res) => {       
-        fetch(`${apiAdress}/auth/google/login`, {
+    const onLoginSuccess = async (res) => {       
+        const loginRes = await fetch(`${apiAdress}/auth/google/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'                
@@ -19,21 +18,24 @@ const GoogleAuth = () => {
                 }
             )
         })
+        if (loginRes.ok) {
+            const userData = await loginRes.json()
+            onLogin(userData)
+        }
     }
 
     const onLoginFailure = (res) => {
-        console.log('Login response')
+        console.log('Login failure')
         console.log(res)
     }
 
     const onLogoutSuccess = () => {
-        console.log('Logout success')        
+        onLogout()       
     }
 
     return (
-        <div>
-            <h1>Hello world</h1>
-            <GoogleLogin
+        <div>            
+            {!isLogged ? <GoogleLogin
                 clientId={clientId}
                 buttonText="Login"
                 onSuccess={onLoginSuccess}
@@ -41,11 +43,12 @@ const GoogleAuth = () => {
                 cookiePolicy={'single_host_origin'}
                 isSignedIn={true}
             />
+                :
             <GoogleLogout
                 clientId={clientId}
                 buttonText="Logout"
                 onLogoutSuccess={onLogoutSuccess}
-            />
+            />}
         </div>
     )
 }

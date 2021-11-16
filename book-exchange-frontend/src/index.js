@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GoogleAuth from './GoogleAuth';
-import './index.css';
+import Exchange from './Exchange'
 
 ReactDOM.render(
   <React.StrictMode>
-    <GoogleAuth/>
+    <Exchange/>
   </React.StrictMode>,
   document.getElementById('root')
 );
