@@ -9,6 +9,7 @@ width: 100%;
 display : flex;
 justify-content: flex-end;
 border-bottom: 2px solid var(--dark-blue);
+position: sticky;
 `
 
 const Navbar = ({ isLogged, onLogin, onLogout }) => {
