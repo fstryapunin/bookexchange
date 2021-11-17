@@ -73,10 +73,7 @@ app.post('/auth/google/login', async (req, res) => {
             }, 'id')
 
             res.json({
-                id: parseInt(userId[0]),
-                firstName: firstName,
-                lastName: lastName,
-                img: imageLink
+                id: parseInt(userId[0])               
             })
         }
         
