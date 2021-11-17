@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import Navbar from "./Navbar/Navbar";
 import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
-import { Routes, Route, useNavigate  } from "react-router";
+import { Routes, Route, useNavigate, Navigate  } from "react-router";
 
 const Exchange = () => {
     const [user, updateUser] = useState({
@@ -30,7 +30,7 @@ const Exchange = () => {
             <Navbar isLogged={user.isLogged} onLogin={onLogin} onLogout={onLogout} />
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
-                <Route path="profil" element={<UserProfile userData={user}/>}/>
+                <Route path="profil" element={user.isLogged ? <UserProfile userData={user} /> : <Navigate to='/'/>}/>
             </Routes>            
         </>
     )
