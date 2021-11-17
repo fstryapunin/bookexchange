@@ -8,12 +8,22 @@ const Exchange = () => {
     const [user, updateUser] = useState({
         isLogged: false
     })
+    const apiAdress = process.env.REACT_APP_API_ADRESS
     const navigate = useNavigate()
     
 
-    const onLogin = (userData) => {
-        const newUser = { ...user, isLogged: true, data: userData }
-        updateUser(newUser)         
+    const onLogin = (tokenId) => {        
+        const loginRes = await fetch(`${apiAdress}/auth/google/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'                
+            },
+            body: JSON.stringify(
+                {
+                    token: token
+                }
+            )
+        })
     }
 
     const onLogout = () => {
