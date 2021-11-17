@@ -1,36 +1,35 @@
 import React, {useState} from "react";
 import Navbar from "./Navbar/Navbar";
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route
-  } from "react-router-dom";
+import UserProfile from "./User/UserProfile";
+import { Routes, Route } from "react-router";
+
 const Exchange = () => {
     const [user, updateUser] = useState({
         isLogged: false
     })
+    
 
     const onLogin = (userData) => {
         const newUser = { ...user, isLogged: true, data: userData }
-        updateUser(newUser)
+        updateUser(newUser)         
     }
 
     const onLogout = () => {
         updateUser({
             isLogged: false
-        })
+        })        
     }
 
+    
+
     return (
-        <div>
-            
-            <Router>
-                <Navbar isLogged={user.isLogged} onLogin={onLogin} onLogout={onLogout}/>
-                <Routes>                    
-                    <Route path='/profil' element={<h1>Profil</h1>} />                 
-                </Routes>          
-            </Router>           
-        </div>
+        <>
+            <Navbar isLogged={user.isLogged} onLogin={onLogin} onLogout={onLogout} />
+            <Routes>
+                <Route path="/" />
+                <Route path="profil" />
+            </Routes>            
+        </>
     )
 }
 

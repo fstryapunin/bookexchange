@@ -4,7 +4,7 @@ import { apiAdress } from "../Variables";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
 
-const GoogleAuth = ({isLogged, onLogin, onLogout}) => {
+const GoogleAuth = ({ isLogged, onLogin, onLogout }) => {  
 
     const onLoginSuccess = async (res) => {       
         const loginRes = await fetch(`${apiAdress}/auth/google/login`, {
@@ -20,13 +20,14 @@ const GoogleAuth = ({isLogged, onLogin, onLogout}) => {
         })
         if (loginRes.ok) {
             const userData = await loginRes.json()
-            onLogin(userData)
+            onLogin(userData)           
         }
     }
 
     const onLoginFailure = (res) => {
         console.log('Login failure')
         console.log(res)
+        
     }
 
     const onLogoutSuccess = () => {

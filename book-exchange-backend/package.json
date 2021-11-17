@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "start",
-    "start": "node server.js"
+    "start": "node server.js",
+    "demon": "nodemon server.js"
   },
   "author": "Fedor Stryapunin",
   "license": "ISC",
