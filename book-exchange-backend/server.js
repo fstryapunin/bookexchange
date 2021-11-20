@@ -38,13 +38,15 @@ app.post('/auth/google/login', async (req, res) => {
     
     const { token } = req.body   
     if (token) {
+        console.log(token)
+        
         const ticket = await googleClient.verifyIdToken({
             idToken: token,
             audience: googleClientId
         });
         
         const payload = ticket.getPayload()
-
+        console.log(payload)
         const firstName = payload.given_name
         const lastName = payload.family_name
         const email = payload.email
@@ -58,12 +60,7 @@ app.post('/auth/google/login', async (req, res) => {
                 last_name: lastName,
                 img_link: imageLink
             }, 'id')
-            res.json({
-                id: parseInt(newUserId[0]),
-                firstName: firstName,
-                lastName: lastName,
-                img: imageLink
-            })
+            res.sendStatus(200)
         } else {
             const userId = await db('users').where('email', email).update({
                 email: email,
@@ -72,9 +69,7 @@ app.post('/auth/google/login', async (req, res) => {
                 img_link: imageLink
             }, 'id')
 
-            res.json({
-                id: parseInt(userId[0])               
-            })
+            res.sendStatus(200)
         }
         
         

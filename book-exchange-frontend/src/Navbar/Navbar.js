@@ -12,11 +12,11 @@ border-bottom: 2px solid var(--dark-blue);
 position: sticky;
 `
 
-const Navbar = ({ isLogged, onLogin, onLogout }) => {
+const Navbar = ({onLogin, onLogout }) => {
     return (
       
         <StyledNavbar>
-            <GoogleAuth isLogged={isLogged} onLogin={onLogin} onLogout={onLogout}/>
+            <GoogleAuth onLogin={onLogin} onLogout={onLogout}/>
         </StyledNavbar>
       
     )

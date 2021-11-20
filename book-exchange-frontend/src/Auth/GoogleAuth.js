@@ -1,41 +1,51 @@
-import React from "react";
-import { GoogleLogin, GoogleLogout } from 'react-google-login'
+import React, { useEffect } from "react";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
+const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
+const apiAdress = process.env.REACT_APP_API_ADRESS
 
-const GoogleAuth = ({ isLogged, onLogin, onLogout }) => {  
+const GoogleAuth = ({ onLogin, onLogout }) => {
 
-    const onLoginSuccess = async (res) => {       
-            onLogin(res.tokenId)       
+    const handleCredentialResponse = async (response) => {
+        if (response.credential) {
+            const loginRes = await fetch(`${apiAdress}/auth/google/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'                
+                },
+                body: JSON.stringify(
+                    {
+                        token: response.credential
+                    }
+                )
+            })            
+        }         
     }
 
-    const onLoginFailure = (res) => {
-        console.log('Login failure')
-        console.log(res)
-        
-    }
+    const googleAccouns = () => {
+        const initializeGoogleSignIn = () => {
+            window.google.accounts.id.initialize({
+                client_id: clientId,
+                callback: handleCredentialResponse
+            });
+            window.google.accounts.id.renderButton(
+                document.getElementById("gbutton"),
+                { theme: "outline", size: "large" } 
+            )
+        }
 
-    const onLogoutSuccess = () => {
-        onLogout()       
-    }
+
+        const script = document.createElement('script')
+        script.src = 'https://accounts.google.com/gsi/client'
+        script.onload = initializeGoogleSignIn()
+        document.body.appendChild(script)
+       
+     }
+    
+    useEffect(googleAccouns, [])    
 
     return (
-        <div>            
-            {!isLogged ? <GoogleLogin
-                clientId={clientId}
-                buttonText="Login"
-                onSuccess={onLoginSuccess}
-                onFailure={onLoginFailure}
-                cookiePolicy={'single_host_origin'}
-                isSignedIn={true}
-            />
-                :
-            <GoogleLogout
-                clientId={clientId}
-                buttonText="Logout"
-                onLogoutSuccess={onLogoutSuccess}
-            />}
-        </div>
+        <div id="gbutton"></div>
     )
 }
 
