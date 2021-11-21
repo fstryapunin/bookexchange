@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { tokenKey } = require('../config');
 
-const auth = (req, res, next) => {
+const cookieAuth = (req, res, next) => {
     const token = req.cookies.token
     
     if (!token) {
@@ -22,19 +22,8 @@ const auth = (req, res, next) => {
             }
         );
 
-        const accessToken = jwt.sign(
-            {
-                id: req.user.id
-            },
-            tokenKey,
-            {
-                expiresIn: '1h'
-            }
-        )
-        
-        res.locals = accessToken
-        res.cookie('token', jRefreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 * 13 })
-        
+      
+        res.cookie('token', jRefreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 * 1 })       
         
         
     }
@@ -46,4 +35,25 @@ const auth = (req, res, next) => {
     return next()
 }
 
-module.exports = auth
+const tokenAuth = (req, res, next) => {
+    const token = req.body.token
+    
+    if (!token) {
+        return res.status(403).send("No access token");
+    }
+    try {
+        const decoded = jwt.verify(token, tokenKey);
+        req.user = decoded       
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(401).send("Expired access Token");
+    }
+    
+    return next()
+}
+
+module.exports = {
+    cookieAuth: cookieAuth,
+    tokenAuth: tokenAuth
+}

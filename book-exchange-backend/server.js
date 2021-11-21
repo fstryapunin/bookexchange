@@ -2,7 +2,7 @@ const express = require('express');
 const knex = require('knex')
 const cors = require('cors')
 const jwt = require("jsonwebtoken");
-const auth = require('./middleware/auth')
+const { cookieAuth, tokenAuth } = require('./middleware/auth')
 const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl, tokenKey } = require('./config');
@@ -105,7 +105,20 @@ app.get('/auth/logout', (req, res) => {
     res.sendStatus(200)
 }) 
 
-app.get('/getAccessToken', auth, (req, res) => {
-        
-    res.status(200).json({token : res.locals})    
+app.get('/getAccessToken', cookieAuth, (req, res) => {
+    const accessToken = jwt.sign(
+        {
+            id: req.user.id
+        },
+        tokenKey,
+        {
+            expiresIn: '12h'
+        }
+    )    
+   
+    res.status(200).json({token : accessToken})    
+})
+
+app.post('/getUserProfile', tokenAuth, (req, res) => {
+    console.log(req.user)
 })
