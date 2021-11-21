@@ -16,7 +16,7 @@ body {
       monospace;
   }
 
-.gbutton-hidden{
+.visibility-none{
   visibility: hidden;
   width: 0.1px;
   height: 0.1px;

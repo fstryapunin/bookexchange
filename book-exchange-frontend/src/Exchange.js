@@ -6,8 +6,8 @@ import { Routes, Route, useNavigate, Navigate } from "react-router";
 const apiAdress = process.env.REACT_APP_API_ADRESS
 
 const Exchange = () => {
-    const [user, updateUser] = useState({
-        isLogged: false,
+    const [user, updateUser] = useState({     
+        isLogged: false,   
         loaded: false
     })    
    
@@ -41,25 +41,33 @@ const Exchange = () => {
 
     useEffect(() => onLoad(), [])
 
-    const onLogin = async (accessToken) => {     
+    const onLogin = async (accessToken) => {
+       
         updateUser({
             isLogged: true,
             token: accessToken
         })
     }
 
-    const onLogout = () => {
-        updateUser({
-            isLogged: false
+    const onLogout = async () => {
+        const logoutRes =  await fetch(`${apiAdress}/auth/logout`, {
+            method: 'GET',
+            credentials: 'include'
         })
-        navigate('/')
+        if (logoutRes.ok) {
+            updateUser({
+                isLogged: false,
+                loaded: true
+            })
+            navigate('/')
+        }       
     }
 
     
 
     return (
         <>
-            <Navbar user={user} onLogin={onLogin} onLogout={onLogout} />
+            <Navbar user={user} onLogin={onLogin} onLogout={onLogout} />            
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="profil" element={user.isLogged ? <UserProfile userData={user} /> : <Navigate to='/' />} />
