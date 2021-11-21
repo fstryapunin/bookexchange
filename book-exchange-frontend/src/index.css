@@ -21,3 +21,10 @@ body {
   width: 0.1px;
   height: 0.1px;
 }
+
+/* google filckering fix */
+#gbutton{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}

@@ -9,7 +9,6 @@ const StyledLogoutButton = styled.div`
     box-sizing: border-box;
     -webkit-transition: background-color .218s,border-color .218s;
     transition: background-color .218s,border-color .218s;
-    -webkit-user-select: none;
     -webkit-appearance: none;
     background-color: #fff;
     background-image: none;
@@ -35,7 +34,7 @@ const StyledLogoutButton = styled.div`
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 500;
 `
 
 const LogoutButton = ({onLogout}) => {

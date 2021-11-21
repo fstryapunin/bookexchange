@@ -106,19 +106,6 @@ app.get('/auth/logout', (req, res) => {
 }) 
 
 app.get('/getAccessToken', auth, (req, res) => {
-    
-    const accessToken = jwt.sign(
-        {
-            id: req.user.id
-        },
-        tokenKey,
-        {
-            expiresIn: '1h'
-        }
-    )
-    
-    const resBody = {
-        token: accessToken
-    }
-    res.status(200).json(resBody)    
+        
+    res.status(200).json({token : res.locals})    
 })

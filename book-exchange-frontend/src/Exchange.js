@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import Navbar from "./Navbar/Navbar";
 import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
-import { Routes, Route, useNavigate, Navigate } from "react-router";
+import { Routes, Route, useNavigate } from "react-router";
 const apiAdress = process.env.REACT_APP_API_ADRESS
 
 const Exchange = () => {
@@ -70,8 +70,8 @@ const Exchange = () => {
             <Navbar user={user} onLogin={onLogin} onLogout={onLogout} />            
             <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="profil" element={user.isLogged ? <UserProfile userData={user} /> : <Navigate to='/' />} />
-            </Routes>
+                <Route path="profil" element={<UserProfile user={user} />} />
+            </Routes>            
         </>
     )
     

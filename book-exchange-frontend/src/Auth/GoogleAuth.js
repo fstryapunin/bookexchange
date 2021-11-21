@@ -36,14 +36,15 @@ const GoogleAuth = ({ user, onLogin, onLogout }) => {
 
     const googleAccounts = () => {    
         if (user.loaded && !user.isLogged) {
-            
             window.google.accounts.id.initialize({
                 client_id: clientId,
                 callback: handleCredentialResponse
             })
             window.google.accounts.id.renderButton(
                 document.getElementById("gbutton"),
-                { size: "medium" }
+                {
+                    size: "medium",                    
+                }
             )  
         }       
     }

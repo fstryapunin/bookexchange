@@ -21,7 +21,22 @@ const auth = (req, res, next) => {
               expiresIn: "30d",
             }
         );
+
+        const accessToken = jwt.sign(
+            {
+                id: req.user.id
+            },
+            tokenKey,
+            {
+                expiresIn: '1h'
+            }
+        )
+        
+        res.locals = accessToken
         res.cookie('token', jRefreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 * 13 })
+        
+        
+        
     }
     catch (err) {
         console.log(err)
