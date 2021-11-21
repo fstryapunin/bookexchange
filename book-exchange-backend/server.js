@@ -2,6 +2,7 @@ const express = require('express');
 const knex = require('knex')
 const cors = require('cors')
 const jwt = require("jsonwebtoken");
+const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl, tokenKey } = require('./config');
 
@@ -16,12 +17,14 @@ const db = knex({
   });
 
 const corsConfig = {
-    origin: ['http://localhost:3000', 'https://kepler-x.vercel.app'],   
-    optionsSuccessStatus: 200
+    origin: ['http://localhost:3000', 'https://kepler-x.vercel.app'],
+    methods: "GET,PUT,POST,DELETE, OPTIONS",
+    optionsSuccessStatus: 200,
+    credentials: true
 }
 
 app.use(cors(corsConfig))
-
+app.use(cookieParser())
 app.use(
     express.json() 
 );
@@ -65,8 +68,7 @@ const upsertUser = async (payload) => {
 app.post('/auth/google/login', async (req, res) => {
     
     const { token } = req.body   
-    if (token) {
-        console.log(token)
+    if (token) {      
         
         const ticket = await googleClient.verifyIdToken({
             idToken: token,
@@ -77,7 +79,7 @@ app.post('/auth/google/login', async (req, res) => {
         
         const userId = upsertUser(payload)      
 
-        const jToken = jwt.sign(
+        const jRefreshToken = jwt.sign(
             {
                 email: payload.email,
                 id : userId
@@ -88,9 +90,15 @@ app.post('/auth/google/login', async (req, res) => {
             }
         );       
 
-        res.status(200).json(jToken)      
+        res.cookie('token', jRefreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 14 })
+        res.sendStatus(200)
         
     } else {
         res.sendStatus(400)
     }
+})
+
+app.get('/test', (req, res) => {
+    console.log(req.cookies)
+    res.sendStatus(200)
 })

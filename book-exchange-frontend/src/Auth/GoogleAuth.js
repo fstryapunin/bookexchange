@@ -10,6 +10,7 @@ const GoogleAuth = ({ onLogin, onLogout }) => {
         if (response.credential) {
             const loginRes = await fetch(`${apiAdress}/auth/google/login`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'                
                 },
