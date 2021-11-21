@@ -13,20 +13,13 @@ border-bottom: 2px solid var(--dark-blue);
 position: sticky;
 `
 
-const Navbar = ({ onLogin, onLogout }) => {
+const Navbar = ({ user, onLogin, onLogout }) => {
     
-    const makeTestReq = async () => {
-        const res = await fetch(`${apiAdress}/test`, {
-            method: 'GET',
-            credentials: 'include'
-        })  
-    }
-
+   
     return (
       
-        <StyledNavbar>
-            <button onClick={makeTestReq}>Test</button>
-            <GoogleAuth onLogin={onLogin} onLogout={onLogout}/>
+        <StyledNavbar>            
+            <GoogleAuth user={user} onLogin={onLogin} onLogout={onLogout}/>
         </StyledNavbar>
       
     )

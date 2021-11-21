@@ -100,7 +100,7 @@ app.post('/auth/google/login', async (req, res) => {
     }
 })
 
-app.get('/test', auth, (req, res) => {
+app.get('/getAccessToken', auth, (req, res) => {
     
     const accessToken = jwt.sign(
         {
@@ -115,6 +115,5 @@ app.get('/test', auth, (req, res) => {
     const resBody = {
         token: accessToken
     }
-
-    res.status(200).json(resBody)
+    res.status(200).json(resBody)    
 })

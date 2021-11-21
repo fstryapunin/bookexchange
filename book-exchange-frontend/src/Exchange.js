@@ -2,19 +2,50 @@ import React, {useState, useEffect} from "react";
 import Navbar from "./Navbar/Navbar";
 import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
-import { Routes, Route, useNavigate, Navigate  } from "react-router";
+import { Routes, Route, useNavigate, Navigate } from "react-router";
+const apiAdress = process.env.REACT_APP_API_ADRESS
 
 const Exchange = () => {
     const [user, updateUser] = useState({
-        isLogged: false
-    })
-
-    
+        isLogged: false,
+        loaded: false
+    })    
    
-    const navigate = useNavigate()   
+    const navigate = useNavigate()
+    
+    const onLoad = async () => {
+        const tokenRes =  await fetch(`${apiAdress}/getAccessToken`, {
+            method: 'GET',
+            credentials: 'include'
+        })
+        if (tokenRes.ok) {
+            const resBody = await tokenRes.json()
+            updateUser({
+                isLogged: true,
+                loaded: true,
+                token: resBody.token
+            })
+        } else if (tokenRes.status === 401) {
+            //navigate to token expired error page here
+            updateUser({
+                isLogged: false,
+                loaded: false                
+            })
+        } else {
+            updateUser({
+                isLogged: false,
+                loaded: false                
+            })
+        }
+    }
 
-    const onLogin = async (tokenId) => {     
-        
+    useEffect(() => onLoad(), [])
+
+    const onLogin = async (accessToken) => {     
+        updateUser({
+            isLogged: true,
+            token: accessToken
+        })
     }
 
     const onLogout = () => {
@@ -28,13 +59,14 @@ const Exchange = () => {
 
     return (
         <>
-            <Navbar onLogin={onLogin} onLogout={onLogout} />            
+            <Navbar user={user} onLogin={onLogin} onLogout={onLogout} />
             <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="profil" element={user.isLogged ? <UserProfile userData={user} /> : <Navigate to='/'/>}/>
-            </Routes>            
+                <Route path="/" element={<HomePage />} />
+                <Route path="profil" element={user.isLogged ? <UserProfile userData={user} /> : <Navigate to='/' />} />
+            </Routes>
         </>
     )
+    
 }
 
 export default Exchange
