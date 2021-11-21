@@ -100,6 +100,11 @@ app.post('/auth/google/login', async (req, res) => {
     }
 })
 
+app.get('/auth/logout', (req, res) => {
+    res.clearCookie('token')
+    res.sendStatus(200)
+}) 
+
 app.get('/getAccessToken', auth, (req, res) => {
     
     const accessToken = jwt.sign(
