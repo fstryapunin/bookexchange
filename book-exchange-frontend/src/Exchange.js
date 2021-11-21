@@ -29,12 +29,12 @@ const Exchange = () => {
             //navigate to token expired error page here
             updateUser({
                 isLogged: false,
-                loaded: false                
+                loaded: true                
             })
         } else {
             updateUser({
                 isLogged: false,
-                loaded: false                
+                loaded: true                
             })
         }
     }

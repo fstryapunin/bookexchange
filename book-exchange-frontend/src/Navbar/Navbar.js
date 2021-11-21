@@ -1,7 +1,6 @@
 import React from "react";
 import GoogleAuth from "../Auth/GoogleAuth";
 import styled from 'styled-components'
-const apiAdress = process.env.REACT_APP_API_ADRESS
 
 const StyledNavbar = styled.div`
 padding: 20px;

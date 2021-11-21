@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import LogoutButton from "./LogoutButton";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
 const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
@@ -43,7 +44,7 @@ const GoogleAuth = ({ user, onLogin, onLogout }) => {
             });
             window.google.accounts.id.renderButton(
                 document.getElementById("gbutton"),
-                { theme: "outline", size: "large" }
+                { theme: "outline", size: "medium" }
             )
         }
 
@@ -56,10 +57,16 @@ const GoogleAuth = ({ user, onLogin, onLogout }) => {
     }
     
     useEffect(googleAccouns, [])
-
+    
     return (
-        <div id="gbutton" className={user.loaded ? null : 'gbutton-hidden'}></div>
+        <div>
+            {user.isLogged? <LogoutButton/> : null}
+            <div id="gbutton" className={user.loaded && !user.isLogged ? null : 'gbutton-hidden'}></div>
+        </div>
+        
     )
+        
+    
 }
 
 export default GoogleAuth

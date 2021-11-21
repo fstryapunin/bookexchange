@@ -18,4 +18,6 @@ body {
 
 .gbutton-hidden{
   visibility: hidden;
+  width: 0.1px;
+  height: 0.1px;
 }
