@@ -119,6 +119,15 @@ app.get('/getAccessToken', cookieAuth, (req, res) => {
     res.status(200).json({token : accessToken})    
 })
 
-app.post('/getUserProfile', tokenAuth, (req, res) => {
-    console.log(req.user)
+app.post('/getUserProfile', tokenAuth, async (req, res) => {
+    const userDb = await db.select('*').from('users').where('id', req.user.id)
+    const user = userDb[0]    
+    const resBody = {
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        link: user.img_link
+    }
+
+    res.status(200).json(resBody)
 })
