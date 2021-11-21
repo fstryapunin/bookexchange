@@ -2,6 +2,7 @@ const express = require('express');
 const knex = require('knex')
 const cors = require('cors')
 const jwt = require("jsonwebtoken");
+const auth = require('./middleware/auth')
 const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl, tokenKey } = require('./config');
@@ -39,29 +40,30 @@ app.get('/', (req, res) => {
 })
 
 const upsertUser = async (payload) => {
+    
     const firstName = payload.given_name
     const lastName = payload.family_name
     const email = payload.email
     const imageLink = payload.picture
 
     const exists = await db.select('*').from('users').where('email', email)
+    
         if (exists.length === 0) {
             const newUserId = await db('users').insert({
                 email: email,
                 first_name: firstName,
                 last_name: lastName,
                 img_link: imageLink
-            }, 'id')
-            return newUserId
+            }, 'id')            
+            return parseInt(newUserId[0])
         } else {
             const userId = await db('users').where('email', email).update({
                 email: email,
                 first_name: firstName,
                 last_name: lastName,
                 img_link: imageLink
-            }, 'id')
-
-            return userId
+            }, 'id')            
+            return parseInt(userId[0])
         }
 }
 
@@ -77,7 +79,7 @@ app.post('/auth/google/login', async (req, res) => {
         
         const payload = ticket.getPayload()
         
-        const userId = upsertUser(payload)      
+        const userId = await upsertUser(payload)      
 
         const jRefreshToken = jwt.sign(
             {
@@ -86,11 +88,11 @@ app.post('/auth/google/login', async (req, res) => {
             },
             tokenKey,
             {
-              expiresIn: "1m",
+              expiresIn: "30d",
             }
         );       
 
-        res.cookie('token', jRefreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 14 })
+        res.cookie('token', jRefreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 * 13 })
         res.sendStatus(200)
         
     } else {
@@ -98,7 +100,21 @@ app.post('/auth/google/login', async (req, res) => {
     }
 })
 
-app.get('/test', (req, res) => {
-    console.log(req.cookies)
-    res.sendStatus(200)
+app.get('/test', auth, (req, res) => {
+    
+    const accessToken = jwt.sign(
+        {
+            id: req.user.id
+        },
+        tokenKey,
+        {
+            expiresIn: '1h'
+        }
+    )
+    
+    const resBody = {
+        token: accessToken
+    }
+
+    res.status(200).json(resBody)
 })
