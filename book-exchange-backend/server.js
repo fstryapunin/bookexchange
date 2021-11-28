@@ -128,6 +128,5 @@ app.post('/getUserProfile', tokenAuth, async (req, res) => {
         lastName: user.last_name,
         link: user.img_link
     }
-
     res.status(200).json(resBody)
 })

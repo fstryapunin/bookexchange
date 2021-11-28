@@ -44,6 +44,7 @@ const Exchange = () => {
     const onLogin = async (accessToken) => {
        
         updateUser({
+            loaded: true,
             isLogged: true,
             token: accessToken
         })

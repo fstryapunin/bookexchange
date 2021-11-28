@@ -34,7 +34,7 @@ const GoogleAuth = ({ user, onLogin, onLogout }) => {
         }
     }    
 
-    const googleAccounts = () => {    
+    const googleAccounts = () => {        
         if (user.loaded && !user.isLogged) {
             window.google.accounts.id.initialize({
                 client_id: clientId,
