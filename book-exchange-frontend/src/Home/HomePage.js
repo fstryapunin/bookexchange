@@ -1,10 +1,19 @@
 import React from "react";
+import styled from "styled-components";
 
-const HomePage = () => {
+const StyledHomepage = styled.div`
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+    padding:25px;
+
+`
+
+const HomePage = () => {  
+
     return (
-        <div>
-            <h1>HomePage</h1>
-        </div>
+        <StyledHomepage>                     
+        </StyledHomepage>
     )
 }
 

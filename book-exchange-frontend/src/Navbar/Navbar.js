@@ -17,7 +17,7 @@ background-color: white;
 `
 const LinkContainer = styled.div`
     display: flex;
-    gap: 20px;
+    gap: 25px;
     position: absolute;
     right: 50%;
     transform: translateX(50%);
