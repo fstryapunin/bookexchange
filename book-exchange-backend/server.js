@@ -84,11 +84,11 @@ app.post('/auth/google/login', async (req, res) => {
             audience: googleClientId
         });
         
-        const payload = ticket.getPayload()
+        const payload = ticket.getPayload()      
         
         const userId = await upsertUser(payload)      
 
-        const jRefreshToken = jwt.sign(
+        const refreshToken = jwt.sign(
             {
                 email: payload.email,
                 id : userId
@@ -97,22 +97,27 @@ app.post('/auth/google/login', async (req, res) => {
             {
               expiresIn: "30d",
             }
-        );       
+        );
+        
+        const accessToken = jwt.sign(
+            {
+                id: userId
+            },
+            tokenKey,
+            {
+                expiresIn: '12h'
+            }
+        ) 
 
-        res.cookie('token', jRefreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 * 13 })
-        res.sendStatus(200)
+        res.cookie('token', refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 * 13 })
+        res.status(200).json({token: accessToken})
         
     } else {
         res.sendStatus(400)
     }
 })
 
-app.get('/auth/logout', (req, res) => {
-    res.clearCookie('token')
-    res.sendStatus(200)
-}) 
-
-app.get('/getAccessToken', cookieAuth, (req, res) => {
+app.get('/auth/getAccessToken', cookieAuth, (req, res) => {
     const accessToken = jwt.sign(
         {
             id: req.user.id
@@ -123,8 +128,14 @@ app.get('/getAccessToken', cookieAuth, (req, res) => {
         }
     )    
    
-    res.status(200).json({token : accessToken})    
+    res.status(200).json({token : accessToken})
+   
 })
+
+app.get('/auth/logout', (req, res) => {
+    res.clearCookie('token')
+    res.sendStatus(200)
+}) 
 
 app.post('/getUserProfile', tokenAuth, async (req, res) => {
     const userDb = await db.select('*').from('users').where('id', req.user.id)
