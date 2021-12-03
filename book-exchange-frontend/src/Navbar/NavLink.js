@@ -11,9 +11,8 @@ const StyledLink = styled(Link)`
 
 const NavLink = ({ target, text }) => {
     const resolved = useResolvedPath(target)
-    const match = useMatch({ path: resolved.pathname, end: true });
-    console.log(match)
-
+    const match = useMatch({ path: resolved.pathname, end: true });    
+    
     return (
         <StyledLink to={`/${target}`} active={match? true : false}>{text}</StyledLink>
     )

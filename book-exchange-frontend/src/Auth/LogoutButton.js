@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { unauthenticateUser } from "../State/authSlice";
 
 //styles copied from google button
 const StyledLogoutButton = styled.div`
@@ -37,7 +39,13 @@ const StyledLogoutButton = styled.div`
     font-weight: 500;
 `
 
-const LogoutButton = ({onLogout}) => {
+const LogoutButton = () => {
+    const dispatch = useDispatch()
+
+    const onLogout = () => {
+        dispatch(unauthenticateUser())
+    }
+
     return (
         <StyledLogoutButton onClick={onLogout}>
             Odhlásit

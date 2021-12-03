@@ -34,7 +34,7 @@ const navLinks = [
     }    
 ]
 
-const Navbar = ({ user, onLogin, onLogout }) => {
+const Navbar = () => {
     
     const links = navLinks.map(linkObj => {
         return <NavLink key={linkObj.text} target={linkObj.target} text={linkObj.text}/>
@@ -46,7 +46,7 @@ const Navbar = ({ user, onLogin, onLogout }) => {
             <LinkContainer>
                 {links}
             </LinkContainer>
-            <GoogleAuth user={user} onLogin={onLogin} onLogout={onLogout}/>
+            <GoogleAuth/>
         </StyledNavbar>
       
     )

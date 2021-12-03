@@ -1,4 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchUserData } from '../State/userSlice'
 import styled from "styled-components";
 import Loader from "../Loader/Loader";
 import UserInfo from "./UserInfo";
@@ -7,7 +9,6 @@ import { SecondaryButton } from "../Styles/GlobalStyles";
 import UserListings from "./UserListings";
 import UserDemands from "./UserDemands";
 import { useNavigate } from "react-router";
-const apiAdress = process.env.REACT_APP_API_ADRESS
 
 const StyledProfile = styled.div`
     width: 100%;
@@ -38,51 +39,28 @@ const FlexButton = styled(SecondaryButton)`
     flex-basis: 50px;
 `
 
-const UserProfile = ({ user }) => {    
-    const [userData, updateUserData] = useState({
-        loaded: false
-    })
+const UserProfile = () => {  
     const navigate = useNavigate()
+    const authStatus = useSelector(state => state.auth.status)
+    const userStatus = useSelector(state => state.user.status)
+    const userData = useSelector(state => state.user.data)
+    const dispatch = useDispatch()   
 
-    const fetchUser = async () => {        
-        const userResponse = await fetch(`${apiAdress}/getUserProfile`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                token: user.token
-            })
-        })
-        if (userResponse.ok) {
-            const data = await userResponse.json()
-            updateUserData({
-                loaded: true,
-                data: data
-            })
-        } else if(userResponse.status === 401){
-            //navigate to token expiry error page
-            navigate('/')
-        } else {
-            navigate('/')
-        }        
-    }
-
-    const checkUser = () => {
-        if (user.loaded && !user.isLogged) navigate('/')
-        else if(user.loaded && user.isLogged){
-            fetchUser()
+    const checkAuth = () => {        
+        if (authStatus === 'unauthenticated') navigate('/')
+        else if (authStatus === 'authenticated' && userStatus === 'idle') {          
+            dispatch(fetchUserData())
         }
     }
 
-    useEffect(checkUser, [user, navigate])
+    useEffect(checkAuth, [authStatus, userStatus, dispatch, navigate])
 
-    if (user.loaded && userData.loaded) {
+    if (authStatus === 'authenticated' && userStatus === 'loaded') {
         return (
             <StyledProfile>
                 <FlexContainer>
                     <div>
-                        <UserInfo user={userData.data} />
+                        <UserInfo user={userData} />
                         <ButtonContainer>
                             <FlexButton primary={false} margin='0px'>PŘIDAT NABÍDKU</FlexButton>
                             <FlexButton primary={false} margin='0px'>PŘIDAT POPTÁVKU</FlexButton>   

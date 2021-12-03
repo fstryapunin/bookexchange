@@ -1,44 +1,23 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux'
+import { authenticateUserWithGoogle } from "../State/authSlice";
 import LogoutButton from "./LogoutButton";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
-const apiAdress = process.env.REACT_APP_API_ADRESS
 
-const GoogleAuth = ({ user, onLogin, onLogout }) => {
+const GoogleAuth = () => {
+    const authStatus = useSelector(state => state.auth.status)
+    const dispatch = useDispatch()    
 
-    const handleCredentialResponse = async (response) => {
-        if (response.credential) {
-            const loginRes = await fetch(`${apiAdress}/auth/google/login`, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(
-                    {
-                        token: response.credential
-                    }
-                )
-            })
-            if (loginRes.ok) {
-                const tokenRes = await fetch(`${apiAdress}/getAccessToken`, {
-                    method: 'GET',
-                    credentials: 'include'
-                })
-                
-                const resBody = await tokenRes.json()
-                if (resBody.token) {
-                    onLogin(resBody.token)
-                }
-            }
+    const googleAccounts = () => {
+        const onResponse = (props) => {
+            dispatch(authenticateUserWithGoogle(props.credential))
         }
-    }    
 
-    const googleAccounts = () => {        
-        if (user.loaded && !user.isLogged) {
+        if (authStatus === 'unauthenticated') {
             window.google.accounts.id.initialize({
                 client_id: clientId,
-                callback: handleCredentialResponse
+                callback: onResponse
             })
             window.google.accounts.id.renderButton(
                 document.getElementById("gbutton"),
@@ -48,19 +27,16 @@ const GoogleAuth = ({ user, onLogin, onLogout }) => {
             )  
         }       
     }
-
     
-    useEffect(googleAccounts, [user])
+    useEffect(googleAccounts, [authStatus, dispatch])
     
     return (
         <div>
-            {user.isLogged ? <LogoutButton onLogout={onLogout}/> : null}
-            <div id="gbutton" className={user.isLogged? 'visibility-none' : null}></div>
+            {authStatus === 'authenticated' ? <LogoutButton/> : null}
+            <div id="gbutton" className={authStatus === 'unauthenticated' ? null : 'visibility-none' }></div>
         </div>
         
-    )
-        
-    
+    )    
 }
 
 export default GoogleAuth

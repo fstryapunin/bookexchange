@@ -1,4 +1,6 @@
 import React from "react";
+import { useSelector, useDispatch} from 'react-redux'
+import { add, fetchCategories  } from '../State/categoriesSlice'
 import styled from "styled-components";
 
 const StyledHomepage = styled.div`
@@ -9,10 +11,13 @@ const StyledHomepage = styled.div`
 
 `
 
-const HomePage = () => {  
-
+const HomePage = () => {
+    /*const categories = useSelector((state) => state.categories.data)
+    const dispatch = useDispatch()
+    dispatch(fetchCategories())*/
+    
     return (
-        <StyledHomepage>                     
+        <StyledHomepage>           
         </StyledHomepage>
     )
 }

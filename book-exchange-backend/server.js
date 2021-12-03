@@ -137,7 +137,7 @@ app.get('/auth/logout', (req, res) => {
     res.sendStatus(200)
 }) 
 
-app.post('/getUserProfile', tokenAuth, async (req, res) => {
+app.post('/user/getUserProfile', tokenAuth, async (req, res) => {
     const userDb = await db.select('*').from('users').where('id', req.user.id)
     const user = userDb[0]    
     const resBody = {
