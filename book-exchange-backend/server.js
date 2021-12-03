@@ -40,6 +40,12 @@ app.get('/', (req, res) => {
     res.sendStatus(200)
 })
 
+app.get('/categories', async (req, res) => {
+    const categories = await db.select('*').from('categories')
+    const sorted = categories.sort((a, b) => (a.order > b.order) ? 1 : -1)
+    res.json(sorted)
+})
+
 const upsertUser = async (payload) => {
     
     const firstName = payload.given_name
