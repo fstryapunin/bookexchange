@@ -17,16 +17,3 @@ body {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
       monospace;
   }
-
-.visibility-none{
-  visibility: hidden;
-  width: 0.1px;
-  height: 0.1px;
-}
-
-/* google filckering fix */
-#gbutton{
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}

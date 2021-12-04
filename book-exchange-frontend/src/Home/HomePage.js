@@ -1,6 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch} from 'react-redux'
-import { add, fetchCategories  } from '../State/categoriesSlice'
+import Categories from "../Categories/Categories";
 import styled from "styled-components";
 
 const StyledHomepage = styled.div`
@@ -10,14 +9,20 @@ const StyledHomepage = styled.div`
     padding:25px;
 
 `
+const CategoriesContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    
+`
 
 const HomePage = () => {
-    /*const categories = useSelector((state) => state.categories.data)
-    const dispatch = useDispatch()
-    dispatch(fetchCategories())*/
     
     return (
-        <StyledHomepage>           
+        <StyledHomepage>
+            <CategoriesContainer>
+                <Categories/>
+            </CategoriesContainer>           
         </StyledHomepage>
     )
 }

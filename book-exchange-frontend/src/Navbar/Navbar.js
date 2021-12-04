@@ -1,26 +1,30 @@
 import React from "react";
 import GoogleAuth from "../Auth/GoogleAuth";
 import NavLink from "./NavLink";
+import { useSelector } from "react-redux";
 import styled from 'styled-components'
 
 const StyledNavbar = styled.div`
-height: 74px;
-padding: 20px;
-box-sizing: border-box;
-width: 100%;
-display : flex;
-justify-content: flex-end;
-align-items: center;
-border-bottom: 5px solid var(--dark-blue);
-position: sticky;
-background-color: white;
+    padding: 25px;
+    box-sizing: border-box;
+    width: 100%;
+    border-bottom: 5px solid var(--dark-blue);
+    position: sticky;
+    background-color: white;
 `
+
 const LinkContainer = styled.div`
+    max-width: 1090px;  
+    margin: 0 auto;
+    display : flex;
+    justify-content: space-between;
+    align-items: center;
     display: flex;
     gap: 25px;
-    position: absolute;
-    right: 50%;
-    transform: translateX(50%);
+    #static-links{
+        display: flex;
+        gap: 10px
+    }    
 `
 
 const navLinks = [
@@ -29,12 +33,13 @@ const navLinks = [
         text: 'DOMŮ'
     },
     {
-        target: 'profil',
-        text: 'PROFIL'
-    }    
+        target: 'katalog',
+        text: 'KATALOG'
+    }   
 ]
 
 const Navbar = () => {
+    const authStatus = useSelector((state) => state.auth.status)
     
     const links = navLinks.map(linkObj => {
         return <NavLink key={linkObj.text} target={linkObj.target} text={linkObj.text}/>
@@ -42,11 +47,14 @@ const Navbar = () => {
    
     return (
       
-        <StyledNavbar>
+        <StyledNavbar>            
             <LinkContainer>
+                <div id="static-links">
                 {links}
-            </LinkContainer>
-            <GoogleAuth/>
+                </div>
+                {authStatus === 'authenticated' ? <NavLink target={'profil'} text={'MŮJ ÚČET'} /> : null}
+                <GoogleAuth/>
+            </LinkContainer>            
         </StyledNavbar>
       
     )

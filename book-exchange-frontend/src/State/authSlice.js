@@ -58,10 +58,6 @@ export const authSlice = createSlice({
   }
 })
 
-
-
 export const getUser = state => state.user
-
-export const { add } = authSlice.actions
 
 export default authSlice.reducer

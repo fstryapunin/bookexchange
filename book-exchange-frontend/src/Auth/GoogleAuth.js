@@ -1,13 +1,18 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { authenticateUserWithGoogle } from "../State/authSlice";
-import LogoutButton from "./LogoutButton";
+import styled from "styled-components";
 
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID
 
+const GoogleButton = styled.div`
+    display: ${props => props.$hidden ? 'none' : 'inline-block'};
+    height: inherit;
+`
+
 const GoogleAuth = () => {
     const authStatus = useSelector(state => state.auth.status)
-    const dispatch = useDispatch()    
+    const dispatch = useDispatch()
 
     const googleAccounts = () => {
         const onResponse = (props) => {
@@ -30,13 +35,10 @@ const GoogleAuth = () => {
     
     useEffect(googleAccounts, [authStatus, dispatch])
     
-    return (
-        <div>
-            {authStatus === 'authenticated' ? <LogoutButton/> : null}
-            <div id="gbutton" className={authStatus === 'unauthenticated' ? null : 'visibility-none' }></div>
-        </div>
-        
+    return (               
+        <GoogleButton id="gbutton" $hidden={authStatus === 'unauthenticated' ? false : true}/>
     )    
 }
 
 export default GoogleAuth
+ /*<div id="gbutton" className={authStatus === 'unauthenticated' ? null : 'visibility-none' } $hidden={authStatus === 'unauthenticated' ? true : false} ></div>  */

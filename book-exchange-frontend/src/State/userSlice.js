@@ -42,6 +42,4 @@ export const userSlice = createSlice({
     }
 })
 
-export const { add } = userSlice.actions
-
 export default userSlice.reducer

@@ -9,6 +9,7 @@ import { SecondaryButton } from "../Styles/GlobalStyles";
 import UserListings from "./UserListings";
 import UserDemands from "./UserDemands";
 import { useNavigate } from "react-router";
+import LogoutButton from '../Auth/LogoutButton'
 
 const StyledProfile = styled.div`
     width: 100%;
@@ -48,7 +49,7 @@ const UserProfile = () => {
 
     const checkAuth = () => {        
         if (authStatus === 'unauthenticated') navigate('/')
-        else if (authStatus === 'authenticated' && (userStatus === 'idle')) {          
+        else if (authStatus === 'authenticated' && userStatus === 'idle') {          
             dispatch(fetchUserData())
         }
     }
@@ -70,6 +71,7 @@ const UserProfile = () => {
                 </FlexContainer>
                 <UserListings />
                 <UserDemands />
+                <LogoutButton/>
             </StyledProfile>
         )
     } else {
