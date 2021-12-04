@@ -30,8 +30,7 @@ export const authenticateUserWithGoogle = createAsyncThunk('user/authenticateGoo
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    status: 'idle',
-    authenticated: false,
+    status: 'idle',   
     token: '',
     error: null
   },
@@ -42,8 +41,7 @@ export const authSlice = createSlice({
       state.status = 'loading'
       })
       .addCase(authenticateUser.fulfilled, (state, action) => {
-        state.status = 'authenticated'
-        state.authenticated = true
+        state.status = 'authenticated'        
         state.token = action.payload.token       
       })
       .addCase(authenticateUser.rejected, (state, action) => {
@@ -55,6 +53,7 @@ export const authSlice = createSlice({
       })
       .addCase(authenticateUserWithGoogle.fulfilled, (state, action) => {
         state.status = 'authenticated'
+        state.token = action.payload.token
       })
   }
 })

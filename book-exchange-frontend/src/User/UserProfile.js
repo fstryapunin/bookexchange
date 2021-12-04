@@ -48,7 +48,7 @@ const UserProfile = () => {
 
     const checkAuth = () => {        
         if (authStatus === 'unauthenticated') navigate('/')
-        else if (authStatus === 'authenticated' && userStatus === 'idle') {          
+        else if (authStatus === 'authenticated' && (userStatus === 'idle')) {          
             dispatch(fetchUserData())
         }
     }
