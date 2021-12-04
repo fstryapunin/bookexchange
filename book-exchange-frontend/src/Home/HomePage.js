@@ -7,10 +7,10 @@ const StyledHomepage = styled.div`
     margin-left: auto;
     margin-right: auto;
     padding:25px;
-
+    box-sizing: border-box;
 `
 const CategoriesContainer = styled.div`
-    display: flex;
+    display: grid;
     flex-wrap: wrap;
     gap: 20px;
     
@@ -20,9 +20,7 @@ const HomePage = () => {
     
     return (
         <StyledHomepage>
-            <CategoriesContainer>
-                <Categories/>
-            </CategoriesContainer>           
+                    
         </StyledHomepage>
     )
 }
