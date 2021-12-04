@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchUserData } from '../State/userSlice'
+import { fetchUserData, fetchUserListings } from './userSlice'
 import styled from "styled-components";
 import Loader from "../Loader/Loader";
 import UserInfo from "./UserInfo";
 import MessageView from "../Messages/MessageView";
 import { SecondaryButton } from "../Styles/GlobalStyles";
 import UserListings from "./UserListings";
-import UserDemands from "./UserDemands";
 import { useNavigate } from "react-router";
 import LogoutButton from '../Auth/LogoutButton'
 
@@ -54,16 +53,24 @@ const UserProfile = () => {
     const authStatus = useSelector(state => state.auth.status)
     const userStatus = useSelector(state => state.user.status)
     const userData = useSelector(state => state.user.data)
+    const listingsStatus = useSelector(state => state.user.listingsStatus)
     const dispatch = useDispatch()   
 
-    const checkAuth = () => {        
+    const getUser = () => {        
         if (authStatus === 'unauthenticated') navigate('/')
         else if (authStatus === 'authenticated' && userStatus === 'idle') {          
             dispatch(fetchUserData())
         }
     }
 
-    useEffect(checkAuth, [authStatus, userStatus, dispatch, navigate])
+    const getListings = () => {
+        if (listingsStatus === 'idle' && authStatus === 'authenticated') {
+            dispatch(fetchUserListings())
+        }
+    }
+
+    useEffect(getListings, [listingsStatus, authStatus, dispatch])
+    useEffect(getUser, [authStatus, userStatus, dispatch, navigate])
 
     if (authStatus === 'authenticated' && userStatus === 'loaded') {
         return (
@@ -72,14 +79,14 @@ const UserProfile = () => {
                     <div id="user-container">
                         <UserInfo user={userData} />
                         <ButtonContainer>
-                            <FlexButton primary={false} margin='0px'>PŘIDAT NABÍDKU</FlexButton>
-                            <FlexButton primary={false} margin='0px'>PŘIDAT POPTÁVKU</FlexButton>   
+                            <FlexButton primary={false} margin='0px'><p>PŘIDAT NABÍDKU</p></FlexButton>
+                            <FlexButton primary={false} margin='0px'><p>PŘIDAT POPTÁVKU</p></FlexButton>   
                         </ButtonContainer>                     
                     </div>
                     <MessageView />
                 </FlexContainer>
-                <UserListings />
-                <UserDemands />
+                <UserListings status={listingsStatus} text="nabídky" type="listing"/>
+                <UserListings status={listingsStatus} text="poptávky" type="demand"/>                
                 <LogoutButton/>
             </StyledProfile>
         )

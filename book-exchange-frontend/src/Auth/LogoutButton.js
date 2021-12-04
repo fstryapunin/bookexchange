@@ -9,6 +9,7 @@ const StyledLogoutButton = styled(SecondaryButton)`
     width: 100%;
     box-sizing: border-box;
     margin: 25px 0px;
+    text-transform: uppercase;
 `
 
 const LogoutButton = () => {
@@ -20,7 +21,7 @@ const LogoutButton = () => {
 
     return (
         <StyledLogoutButton onClick={onLogout}>
-            Odhlásit se
+            <p>Odhlásit se</p>
         </StyledLogoutButton>
     )
 }

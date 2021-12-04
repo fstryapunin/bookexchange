@@ -135,11 +135,16 @@ app.get('/auth/getAccessToken', cookieAuth, (req, res) => {
 app.get('/auth/logout', (req, res) => {
     res.clearCookie('token')
     res.sendStatus(200)
-}) 
+})
 
-app.post('/user/getUserProfile', tokenAuth, async (req, res) => {
-    const userDb = await db.select('*').from('users').where('id', req.user.id)
-    const user = userDb[0]    
+app.post('/user/listings', tokenAuth, async (req, res) => {
+    const userListings = await db.select('*').from('listings').where('poster_id', req.user.id)
+    res.status(200).json(userListings)
+})
+
+app.post('/user/profile', tokenAuth, async (req, res) => {
+    const userData = await db.select('*').from('users').where('id', req.user.id)
+    const user = userData[0]    
     const resBody = {
         email: user.email,
         firstName: user.first_name,

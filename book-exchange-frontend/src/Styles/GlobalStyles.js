@@ -1,11 +1,13 @@
 import styled from "styled-components";
 
-export const SectionHeading = styled.h1`
-    text-align: center;
+export const SectionHeading = styled.h3`
+    text-align: ${props=> props.align? props.align : 'center'};
     width: 100%;
     box-sizing: border-box;    
-    margin: ${props => props.margin? props.margin : 0};
+    margin: ${props => props.margin ? props.margin : 0};
+    text-transform: uppercase;
 `
+
 export const Card = styled.div`
     margin: ${props => props.margin? props.margin : 0};
     padding: 25px;
@@ -38,5 +40,8 @@ export const SecondaryButton = styled.button`
         color: var(--light-gray);
         border: 2px solid var(--dark-blue);
         background-color: var(--dark-blue);
+    }
+    p{
+        margin: 0;
     }
 `
