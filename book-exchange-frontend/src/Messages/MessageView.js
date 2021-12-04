@@ -3,9 +3,8 @@ import { SectionHeading, Card } from '../Styles/GlobalStyles'
 import styled from "styled-components";
 
 const MessagesContainer = styled(Card)`
-    box-sizing: border-box;
-    width: 100%;
-    background-color: white;
+    box-sizing: border-box;    
+    background-color: white;   
 `
 
 const MessageView = () => {

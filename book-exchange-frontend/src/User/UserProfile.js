@@ -27,12 +27,21 @@ const Center = styled.div`
 `
 const FlexContainer = styled.div`
     display: flex;
+    flex-wrap: wrap;
     gap: 25px;
+    div{
+        flex-basis: 300px;
+        flex-grow: 2;
+    }
+    #user-container{
+        flex-grow: 1;
+    }
 `
 
 const ButtonContainer = styled.div`
     margin-top: 15px;
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
 `
 const FlexButton = styled(SecondaryButton)`
@@ -60,7 +69,7 @@ const UserProfile = () => {
         return (
             <StyledProfile>
                 <FlexContainer>
-                    <div>
+                    <div id="user-container">
                         <UserInfo user={userData} />
                         <ButtonContainer>
                             <FlexButton primary={false} margin='0px'>PŘIDAT NABÍDKU</FlexButton>

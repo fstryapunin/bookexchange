@@ -4,10 +4,10 @@ export const SectionHeading = styled.h1`
     text-align: center;
     width: 100%;
     box-sizing: border-box;    
-    margin: ${props => props.margin? props.margin: null};
+    margin: ${props => props.margin? props.margin : 0};
 `
 export const Card = styled.div`
-    margin: ${props => props.margin? props.margin : null};
+    margin: ${props => props.margin? props.margin : 0};
     padding: 25px;
     background-color: white;
     box-shadow: 0px 0px 6px 3px rgba(0,0,0, 0.1);

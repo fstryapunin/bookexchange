@@ -1,5 +1,5 @@
 import React from "react";
-import { SectionHeading, Card } from "../Styles/GlobalStyles";
+import { Card } from "../Styles/GlobalStyles";
 import styled from "styled-components";
 
 const UserValues = styled.div`
@@ -10,8 +10,7 @@ const UserName = styled.h2`
     font-size: 24px;
     margin-bottom: 5px;
     font-weight: bold;
-    margin-top: 0px;
-    white-space: nowrap;
+    margin-top: 0px;   
 `
 const UserEmail = styled.div`
     font-size: 20px;
