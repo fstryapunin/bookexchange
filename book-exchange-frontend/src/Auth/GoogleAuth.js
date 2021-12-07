@@ -29,7 +29,7 @@ const GoogleAuth = () => {
                 {
                     size: "medium",                    
                 }
-            )  
+            )
         }       
     }
     
@@ -41,4 +41,3 @@ const GoogleAuth = () => {
 }
 
 export default GoogleAuth
- /*<div id="gbutton" className={authStatus === 'unauthenticated' ? null : 'visibility-none' } $hidden={authStatus === 'unauthenticated' ? true : false} ></div>  */

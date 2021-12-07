@@ -2,6 +2,7 @@ const express = require('express');
 const knex = require('knex')
 const cors = require('cors')
 const jwt = require("jsonwebtoken");
+const mockData = require('./files/MOCK_DATA.json')
 const { cookieAuth, tokenAuth } = require('./middleware/auth')
 const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
@@ -138,7 +139,7 @@ app.get('/auth/logout', (req, res) => {
 })
 
 app.post('/user/listings', tokenAuth, async (req, res) => {
-    const userListings = await db.select('*').from('listings').where('poster_id', req.user.id)
+    const userListings = await db.select('*').from('dupe_listings').where('poster_id', req.user.id)
     res.status(200).json(userListings)
 })
 
@@ -153,3 +154,26 @@ app.post('/user/profile', tokenAuth, async (req, res) => {
     }
     res.status(200).json(resBody)
 })
+
+app.post('/public/listings/new', async (req, res) => {
+    const { page } = req.body
+    const data = await db('dupe_listings').select('*')
+    data.sort(function(a, b) {
+        return (a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0);
+    });
+    const hundredItems = data.slice(0, 100)
+    
+    res.status(200).json(hundredItems)
+})
+
+/*const loadSampleData = async () => {
+    const response = await db('dupe_listings').select('*')  
+
+    for (element of response) {
+        console.log(element)
+        const update = await db('dupe_listings').where('id', element.id).update('active', Math.random() < 0.5)
+        console.log(update)
+    }
+}
+
+loadSampleData()*/
