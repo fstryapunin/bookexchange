@@ -41,7 +41,13 @@ app.get('/', (req, res) => {
     res.sendStatus(200)
 })
 
-
+app.get('/public/listings', async (req, res) => {
+    const listings = await db.select('*').from('dupe_listings').where('active', true)
+    const sortedListings = listings.sort(function(a, b) {
+        return (a.added > b.added) ? -1 : ((a.added < b.added) ? 1 : 0);
+    });
+    res.json(sortedListings)
+})
 
 app.get('/categories', async (req, res) => {
     const categories = await db.select('*').from('categories')
@@ -160,6 +166,7 @@ app.post('/user/profile', tokenAuth, async (req, res) => {
     res.status(200).json(resBody)
 })
 
+/*
 app.get('/public/listings/new', async (req, res) => {
    
     const data = await db('dupe_listings').select('*')
@@ -169,7 +176,7 @@ app.get('/public/listings/new', async (req, res) => {
     const hundredItems = data.slice(0, 100)
     
     res.status(200).json(hundredItems)
-})
+})*/
 
 /*const loadSampleData = async () => {
     const response = await db('dupe_listings').select('*')  
