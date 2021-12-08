@@ -41,6 +41,8 @@ app.get('/', (req, res) => {
     res.sendStatus(200)
 })
 
+
+
 app.get('/categories', async (req, res) => {
     const categories = await db.select('*').from('categories')
     const sorted = categories.sort((a, b) => (a.order > b.order) ? 1 : -1)
@@ -140,7 +142,10 @@ app.get('/auth/logout', (req, res) => {
 
 app.post('/user/listings', tokenAuth, async (req, res) => {
     const userListings = await db.select('*').from('dupe_listings').where('poster_id', req.user.id)
-    res.status(200).json(userListings)
+    const sortedListings= userListings.sort(function(a, b) {
+        return (a.added > b.added) ? -1 : ((a.added < b.added) ? 1 : 0);
+    });
+    res.status(200).json(sortedListings)
 })
 
 app.post('/user/profile', tokenAuth, async (req, res) => {
@@ -155,11 +160,11 @@ app.post('/user/profile', tokenAuth, async (req, res) => {
     res.status(200).json(resBody)
 })
 
-app.post('/public/listings/new', async (req, res) => {
-    const { page } = req.body
+app.get('/public/listings/new', async (req, res) => {
+   
     const data = await db('dupe_listings').select('*')
     data.sort(function(a, b) {
-        return (a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0);
+        return (a.added < b.added) ? -1 : ((a.added > b.added) ? 1 : 0);
     });
     const hundredItems = data.slice(0, 100)
     
