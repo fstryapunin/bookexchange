@@ -8,7 +8,7 @@ const { cookieAuth, tokenAuth } = require('./middleware/auth')
 const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl, tokenKey } = require('./config');
-
+const { listingModel } = require('./models')
 
 const app = express();
 const googleClient = new OAuth2Client(googleClientId)
@@ -44,7 +44,8 @@ app.get('/', (req, res) => {
 })
 
 app.get('/public/listings/new', async (req, res) => {
-    const listings = await db.select('*',).from({ listings: 'dupe_listings' }).orderBy('added', 'desc').limit('20')
+    //const listings = await db.select('*',).from({ listings: 'dupe_listings' }).orderBy('added', 'desc').limit('20')
+    const listings = await listingModel.query().withGraphFetched('user').select('*').from({ listings: 'dupe_listings'}).orderBy('added', 'desc').limit('20')
     res.json(listings)
 })
 
