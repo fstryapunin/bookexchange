@@ -3,6 +3,7 @@ const knex = require('knex')
 const cors = require('cors')
 const jwt = require("jsonwebtoken");
 const mockData = require('./files/MOCK_DATA.json')
+const { Model } = require('objection');
 const { cookieAuth, tokenAuth } = require('./middleware/auth')
 const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
@@ -16,7 +17,8 @@ const db = knex({
     connection: {
        connectionString : dbUrl,      
     }
-  });
+});
+Model.knex(db)
 
 const corsConfig = {
     origin: ['http://localhost:3000', 'https://kepler-x.vercel.app'],
@@ -41,8 +43,8 @@ app.get('/', (req, res) => {
     res.sendStatus(200)
 })
 
-app.get('/public/listings', async (req, res) => {
-    const listings = await db.select('*').from('dupe_listings').where('active', true).orderBy('added', 'desc')     
+app.get('/public/listings/new', async (req, res) => {
+    const listings = await db.select('*',).from({ listings: 'dupe_listings' }).orderBy('added', 'desc').limit('20')
     res.json(listings)
 })
 
@@ -143,7 +145,8 @@ app.get('/auth/logout', (req, res) => {
 })
 
 app.post('/user/listings', tokenAuth, async (req, res) => {
-    const userListings = await db.select('*').from('dupe_listings').where('poster_id', req.user.id).orderBy('added', 'desc')    
+    //limit ammount
+    const userListings = await db.select('*').from('dupe_listings').where('poster_id', req.user.id).orderBy('added', 'desc')   
     res.status(200).json(userListings)
 })
 
@@ -162,7 +165,7 @@ app.post('/user/profile', tokenAuth, async (req, res) => {
 /*
 app.get('/public/listings/new', async (req, res) => {
    
-    const data = await db('dupe_listings').select('*')
+    const data = await db('dupe_listings').select('*').limit('100') 
     data.sort(function(a, b) {
         return (a.added < b.added) ? -1 : ((a.added > b.added) ? 1 : 0);
     });
