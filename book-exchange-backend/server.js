@@ -43,10 +43,13 @@ app.get('/', (req, res) => {
     res.sendStatus(200)
 })
 
-app.get('/public/listings/new', async (req, res) => {
+app.get('/public/listings/new/:page', async (req, res) => {
     //const listings = await db.select('*',).from({ listings: 'dupe_listings' }).orderBy('added', 'desc').limit('20')
-    const listings = await listingModel.query().withGraphFetched('user').select('*').from({ listings: 'dupe_listings'}).orderBy('added', 'desc').limit('20')
-    res.json(listings)
+
+   /* const { page } = req.params
+    console.log(page)
+    const listings = await listingModel.query().withGraphFetched('user').select('*').from({ listings: 'dupe_listings'}).orderBy('added', 'desc').offset(0).limit(20)
+    res.json(listings)*/
 })
 
 app.get('/categories', async (req, res) => {
