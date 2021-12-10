@@ -19,8 +19,8 @@ const LoaderContainer = styled.div`
 
 const ListingsContainer = () => {
     const dispatch = useDispatch()
-    const listingStatus = useSelector(state => state.listings.status)
-    const listings = useSelector(state => state.listings.data)
+    const listingStatus = useSelector(state => state.listings.homepage.status)
+    const listings = useSelector(state => state.listings.homepage.data)    
 
     useEffect(() => {
         if (listingStatus === 'idle') {

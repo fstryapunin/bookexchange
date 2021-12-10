@@ -25,6 +25,12 @@ const LinkContainer = styled.div`
         display: flex;
         gap: 10px
     }    
+    #static-links > a{
+        white-space: nowrap;
+    }
+    a{
+        white-space: nowrap;
+    }
 `
 
 const navLinks = [

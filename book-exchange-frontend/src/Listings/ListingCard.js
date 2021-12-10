@@ -1,5 +1,6 @@
 import React from "react";
 import { Card } from "../Styles/GlobalStyles";
+import { Link } from 'react-router-dom'
 import styled from "styled-components";
 
 const StyledListingName = styled.h6` 
@@ -9,6 +10,7 @@ const StyledListingName = styled.h6`
     margin: 0px 0px 15px 0px;
     font-weight: normal;
 `
+
 const StyledListingType = styled.p` 
     font-weight: bold;
     margin: 0;
@@ -21,20 +23,13 @@ const StyledBottomLine = styled.div`
     align-items: center;
     gap: 10px;
 `
+
 const StyledListingPrice = styled.h6`
     margin: 0;
 `
+
 const StyledInfoContainer = styled.div` 
     padding: 15px 25px 25px 25px;
-`
-const StyledImage = styled.image` 
-    object-fit: cover;
-    position: absolute;
-    top:0;
-    right:0;
-    left:0;
-    bottom:0;
-    z-index:10;
 `
 
 const StyledListing = styled(Card)`
@@ -60,10 +55,12 @@ const StyledImageContainer = styled.div`
     }
     
 `
+const StyledLink = styled(Link)` 
+    text-decoration: none;
+    color: inherit;
+`
 
-const ListingCard = ({ data }) => {
-    // const categoryName = useSelector(state => selectCategoryName(state.categories.data, data.category_id))
-    console.log(data)
+const ListingCard = ({ data }) => {  
 
     const getTypeText = (type) => {
         switch (type) {
@@ -84,18 +81,20 @@ const ListingCard = ({ data }) => {
     }
 
     return (
-        <StyledListing>
-            <StyledImageContainer>
-                <img className="listing-image" src={getListingImageSrc() || `https://picsum.photos/600/700?rand=${Math.random() * 1000}`} alt="" />
-            </StyledImageContainer>
-            <StyledInfoContainer>
-                <StyledListingName className="listing-name">{data.name}</StyledListingName>
-                    <StyledBottomLine className="bottom-line">
-                        <StyledListingType className="listing-type">{getTypeText(data.type)}</StyledListingType>
-                        <StyledListingPrice>{data.price} KČ</StyledListingPrice>
-                    </StyledBottomLine>
-            </StyledInfoContainer>
-        </StyledListing>
+        <StyledLink to={`/listing/${data.id}`}>
+            <StyledListing>
+                <StyledImageContainer>
+                    <img className="listing-image" src={getListingImageSrc() || `https://picsum.photos/600/600`} alt="" />
+                </StyledImageContainer>
+                <StyledInfoContainer>
+                    <StyledListingName className="listing-name">{data.name}</StyledListingName>
+                        <StyledBottomLine className="bottom-line">
+                            <StyledListingType className="listing-type">{getTypeText(data.type)}</StyledListingType>
+                            <StyledListingPrice>{data.price} KČ</StyledListingPrice>
+                        </StyledBottomLine>
+                </StyledInfoContainer>
+            </StyledListing>
+        </StyledLink>
     )
 }
 

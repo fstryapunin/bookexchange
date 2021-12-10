@@ -2,13 +2,15 @@ const express = require('express');
 const knex = require('knex')
 const cors = require('cors')
 const jwt = require("jsonwebtoken");
-const mockData = require('./files/MOCK_DATA.json')
+//const mockData = require('./files/MOCK_DATA.json')
 const { Model } = require('objection');
 const { cookieAuth, tokenAuth } = require('./middleware/auth')
 const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl, tokenKey } = require('./config');
 const { listingModel } = require('./models')
+const { body, param, validationResult } = require('express-validator');
+
 
 const app = express();
 const googleClient = new OAuth2Client(googleClientId)
@@ -43,13 +45,33 @@ app.get('/', (req, res) => {
     res.sendStatus(200)
 })
 
-app.get('/public/listings/new/:page', async (req, res) => {
-    //const listings = await db.select('*',).from({ listings: 'dupe_listings' }).orderBy('added', 'desc').limit('20')
+app.get('/public/listings/new/:page', param('page').escape().toInt(), async (req, res) => {   
+    const { page } = req.params
+    
+    if (Number.isInteger(page) && page >= 0) {
+        const listings = await listingModel.query().withGraphFetched('user').select('*').from({ listings: 'dupe_listings' }).orderBy('added', 'desc').offset(page * 20).limit(20)        
+        if (listings.length === 0) {
+            res.sendStatus(204)
+        } else {
+            res.json(listings)
+        }
+    } else {
+        res.sendStatus(400)
+    }
+})
 
-   /* const { page } = req.params
-    console.log(page)
-    const listings = await listingModel.query().withGraphFetched('user').select('*').from({ listings: 'dupe_listings'}).orderBy('added', 'desc').offset(0).limit(20)
-    res.json(listings)*/
+app.get('/public/listing/:listingId', param('listingId').escape().toInt(), async (req, res) => {
+    const { listingId } = req.params
+    if (Number.isInteger(listingId)) {
+        const data = await listingModel.query().withGraphFetched('user').select('*').from({ listings: 'dupe_listings' }).where('id', listingId)
+        if (data.length > 0) {
+            res.json(data[0])
+        } else {
+            res.sendStatus(404)
+        }
+    } else {
+        res.sendStatus(400)
+    } 
 })
 
 app.get('/categories', async (req, res) => {

@@ -3,6 +3,7 @@ import Navbar from "./Navbar/Navbar";
 import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
 import Catalogue from "./Catalogue/Catalogue";
+import ListingPage from "./Listings/ListingPage";
 import { Routes, Route } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
 import { authenticateUser } from './User/userSlice'
@@ -25,7 +26,8 @@ const Exchange = () => {
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="profil" element={<UserProfile />} />
-                <Route path="katalog" element={<Catalogue/>}/>
+                <Route path="katalog" element={<Catalogue />} />
+                <Route path="listing/:id" element={<ListingPage/>}/>
             </Routes>            
         </>
     )
