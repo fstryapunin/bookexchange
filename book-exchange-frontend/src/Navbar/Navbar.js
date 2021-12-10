@@ -39,7 +39,7 @@ const navLinks = [
 ]
 
 const Navbar = () => {
-    const authStatus = useSelector((state) => state.auth.status)
+    const authStatus = useSelector((state) => state.user.auth.status)
     
     const links = navLinks.map(linkObj => {
         return <NavLink key={linkObj.text} target={linkObj.target} text={linkObj.text}/>

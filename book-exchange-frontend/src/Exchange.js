@@ -5,10 +5,10 @@ import HomePage from "./Home/HomePage";
 import Catalogue from "./Catalogue/Catalogue";
 import { Routes, Route } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
-import { authenticateUser } from './State/authSlice'
+import { authenticateUser } from './User/userSlice'
 
 const Exchange = () => {
-    const authStatus = useSelector(state => state.auth.status)   
+    const authStatus = useSelector(state => state.user.auth.status)   
     const dispatch = useDispatch()    
     
     const onLoad = () => {

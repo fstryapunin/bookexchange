@@ -50,13 +50,14 @@ const FlexButton = styled(SecondaryButton)`
 
 const UserProfile = () => {  
     const navigate = useNavigate()
-    const authStatus = useSelector(state => state.auth.status)
-    const userStatus = useSelector(state => state.user.status)
-    const userData = useSelector(state => state.user.data)
-    const listingsStatus = useSelector(state => state.user.listingsStatus)
+    const authStatus = useSelector(state => state.user.auth.status)
+    const userStatus = useSelector(state => state.user.info.status)
+    const userData = useSelector(state => state.user.info.data)
+    const listingsStatus = useSelector(state => state.user.listings.status)
     const dispatch = useDispatch()   
 
-    const getUser = () => {        
+    const getUser = () => {
+        //check if authenticated and redirect to homepage if not, else fetch user data if not yet fetched
         if (authStatus === 'unauthenticated') navigate('/')
         else if (authStatus === 'authenticated' && userStatus === 'idle') {          
             dispatch(fetchUserData())
@@ -64,6 +65,7 @@ const UserProfile = () => {
     }
 
     const getListings = () => {
+        //fetch listings if not yet fetched and user is authenticated
         if (listingsStatus === 'idle' && authStatus === 'authenticated') {
             dispatch(fetchUserListings())
         }

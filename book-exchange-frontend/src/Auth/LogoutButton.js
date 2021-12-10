@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { unauthenticateUser } from "../State/authSlice";
+import { unauthenticateUser } from "../User/userSlice";
 import { SecondaryButton } from "../Styles/GlobalStyles";
 
 //styles copied from google button
@@ -15,6 +15,7 @@ const StyledLogoutButton = styled(SecondaryButton)`
 const LogoutButton = () => {
     const dispatch = useDispatch()
 
+    //send request to destroy refresh token cookie
     const onLogout = () => {
         dispatch(unauthenticateUser())
     }

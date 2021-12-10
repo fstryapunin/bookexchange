@@ -1,6 +1,8 @@
 import React from "react";
-import Categories from "../Categories/Categories";
+//import Categories from "../Categories/Categories";
+import ListingsContainer from "../Listings/ListingsContainer";
 import styled from "styled-components";
+
 
 const StyledHomepage = styled.div`
     max-width: 1140px;
@@ -9,18 +11,17 @@ const StyledHomepage = styled.div`
     padding:25px;
     box-sizing: border-box;
 `
-const CategoriesContainer = styled.div`
+/*const CategoriesContainer = styled.div`
     display: grid;
     flex-wrap: wrap;
-    gap: 20px;
-    
-`
+    gap: 20px;    
+`*/
 
-const HomePage = () => {
+const HomePage = () => {    
     
     return (
-        <StyledHomepage>
-                    
+        <StyledHomepage>           
+            <ListingsContainer/>      
         </StyledHomepage>
     )
 }

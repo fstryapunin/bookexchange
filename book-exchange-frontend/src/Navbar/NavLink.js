@@ -10,6 +10,7 @@ const StyledLink = styled(Link)`
 `
 
 const NavLink = ({ target, text }) => {
+    //check if path matches link
     const resolved = useResolvedPath(target)
     const match = useMatch({ path: resolved.pathname, end: true });    
     

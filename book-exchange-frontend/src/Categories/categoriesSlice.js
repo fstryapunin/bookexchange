@@ -30,4 +30,11 @@ export const categoriesSlice = createSlice({
   }
 })
 
+export const selectCategoryName = (data, categoryId) => {
+  console.log(data)
+  const category = data.find(categoryObj => categoryObj.id === categoryId)
+  
+  return category.name    
+}
+
 export default categoriesSlice.reducer

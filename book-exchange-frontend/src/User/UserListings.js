@@ -51,8 +51,9 @@ const GridLabel = styled.h6`
 const UserListings = ({ text, type }) => {
     const [currentPage, updateCurrentPage] = useState(0)
     const [pageSize,] = useState(10)
-    const listings = useSelector(state => selectUserListings(state.user.listings, type))
+    const listings = useSelector(state => selectUserListings(state.user.listings.data, type))
     
+    //get right ammount of jsx elements based on page size (max. ammount of elements on a page) and current page index
     const getElements = () => {
         const currentData = listings.slice(pageSize * currentPage, pageSize * currentPage + pageSize)        
         const elements = currentData.map(listingObj => {

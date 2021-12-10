@@ -10,6 +10,7 @@ const Categories = () => {
     const dispatch = useDispatch()
 
     const getCategories = () => {
+        //fetch categories if not yet fetched
         if (categoriesStatus === 'idle') {
             dispatch(fetchCategories())
         }

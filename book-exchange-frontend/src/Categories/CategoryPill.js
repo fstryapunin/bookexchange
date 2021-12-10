@@ -3,18 +3,22 @@ import styled from "styled-components";
 
 const StyledCategory = styled.div`
     background-color: white;
-    padding: 5px 10px;
+    padding: 10px 15px;
     cursor: pointer;
     text-align: center;
-    border: 2px solid var(--dark-blue);
-    border-radius: 15px;
+    border: 3px solid var(--dark-blue);  
     display: inline-block;
-
+    user-select: none;
+    transition: 0.3s;
     p{
         margin: 0;
         text-transform: uppercase;
-        font-weight: bold;
+        font-weight: 700;
         color: var(--dark-blue);
+    }
+    :hover{
+        background-color: var(--dark-blue);
+        > p {color: white;}
     }
 `
 
