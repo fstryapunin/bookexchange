@@ -15,10 +15,10 @@ const { body, param, validationResult } = require('express-validator');
 const app = express();
 const googleClient = new OAuth2Client(googleClientId)
 const db = knex({
+   
     client: 'pg',
-    connection: {
-       connectionString : dbUrl,      
-    }
+    connection : dbUrl,      
+    
 });
 Model.knex(db)
 
@@ -49,7 +49,7 @@ app.get('/public/listings/new/:page', param('page').escape().toInt(), async (req
     const { page } = req.params
     
     if (Number.isInteger(page) && page >= 0) {
-        const listings = await listingModel.query().withGraphFetched('user').select('*').from({ listings: 'dupe_listings' }).orderBy('added', 'desc').offset(page * 20).limit(20)        
+        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').select('*').from({ listings: 'dupe_listings' }).orderBy('added', 'desc').offset(page * 20).limit(20)        
         if (listings.length === 0) {
             res.sendStatus(204)
         } else {
@@ -63,7 +63,7 @@ app.get('/public/listings/new/:page', param('page').escape().toInt(), async (req
 app.get('/public/listing/:listingId', param('listingId').escape().toInt(), async (req, res) => {
     const { listingId } = req.params
     if (Number.isInteger(listingId)) {
-        const data = await listingModel.query().withGraphFetched('user').select('*').from({ listings: 'dupe_listings' }).where('id', listingId)
+        const data = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').select('*').from({ listings: 'dupe_listings' }).where('id', listingId)
         if (data.length > 0) {
             res.json(data[0])
         } else {
@@ -171,8 +171,8 @@ app.get('/auth/logout', (req, res) => {
 })
 
 app.post('/user/listings', tokenAuth, async (req, res) => {
-    //limit ammount
-    const userListings = await db.select('*').from('dupe_listings').where('poster_id', req.user.id).orderBy('added', 'desc')   
+    //limit ammount    
+    const userListings = await listingModel.query().withGraphFetched('tags').select('*').from({ listings: 'dupe_listings' }).where('poster_id', req.user.id).orderBy('added', 'desc') 
     res.status(200).json(userListings)
 })
 
@@ -187,6 +187,37 @@ app.post('/user/profile', tokenAuth, async (req, res) => {
     }
     res.status(200).json(resBody)
 })
+
+app.post('/user/listing/:listingId', tokenAuth, param('listingId').escape().toInt(), async (req, res) => {
+    const { listingId } = req.params
+    if (Number.isInteger(listingId)) {
+        //const listing = await db.select('*').from({ listings: 'dupe_listings' }).where('id', listingId)
+        const listing = await listingModel.query().withGraphFetched('tags').select('*').from({ listings: 'dupe_listings' }).where('id', listingId)
+        if(listing.length > 0){
+            if (parseInt(listing[0].poster_id) === req.user.id) {
+                res.json(listing[0])
+            } else {
+                res.sendStatus(403)
+            }
+        } else {
+            res.sendStatus(404)
+        }        
+    } else {
+        res.sendStatus(400)
+    }
+})
+
+app.get('/public/tags/:name', param('name').escape(), async (req, res) => {
+    const { name } = req.params    
+    const data = await db('tags').select('*').where('text', 'like', `${name}%`).orderBy('times_used')    
+    res.json(data)
+})
+
+app.put('/user/listing/create', async (req, res) => {
+    console.log(req.get('origin'))
+    res.sendStatus(200)
+})
+
 
 /*
 app.get('/public/listings/new', async (req, res) => {
@@ -208,6 +239,4 @@ app.get('/public/listings/new', async (req, res) => {
         const update = await db('dupe_listings').where('id', element.id).update('active', Math.random() < 0.5)
         console.log(update)
     }
-}
-
-loadSampleData()*/
+}*/

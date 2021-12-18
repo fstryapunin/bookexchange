@@ -9,6 +9,15 @@ class User extends Model {
   }
 }
 
+class Tag extends Model {
+  static get tableName() {
+    return 'dupe_tags';
+  }
+  static get idColumn() {
+    return 'id';
+  }
+}
+
 class Listing extends Model {
     static get tableName() {
       return 'dupe_listings';
@@ -23,6 +32,18 @@ class Listing extends Model {
         join: {
           from: 'dupe_listings.poster_id',
           to: 'users.id'
+        }
+      },
+      tags: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Tag,
+        join: {
+          from: 'dupe_listings.id',
+          through: {          
+          from: 'listing_tags.listing_id',
+          to: 'listing_tags.tag_id'
+          },
+        to: 'dupe_tags.id'
         }
       }
     };
