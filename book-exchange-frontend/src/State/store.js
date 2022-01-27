@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
-import categoriesReducer from '../Categories/categoriesSlice'
 import userReducer from '../User/userSlice'
 import listingsReducer from '../Listings/listingsSlice'
+import creatorReducer from '../User/CreatorSlice'
+import { createSocketMiddleware } from './websocket'
 
 export default configureStore({
-  reducer: {
-      categories: categoriesReducer,      
-      user: userReducer,
-      listings: listingsReducer
-    },
+  reducer: {        
+    user: userReducer,
+    listings: listingsReducer,
+    creator: creatorReducer
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(createSocketMiddleware())
 })

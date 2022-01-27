@@ -1,6 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 import moment from 'moment'
 import styled from "styled-components";
+
+const StyledLink = styled(Link)` 
+    text-decoration: none;
+    color: inherit;
+    flex-grow: 1;
+    flex-basis: 50px;
+    > button{
+        width: 100%;
+    }
+`
 
 const ListingElement = styled.p`
     flex-grow: ${props => props.fr};
@@ -33,7 +44,6 @@ const DetailsContainer = styled.div`
 `
 
 const UserListing = ({data}) => {
-    const [showDetail, updateShowDetail] = useState(false)
     
     return (
         <ListingContainer>
@@ -44,7 +54,9 @@ const UserListing = ({data}) => {
                 <ListingElement fr="0.5" basis="30px">{data.price} Kč</ListingElement>
             </DetailsContainer>
             <div className="listing-buttons">
-                <button>Detail</button>
+                <StyledLink to={`editor/${data.id}`}>
+                    <button>Upravit</button>
+                </StyledLink>
                 <button>Smazat</button>
             </div>
         </ListingContainer>

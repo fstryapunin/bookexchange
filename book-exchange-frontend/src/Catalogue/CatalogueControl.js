@@ -6,7 +6,7 @@ const StyledControl = styled.div`
     gap: 20px;
     background-color: white;
     padding: 20px;
-   
+    
     > input{
         flex-grow: 1;
         min-height: 30px;

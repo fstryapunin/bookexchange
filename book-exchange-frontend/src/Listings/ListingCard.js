@@ -11,7 +11,7 @@ const StyledListingName = styled.h6`
     font-weight: normal;
 `
 
-const StyledListingType = styled.p` 
+const StyledListingType = styled.h6` 
     font-weight: bold;
     margin: 0;
     color: var(--dark-blue);

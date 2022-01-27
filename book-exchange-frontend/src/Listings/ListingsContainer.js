@@ -23,9 +23,9 @@ const ListingsContainer = () => {
     const listings = useSelector(state => state.listings.homepage.data)    
 
     useEffect(() => {
-        if (listingStatus === 'idle') {
+        if (listingStatus === 'idle') {           
             dispatch(fetchListings())
-        }
+        }        
     }, [listingStatus, dispatch])
     
     const getListings = () => {        

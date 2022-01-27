@@ -110,7 +110,7 @@ export const userSlice = createSlice({
         .addCase(authenticateUser.pending, (state, action) => {
             state.auth.status = 'loading'
         })
-        .addCase(authenticateUser.fulfilled, (state, action) => {
+            .addCase(authenticateUser.fulfilled, (state, action) => {           
             state.auth.status = 'authenticated'        
             state.auth.token = action.payload.token       
         })
@@ -122,16 +122,21 @@ export const userSlice = createSlice({
             //reset set to initial on logout
             return initialState
         })
-        .addCase(authenticateUserWithGoogle.fulfilled, (state, action) => {
+        .addCase(authenticateUserWithGoogle.fulfilled, (state, action) => {           
             state.auth.status = 'authenticated'
             state.auth.token = action.payload.token
-        })
-    }
+        })        
+    }    
 })
 
 export const selectUserListings = (listings, type) => {
     const filteredListings = listings.filter(listing => listing.type === type)    
     return filteredListings    
+}
+
+export const selectListingById = (listings, id) => {
+    const listing = listings.find(listingObj => listingObj.id === id)
+    return listing
 }
 
 export default userSlice.reducer

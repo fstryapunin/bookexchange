@@ -4,6 +4,9 @@ import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
 import Catalogue from "./Catalogue/Catalogue";
 import ListingPage from "./Listings/ListingPage";
+import ListingEditor from "./User/ListingEditor";
+import RequireAuth from "./User/RequireAuth";
+import ListingCreator from "./User/ListingCreator";
 import { Routes, Route } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
 import { authenticateUser } from './User/userSlice'
@@ -13,7 +16,7 @@ const Exchange = () => {
     const dispatch = useDispatch()    
     
     const onLoad = () => {
-        if (authStatus === 'idle') {
+        if (authStatus === 'idle') {            
             dispatch(authenticateUser())
         }
     }
@@ -24,14 +27,18 @@ const Exchange = () => {
         <>            
             <Navbar />           
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="profil" element={<UserProfile />} />
+                <Route path="/" element={<HomePage />} />               
                 <Route path="katalog" element={<Catalogue />} />
-                <Route path="listing/:id" element={<ListingPage/>}/>
+                <Route path="listing/:id" element={<ListingPage />} />                
+                <Route element={<RequireAuth/>}>
+                    <Route path="profil/editor/:id" element={<ListingEditor />} />
+                    <Route path="profil" element={<UserProfile />} />
+                    <Route path="profil/creator" element={<ListingCreator/>} />
+                </Route>
             </Routes>            
         </>
-    )
-    
+    )    
 }
+
 
 export default Exchange

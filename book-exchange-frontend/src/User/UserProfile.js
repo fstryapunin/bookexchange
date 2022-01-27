@@ -50,39 +50,41 @@ const FlexButton = styled(SecondaryButton)`
 
 const UserProfile = () => {  
     const navigate = useNavigate()
-    const authStatus = useSelector(state => state.user.auth.status)
     const userStatus = useSelector(state => state.user.info.status)
     const userData = useSelector(state => state.user.info.data)
     const listingsStatus = useSelector(state => state.user.listings.status)
     const dispatch = useDispatch()   
 
     const getUser = () => {
-        //check if authenticated and redirect to homepage if not, else fetch user data if not yet fetched
-        if (authStatus === 'unauthenticated') navigate('/')
-        else if (authStatus === 'authenticated' && userStatus === 'idle') {          
+        //fetch user if not yet fetched
+        if (userStatus === 'idle') {          
             dispatch(fetchUserData())
         }
     }
 
     const getListings = () => {
-        //fetch listings if not yet fetched and user is authenticated
-        if (listingsStatus === 'idle' && authStatus === 'authenticated') {
+        //fetch listings if not yet fetched
+        if (listingsStatus === 'idle') {
             dispatch(fetchUserListings())
         }
     }
 
-    useEffect(getListings, [listingsStatus, authStatus, dispatch])
-    useEffect(getUser, [authStatus, userStatus, dispatch, navigate])
+    useEffect(getListings, [listingsStatus, dispatch])
+    useEffect(getUser, [userStatus, dispatch])
 
-    if (authStatus === 'authenticated' && userStatus === 'loaded') {
+    const handleCreateClick = (type) => {
+        navigate('../profil/creator', {state: {type: type}})
+    }
+
+    if (userStatus === 'loaded') {
         return (
             <StyledProfile>
                 <FlexContainer>
                     <div id="user-container">
                         <UserInfo user={userData} />
                         <ButtonContainer>
-                            <FlexButton primary={false} margin='0px'><p>PŘIDAT NABÍDKU</p></FlexButton>
-                            <FlexButton primary={false} margin='0px'><p>PŘIDAT POPTÁVKU</p></FlexButton>   
+                            <FlexButton primary={false} margin='0px' onClick={() => handleCreateClick('listing')}><p>PŘIDAT NABÍDKU</p></FlexButton>
+                            <FlexButton primary={false} margin='0px' onClick={() => handleCreateClick('demand')}><p>PŘIDAT POPTÁVKU</p></FlexButton>   
                         </ButtonContainer>                     
                     </div>
                     <MessageView />
