@@ -190,16 +190,14 @@ const ListingCreator = () => {
     }
 
     const handleTagInputBlur = (event) => {
-
         //only blur if clicked outside parent input div
-        /*if (!event.currentTarget.contains(event.relatedTarget)) {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
             updateTagNameInput('')
             dispatch({
                 type: 'GET_WEBSOCKET_TAGS',
                 payload: ''
             })
-        }*/
-        
+        }        
     }    
 
     return (
