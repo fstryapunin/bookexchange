@@ -8,6 +8,7 @@ export const createSocketMiddleware = () => {
         socket.addEventListener("message", (message) => {
             const response = JSON.parse(message.data)
             
+            //dispatch response event
             store.dispatch({
                 type : response.type,
                 payload: {
@@ -18,21 +19,33 @@ export const createSocketMiddleware = () => {
         });
 
         return next => action => {            
-            if (action.type === "SEND_WEBSOCKET_MESSAGE") {
-                if (socket.readyState === 1) {
-                    socket.send(action.payload);
-                    return;
-                }
-                return;
-            }
             if (action.type === "GET_WEBSOCKET_TAGS") {
-                if (socket.readyState === 1) {
-                    const getTagsPayload = {
-                        type: 'GET_TAGS',
-                        text: action.payload
-                    }                    
-                    socket.send(JSON.stringify(getTagsPayload));
-                    return;
+                if (socket.readyState === 1) {                    
+                    if (action.payload.length > 0) {
+
+                        //dispatch loading event for ui change
+                        store.dispatch({
+                            type: 'LOADING_WEBSOCKET_TAGS',
+                            payload: null
+                        })
+
+                        //send websocket message
+                        const getTagsPayload = {
+                            type: 'GET_TAGS',
+                            text: action.payload
+                        }
+                    
+                        socket.send(JSON.stringify(getTagsPayload));
+
+                        return;
+                    } else {                        
+                        store.dispatch({
+                            type: 'CLEAR_WEBSOCKET_TAGS',
+                            payload: null
+                        })
+
+                        return;
+                    }
                 }
                 return;
             }            

@@ -6,7 +6,7 @@ import Catalogue from "./Catalogue/Catalogue";
 import ListingPage from "./Listings/ListingPage";
 import ListingEditor from "./User/ListingEditor";
 import RequireAuth from "./User/RequireAuth";
-import ListingCreator from "./User/ListingCreator";
+import ListingCreator from "./User/Creator/ListingCreator";
 import { Routes, Route } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
 import { authenticateUser } from './User/userSlice'
