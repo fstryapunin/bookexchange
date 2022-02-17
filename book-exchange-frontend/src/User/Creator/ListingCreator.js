@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import { SectionHeading, Card } from "../../Styles/GlobalStyles";
 import { useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux";
+import ImageInput from "./ImageInput";
 import styled from "styled-components";
 import ListingTag from "./ListingTag";
 
@@ -228,6 +229,7 @@ const ListingCreator = () => {
                     <label htmlFor="description">Popis</label>
                     <DescriptionInput name="description" rows="5" autoComplete="off" onChange={(event) => handleInputChange('description', event.target.value)} />
                 </TextAreaContainer>
+                <ImageInput/>
             </StyledCreator>
         </CreatorContainer>
     )

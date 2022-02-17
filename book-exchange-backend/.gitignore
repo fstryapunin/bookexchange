@@ -5,3 +5,9 @@
 
 #env vars
 .env
+
+# exclude user uploaded images
+/public/uploads/*
+
+# include folder for uploading images
+!public/uploads/.gitkeep 

@@ -1,8 +1,8 @@
 const express = require('express');
 const knex = require('knex')
 const cors = require('cors')
+var multer = require('multer');
 const jwt = require("jsonwebtoken");
-//const mockData = require('./files/MOCK_DATA.json')
 const { Model } = require('objection');
 const { cookieAuth, tokenAuth } = require('./middleware/auth')
 const cookieParser = require('cookie-parser')
@@ -10,7 +10,7 @@ const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl, tokenKey } = require('./config');
 const { listingModel } = require('./models')
 const { body, param, validationResult } = require('express-validator');
-
+const ws = require('ws')
 
 const app = express();
 const googleClient = new OAuth2Client(googleClientId)
@@ -29,6 +29,32 @@ const corsConfig = {
     credentials: true
 }
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './public/uploads')
+    },
+    filename: function (req, file, cb) {
+      const uniquePrefix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, uniquePrefix + '_' + file.originalname)
+    }
+})
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg' || file.mimetype === 'image/png') {
+        cb(null, true)
+    }
+    else {
+        cb(null, false)
+    }  
+}
+  
+const multerUploader = multer({
+    storage: storage,
+    fileFilter: fileFilter
+})
+
+const uploadArray = multerUploader.array('listing_img', 5)
+
 app.use(cors(corsConfig))
 app.use(cookieParser())
 app.use(
@@ -36,10 +62,53 @@ app.use(
 );
 app.use('/images', express.static('images'))
 
-app.listen(port, () => {
-});
+const server = app.listen(port, () => console.log('Listening on port', port));
+const wss = new ws.WebSocketServer({ noServer: true });
 
-console.log('Listening on port', port)
+const handleWebsocketMessage = async (payload) => {
+    const responseObject = {
+        type: payload.type
+    }
+
+    switch (payload.type) {
+        case 'GET_TAGS':
+            responseObject.type = 'GOT_WEBSOCKET_TAGS'
+            try {
+                const data = await db('tags').select('*').whereRaw(`LOWER(text) LIKE LOWER(?)`, [`${payload.text}%`]).orderBy('times_used')
+                
+                return Object.assign(responseObject, {
+                    status: 'success',
+                    data: data
+                })
+            } catch {                 
+                return Object.assign(responseObject, {
+                    status: 'error',
+                    error: 'database error'
+                })
+            }   
+        default:
+            return Object.assign(responseObject, {
+                status: 'error',
+                error: 'unrecognized request type'
+            })            
+    }
+}
+
+wss.on('connection', function connection(ws, request) {      
+    ws.on('message', async function message(data) {
+        const messageData = JSON.parse(String(data))
+        const response = await handleWebsocketMessage(messageData)
+        ws.send(JSON.stringify(response))        
+    });    
+});  
+
+
+server.on('upgrade', async function upgrade(request, socket, head) {   
+   
+    wss.handleUpgrade(request, socket, head, function done(ws) {
+      wss.emit('connection', ws, request);
+    });
+})
 
 app.get('/', (req, res) => {    
     res.sendStatus(200)
@@ -68,11 +137,6 @@ app.get('/public/listing/:listingId', param('listingId').escape().toInt(), async
     } else {
         res.sendStatus(400)
     } 
-})
-
-app.get('/categories', async (req, res) => {
-    const categories = await db.select('*').from('categories').orderBy('order')    
-    res.json(categories)
 })
 
 const upsertUser = async (payload) => {
@@ -202,15 +266,22 @@ app.post('/user/listing/:listingId', tokenAuth, param('listingId').escape().toIn
     }
 })
 
-app.get('/public/tags/:name', param('name').escape(), async (req, res) => {
-    const { name } = req.params    
-   
-    const data = await db('tags').select('*').whereRaw(`LOWER(text) LIKE LOWER(?)`, [`${name}%`]).orderBy('times_used')       
+app.post('/new/listing', async (req, res) => {
+    uploadArray(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+          // A Multer error occurred when uploading.
+        } else if (err) {
+          res.sendStatus(500)
+        }
+        console.log(req.files)
+       
+    }) 
     
-    res.json(data)
+    res.sendStatus(200)
 })
 
-app.put('/user/listing/create', async (req, res) => {
-    console.log(req.get('origin'))
-    res.sendStatus(200)
+app.get('/public/tags/:name', param('name').escape(), async (req, res) => {
+    const { name } = req.params
+    const data = await db('tags').select('*').whereRaw(`LOWER(text) LIKE LOWER(?)`, [`${name}%`]).orderBy('times_used')    
+    res.json(data)
 })
