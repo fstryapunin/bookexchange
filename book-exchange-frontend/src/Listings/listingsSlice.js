@@ -16,7 +16,11 @@ export const listingsSlice = createSlice({
             error: null
         }               
     },
-    reducers: {},
+    reducers: {
+        addListing: (state, action) => {
+            state.homepage.data = [action.payload, ...state.homepage.data]
+        }
+    },
     extraReducers(builder) {
         builder
         .addCase(fetchListings.pending, (state, action) => {
@@ -32,5 +36,7 @@ export const listingsSlice = createSlice({
     }
    
 })
+
+export const { addListing } = listingsSlice.actions
   
 export default listingsSlice.reducer

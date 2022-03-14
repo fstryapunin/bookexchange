@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { AddIcon } from '../../Styles/GlobalIcons'
 import PreviewImage from './PreviewImage'
+import { uploadImages } from './CreatorSlice';
+import { useSelector, useDispatch } from "react-redux";
 import styled from 'styled-components'
 
 const PreviewContainer = styled.div` 
@@ -43,18 +45,18 @@ const AddImageIcon = styled(AddIcon)`
     fill: var(--dark-blue);
 `
 
-const ImageInput = () => {
-    const [imageUploads, updateImageUploads] = useState([])
-    const [imagePreviews, updateImagePreviews] = useState([])
-    const [currentMainImageName, updateCurrentMainName] = useState(null)
+const ImageInput = () => {    
+    const [imagePreviews, updateImagePreviews] = useState([])    
     const [uiWarning, updateUiWarning] = useState({
         display: false,
         text: null
     })
+    const dispatch = useDispatch()
+    const images = useSelector(state => state.creator.images.uploads)    
 
     const checkUploads = (files) => {
         const checkForDuplicates = (list) => {
-            const nameList = [...imageUploads.map(file => file.name), ...list.map(file => file.name)]
+            const nameList = [...images.map(file => file.name), ...list.map(file => file.name)]
             for (const file of files) {
                 let encountered = 0
                 nameList.forEach(name => {
@@ -68,7 +70,7 @@ const ImageInput = () => {
             return false
         }
 
-        if (imageUploads.length + files.length > 5) {
+        if (images.length + files.length > 5) {
             return {
                 isOk: false,
                 error: 'Maximum pět fotografii'
@@ -106,17 +108,14 @@ const ImageInput = () => {
         const uploadStatus = checkUploads(newFiles)
 
         if (uploadStatus.isOk) {
-
-            const newUploaded = [...imageUploads, ...newFiles]
-
-            if (!currentMainImageName) {
-                updateCurrentMainName(newFiles[0].name)
-            }
-            updateUiWarning({
-                display: false,
-                text: null
-            })
-            updateImageUploads(newUploaded)
+            //remove error message on succesful upload
+            if (uiWarning.display) {
+                updateUiWarning({
+                    display: false,
+                    text: null
+                })
+            }            
+            dispatch(uploadImages(newFiles))            
         } else {
             updateUiWarning({
                 display: true,
@@ -125,58 +124,26 @@ const ImageInput = () => {
         }
     }
 
+    //generate new preview data when uploads change
     useEffect(() => {        
-        if (imageUploads.length === 0) {            
-            updateCurrentMainName(null)
-        }
-
         const newPreviews = []
-        imageUploads.forEach(image => {
+        images.forEach(image => {
             const previewObj = {
                 name: image.name,
                 src: URL.createObjectURL(image)
-            }
-            
+            }            
             newPreviews.push(previewObj)
         });
-
         updateImagePreviews(newPreviews)
-
-    }, [imageUploads])
-
-    useEffect(() => {       
-        if (!currentMainImageName && imageUploads.length > 0) {              
-            updateCurrentMainName(imageUploads[0].name)
-        }
-    }, [currentMainImageName, imageUploads])
+    }, [images]) 
     
-    const getPreviewImages = () => {
-        
-        const checkIfMain = (name) => {           
-            if (name === currentMainImageName) return true
-            else return false
-        }
-
+    //get preview elements
+    const getPreviewImages = () => {     
         const previews = imagePreviews.map(previewObj => {
-            return <PreviewImage key={previewObj.name} data={previewObj} isMain={checkIfMain(previewObj.name)} onClick={handleMainIdUpdate} onDelete={handleImageDeletion}/>
+            return <PreviewImage key={previewObj.name} data={previewObj}/>
         })
 
         return previews
-    }
-    
-    const handleMainIdUpdate = (name) => {
-        if (name !== currentMainImageName) {            
-            updateCurrentMainName(name)
-        }
-    }
-
-    const handleImageDeletion = (name) => {       
-        const newUploads = imageUploads.filter(imageFile => imageFile.name !== name)
-        updateImageUploads(newUploads)
-
-        if (name === currentMainImageName) {            
-            updateCurrentMainName(null)
-        }
     }
 
     return (

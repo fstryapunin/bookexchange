@@ -36,7 +36,7 @@ const cookieAuth = (req, res, next) => {
 }
 
 const tokenAuth = (req, res, next) => {
-    const token = req.body.token
+    const token = req.body.token || req.headers["x-access-token"]
     
     if (!token) {
         return res.status(403).send("No access token");

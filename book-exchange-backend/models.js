@@ -18,6 +18,15 @@ class Tag extends Model {
   }
 }
 
+class Image extends Model {
+  static get tableName() {
+    return 'user_images'
+  }
+  static get idColumn() {
+    return 'id';
+  }
+}
+
 class Listing extends Model {
     static get tableName() {
       return 'listings';
@@ -32,6 +41,14 @@ class Listing extends Model {
         join: {
           from: 'listings.poster_id',
           to: 'users.id'
+        }
+      },      
+      images: {
+        relation: Model.HasManyRelation,
+        modelClass: Image,
+        join: {
+          from: 'listings.id',
+          to: 'user_images.listing_id'
         }
       },
       tags: {

@@ -43,14 +43,14 @@ const DetailsContainer = styled.div`
     gap: 10px;    
 `
 
-const UserListing = ({data}) => {
+const UserListing = ({ data }) => {    
     
     return (
         <ListingContainer>
             <DetailsContainer className="listing-details">
                 <ListingElement fr="0.5" basis="30px">{moment(data.added).format('DD.MM.YYYY')}</ListingElement>
                 <ListingElement fr="1" basis="100px">{data.name}</ListingElement>
-                <ListingElement fr="0.5" basis="30px">{data.active.toString()}</ListingElement>
+                <ListingElement fr="0.5" basis="30px">{data.status}</ListingElement>
                 <ListingElement fr="0.5" basis="30px">{data.price} Kč</ListingElement>
             </DetailsContainer>
             <div className="listing-buttons">

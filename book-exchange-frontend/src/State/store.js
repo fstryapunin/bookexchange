@@ -10,5 +10,7 @@ export default configureStore({
     listings: listingsReducer,
     creator: creatorReducer
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(createSocketMiddleware())
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false
+  }).concat(createSocketMiddleware())
 })

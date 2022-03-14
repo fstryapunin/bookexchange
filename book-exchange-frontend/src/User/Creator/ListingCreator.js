@@ -1,10 +1,13 @@
 import React, {useState} from "react";
 import { SectionHeading, Card } from "../../Styles/GlobalStyles";
 import { useLocation } from 'react-router-dom'
+import { addListing } from "../../Listings/listingsSlice";
 import { useSelector, useDispatch } from "react-redux";
 import ImageInput from "./ImageInput";
-import styled from "styled-components";
+import { PrimaryButton, DisabledButton } from "../../Styles/GlobalStyles";
+import { useNavigate } from "react-router-dom";
 import ListingTag from "./ListingTag";
+import styled from "styled-components";
 
 const StyledCreator = styled(Card)` 
     max-width: 1140px;
@@ -66,6 +69,19 @@ const SelectedTags = styled.div`
     display: flex;
     align-items: flex-end;
     gap: 10px;
+    flex-wrap: wrap;
+`
+
+const StyledDisabledButton = styled(DisabledButton)` 
+    width: 100%;
+    box-sizing: border-box;
+    margin: 20px 0px 0px 0px;
+`
+
+const StyledAddButton = styled(PrimaryButton)` 
+    width: 100%;
+    box-sizing: border-box;
+    margin: 20px 0px 0px 0px;
 `
 
 const EmptyTag = styled.p` 
@@ -73,21 +89,25 @@ const EmptyTag = styled.p`
     margin: 0px;
 `
 
+const apiAdress = process.env.REACT_APP_API_ADRESS
+
 const ListingCreator = () => {
+    const [listingName, updateListingName] = useState('')
+    const [listingPrice, updateListingPrice] = useState('')
+    const [listingDescription, updateListingDescription] = useState('')
     const [selectedTags, updateSelectedTags] = useState([])
     const [newTags, updateNewTags] = useState([])
-    const [tagNameInput, updateTagNameInput] = useState('')
-    const listingData = {
-        name: '',
-        description: '',
-        tags: [],
-        price: 0
-    }
+    const [tagNameInput, updateTagNameInput] = useState('')    
     const location = useLocation();
     const dispatch = useDispatch();
-    const tagsStatus = useSelector(state => state.creator.status)
-    const tagsData = useSelector(state => state.creator.loadedTags)
-    const type = location.state.type   
+    const navigate = useNavigate();
+    const token = useSelector(state => state.user.auth.token)
+    const tagsStatus = useSelector(state => state.creator.tags.status)
+    const tagsData = useSelector(state => state.creator.tags.loadedTags)
+    const listingImages = useSelector(state => state.creator.images)
+      
+    const type = (location.state?.type || 'listing')
+    
 
     const getType = () => {
         switch (type) {
@@ -102,12 +122,14 @@ const ListingCreator = () => {
     
     const handleTagClick = (data, action, custom) => {
         if (action === 'select') {
-            if (custom) { 
-                const nextTags = [...newTags, data]
-                updateNewTags(nextTags)
-            } else {
-                const nextTags = [...selectedTags, data]
-                updateSelectedTags(nextTags)
+            if (selectedTags.length + newTags.length < 10) {
+                if (custom) {
+                    const nextTags = [...newTags, data]
+                    updateNewTags(nextTags)
+                } else {
+                    const nextTags = [...selectedTags, data]
+                    updateSelectedTags(nextTags)
+                }
             }
         } else if (action === 'remove') {
             if (custom) {
@@ -123,21 +145,24 @@ const ListingCreator = () => {
     const getTagElements = (type) => {
         if (type === 'menu') {
             if (tagsStatus === 'loaded' || 'loading') {
+                //remove selected tags from menu
                 const filteredTags = tagsData.filter(tagObj => {
                     let selected = false
                     selectedTags.forEach(selectedTag => {                            
                             if (selectedTag.id === tagObj.id) {
                                 selected = true
                             }
-                    })
-                    if(!selected) return tagObj
-                    }                    
+                    })                    
+                    return !selected
+                    }
+                                        
                 )                               
 
                 const tags = filteredTags.map(tagObj => {
                     return <ListingTag key={tagObj.id} data={tagObj} handleClick={handleTagClick} selected={false} cutsom={false}/>
                 }) 
                 
+                //add custom tag if longer than 2 characters (no tags shorter than 2 chars)
                 if (tagNameInput.length > 2) {
                     let showCustomTag = true;
                     tagsData.forEach(tagObj => {
@@ -173,11 +198,7 @@ const ListingCreator = () => {
 
             return tags
         }
-    }
-
-    const handleInputChange = (key, value) => {
-        listingData[key] = value        
-    }
+    }  
 
     const handleTagInput = (event) => {
         const inputText = event.target.value
@@ -199,20 +220,102 @@ const ListingCreator = () => {
                 payload: ''
             })
         }        
-    }    
+    }
+    
+    const getEnableUpload = () => {
+        const listingObj = {
+            name: listingName,
+            price: listingPrice,
+            description: listingDescription,
+            tags: [...selectedTags, ...newTags],            
+            images: listingImages
+        }        
+
+        for (const property in listingObj) { 
+            if (listingObj[property]) {
+                if (listingObj[property].length === 0) return false
+            } else return false
+            
+        }
+
+        return true
+    }
+
+    const handleSuccessfulUpload = (data) => {
+        dispatch(addListing(data))
+        navigate('/success')
+    }
+    
+    const handleCreateClick = async (event) => {
+        event.preventDefault()        
+        const listingObj = {
+            name: listingName,
+            price: listingPrice,
+            description: listingDescription,            
+            type: type,
+            titleImage : listingImages.title
+        }          
+        
+        const newListing = new FormData()        
+
+        //append info to form data
+        for (const property in listingObj) { 
+            newListing.append(property, listingObj[property])
+        }
+
+        newListing.append('tags', JSON.stringify(selectedTags))
+        newListing.append('newTags', JSON.stringify(newTags))
+
+        //apend each image to formdata
+        listingImages.uploads.forEach(file => newListing.append('images', file))    
+
+        const response = await fetch(`${apiAdress}/new/listing`, {
+            method: 'POST',
+            headers: {
+                'x-access-token': token
+            },
+            body: newListing           
+        })
+        
+        if (response.ok) {
+            const data = await response.json()
+            handleSuccessfulUpload(data)
+        } else { 
+            //navigate to error page here
+            navigate('/error')
+        }
+    }
+
+    const handleNameChange = (event) => {
+        const newName = event.target.value
+        if (newName.length < 50) {
+            updateListingName(newName)
+        }
+    }
+
+    const handlePriceChange = (event) => {
+        const re = /^[0-9\b]+$/;   
+        if (event.target.value === '' || re.test(event.target.value)) {
+           updateListingPrice(event.target.value)
+        } else {
+            event.preventDefault()
+        }
+           
+    }
 
     return (
         <CreatorContainer>
             <StyledCreator>            
                 <CreatorHeading>NOVÁ {getType()}</CreatorHeading>
+                <form onSubmit={handleCreateClick}>
                 <StyledInputRow>
                     <InputContainer fr="10" basis="100px">
                         <label htmlFor="name">Jméno</label>
-                        <InputField name="name" type="text" maxLength="30" autoComplete="off" onChange={(event) => handleInputChange('name', event.target.value)} />
+                        <InputField value={listingName} name="name" type="text" autoComplete="off" onChange={handleNameChange} />
                     </InputContainer>
                     <InputContainer fr="1" basis="100px">
                         <label htmlFor="price">Cena</label>
-                        <InputField name="price" type="number" autoComplete="off" onChange={(event) => handleInputChange('price', parseInt(event.target.value))} />
+                        <InputField value={listingPrice} name="price" type="number" autoComplete="off" onChange={handlePriceChange} />
                     </InputContainer>
                 </StyledInputRow>
                 <TagRow tabIndex="0" onBlur={(event) => handleTagInputBlur(event)}>                    
@@ -227,9 +330,11 @@ const ListingCreator = () => {
                 </TagRow>                
                 <TextAreaContainer>
                     <label htmlFor="description">Popis</label>
-                    <DescriptionInput name="description" rows="5" autoComplete="off" onChange={(event) => handleInputChange('description', event.target.value)} />
-                </TextAreaContainer>
-                <ImageInput/>
+                    <DescriptionInput name="description" rows="5" autoComplete="off" onChange={(event) => updateListingDescription(event.target.value)} />
+                </TextAreaContainer>                
+                <ImageInput />               
+                    {getEnableUpload()? <StyledAddButton type='submit'><p>Přidat</p></StyledAddButton> : <StyledDisabledButton onClick={e => e.preventDefault()} ><p>Přidat</p></StyledDisabledButton>}
+                </form>
             </StyledCreator>
         </CreatorContainer>
     )

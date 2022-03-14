@@ -19,8 +19,27 @@ export const PrimaryButton = styled.button`
     border: 2px solid var(--dark-blue);
     background-color: var(--dark-blue);
     padding: 10px;
+    font-weight: 600;
     margin: 10px;
     cursor: pointer;
+    text-transform: uppercase;
+    p {
+        margin: 0;
+    }
+`
+
+export const DisabledButton = styled.button` 
+    color: var(--light-gray);
+    border: 2px solid var(--medium-gray);
+    background-color: var(--medium-gray);
+    padding: 10px;
+    font-weight: 600;
+    margin: 10px;    
+    text-transform: uppercase;
+    p {
+        color : var(--light-gray);
+        margin: 0;
+    }
 `
 
 export const SecondaryButton = styled.button`

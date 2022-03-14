@@ -1,5 +1,7 @@
 import React from "react";
 import { MediumDeleteIcon } from "../../Styles/GlobalIcons";
+import { setTitleImage, removeImage } from "./CreatorSlice";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 const PreviewImageWrapper = styled.div`
@@ -38,16 +40,18 @@ const TitleText = styled.p`
     background-color: var(--medium-gray);    
 `
 
-const PreviewImage = ({ data, isMain, onClick, onDelete }) => {
+const PreviewImage = ({ data }) => {
+    const dispatch = useDispatch()
+    const titleImage = useSelector(state => state.creator.images.title)    
     
     return (
-        <PreviewImageWrapper active={!isMain} onClick={() => onClick(data.name)}>
+        <PreviewImageWrapper active={titleImage !== data.name ? true : false} onClick={() => dispatch(setTitleImage(data.name))}>
             <StyledPreviewImage src={data.src} />
             <DeleteIcon onClick={(event) => {
                 event.stopPropagation()
-                onDelete(data.name)
+                dispatch(removeImage(data))
             }} />
-            {isMain? <TitleText>Titulní obrázek</TitleText> : null}
+            {titleImage === data.name ? <TitleText>Titulní obrázek</TitleText> : null}
         </PreviewImageWrapper>
     )
 }

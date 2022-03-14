@@ -23,7 +23,6 @@ const SelectedTag = styled.div`
     display: flex;
     height: min-content;
     gap: 5px;
-    box-shadow: 0px 0px 6px 3px rgba(0,0,0, 0.1);
     > p {
         margin: 0px;
         display: inline-block;
