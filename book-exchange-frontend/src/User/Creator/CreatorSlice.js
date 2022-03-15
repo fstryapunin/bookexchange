@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     tags: {
         loadedTags: [],
+        selectedTags: [],
+        newTags: [],
         status: 'idle',
         error: null
     },
@@ -34,6 +36,9 @@ export const creatorSlice = createSlice({
                     state.images.title = null
                 }
             }                        
+        },
+        resetCreator: (state) => {
+            Object.assign(state, initialState)
         }
     },
     extraReducers(builder) {
@@ -59,5 +64,5 @@ export const creatorSlice = createSlice({
     }    
 })
 
-export const { setTitleImage, uploadImages, removeImage } = creatorSlice.actions 
+export const { setTitleImage, uploadImages, removeImage, resetCreator } = creatorSlice.actions 
 export default creatorSlice.reducer

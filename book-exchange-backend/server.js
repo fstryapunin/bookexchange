@@ -64,7 +64,7 @@ app.use(cookieParser())
 //parse json
 app.use(express.json())
 //server static images
-app.use('/pulbic/uploads', express.static('pulbic/uploads'))
+app.use('/public/uploads', express.static('public/uploads'))
 
 const server = app.listen(port, () => console.log('Listening on port', port));
 const wss = new ws.WebSocketServer({ noServer: true });
@@ -284,6 +284,7 @@ app.post('/new/listing',
                 listingInfo.tags = JSON.parse(listingInfo.tags)
                 listingInfo.newTags = JSON.parse(listingInfo.newTags)                
                 if (listingInfo.name.length > 0
+                    && listingInfo.name.length <= 50
                     && listingInfo.price.length > 0
                     && listingInfo.description.length > 0
                     && listingInfo.titleImage.length > 0
@@ -317,8 +318,9 @@ app.post('/new/listing',
 
                         let newTagsIds;
                         if (newTags.length > 0) {
-                            newTagIds = await trx('tags').insert(newTags).returning('id')
-                        }
+                            const response = await trx('tags').insert(newTags).returning('id')
+                            newTagsIds = response
+                        }                        
 
                         const updateTagPromises = []                            
                         
@@ -364,22 +366,17 @@ app.post('/new/listing',
                         
                         res.status(201).json(newListing[0])
                     }
-                    catch (e) {
+                    catch (e) {     
                         console.log(e)
-                        
-                        console.log(req.files)
                         await trx.rollback();
-                        res.sendStatus(500).json('failed listing upload')  
-
+                        res.sendStatus(500).json('failed listing upload')
                         //clean up images
-                        req.files.forEach(file => asyncFs.unlink(`./public/uploads${file.filename}`))
-                        
-                    }                  
-                    
-                    
+                        req.files.forEach(file => asyncFs.unlink(`./public/uploads${file.filename}`))                       
+                    }                   
                 } else { 
                     //clean up files
                     res.sendStatus(400)
+                    req.files.forEach(file => asyncFs.unlink(`./public/uploads${file.filename}`))
                 }                  
             }           
         })    

@@ -14,6 +14,7 @@ const StyledButtonContainer = styled.div`
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    justify-content: space-between;
 `
 
 const StyledSuccessHeading = styled(SectionHeading)`     

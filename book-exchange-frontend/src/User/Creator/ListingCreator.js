@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { SectionHeading, Card } from "../../Styles/GlobalStyles";
 import { useLocation } from 'react-router-dom'
+import { resetCreator } from "./CreatorSlice";
 import { addListing } from "../../Listings/listingsSlice";
 import { useSelector, useDispatch } from "react-redux";
 import ImageInput from "./ImageInput";
@@ -154,8 +155,7 @@ const ListingCreator = () => {
                             }
                     })                    
                     return !selected
-                    }
-                                        
+                    }                                        
                 )                               
 
                 const tags = filteredTags.map(tagObj => {
@@ -243,6 +243,7 @@ const ListingCreator = () => {
 
     const handleSuccessfulUpload = (data) => {
         dispatch(addListing(data))
+        dispatch(resetCreator())
         navigate('/success')
     }
     
@@ -281,7 +282,8 @@ const ListingCreator = () => {
             const data = await response.json()
             handleSuccessfulUpload(data)
         } else { 
-            //navigate to error page here
+            //navigate to error page here, clean up state
+            dispatch(resetCreator())
             navigate('/error')
         }
     }
@@ -310,7 +312,7 @@ const ListingCreator = () => {
                 <form onSubmit={handleCreateClick}>
                 <StyledInputRow>
                     <InputContainer fr="10" basis="100px">
-                        <label htmlFor="name">Jméno</label>
+                        <label htmlFor="name">Název</label>
                         <InputField value={listingName} name="name" type="text" autoComplete="off" onChange={handleNameChange} />
                     </InputContainer>
                     <InputContainer fr="1" basis="100px">
@@ -327,7 +329,7 @@ const ListingCreator = () => {
                         </TagsWrapper>                       
                     </InputContainer>
                     <SelectedTags>{getTagElements('selected')}</SelectedTags>
-                </TagRow>                
+                    </TagRow>                  
                 <TextAreaContainer>
                     <label htmlFor="description">Popis</label>
                     <DescriptionInput name="description" rows="5" autoComplete="off" onChange={(event) => updateListingDescription(event.target.value)} />

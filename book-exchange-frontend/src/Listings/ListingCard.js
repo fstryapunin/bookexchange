@@ -61,30 +61,24 @@ const StyledLink = styled(Link)`
 `
 
 const ListingCard = ({ data }) => {  
+    const apiAdress = process.env.REACT_APP_API_ADRESS    
 
     const getTypeText = (type) => {
         switch (type) {
-            case 'demand':
-                return 'prodám'                
             case 'listing':
+                return 'prodám'                
+            case 'demand':
                 return 'koupím'
             default:
                 return ''
         }
-    }
-
-    const getListingImageSrc = () => {
-        if (data.img_links) {
-            return data.img_links[0]
-        }
-        else return null
-    }
+    }   
 
     return (
         <StyledLink to={`/listing/${data.id}`}>
             <StyledListing>
                 <StyledImageContainer>
-                    <img className="listing-image" src={getListingImageSrc() || `https://picsum.photos/600/600`} alt="" />
+                    <img className="listing-image" src={`${apiAdress}/public/uploads/${data.title_image}`} alt="" />
                 </StyledImageContainer>
                 <StyledInfoContainer>
                     <StyledListingName className="listing-name">{data.name}</StyledListingName>
