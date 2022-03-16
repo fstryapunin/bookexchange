@@ -202,7 +202,7 @@ const ListingCreator = () => {
 
     const handleTagInput = (event) => {
         const inputText = event.target.value
-        if (inputText.charAt(inputText.length - 1) !== ' ') {
+        if (inputText.charAt(inputText.length - 1) !== ' ' && inputText.length < 15) {
             updateTagNameInput(event.target.value)
             dispatch({
                 type: 'GET_WEBSOCKET_TAGS',
@@ -290,7 +290,7 @@ const ListingCreator = () => {
 
     const handleNameChange = (event) => {
         const newName = event.target.value
-        if (newName.length < 50) {
+        if (newName.length < 40) {
             updateListingName(newName)
         }
     }
