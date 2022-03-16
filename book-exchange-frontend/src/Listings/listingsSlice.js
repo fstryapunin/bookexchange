@@ -1,17 +1,30 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 const apiAdress = process.env.REACT_APP_API_ADRESS
 
-export const fetchListings = createAsyncThunk('listings/get', async () => {
-    const response = await fetch(`${apiAdress}/public/listings/new/0`)    
+export const fetchListings = createAsyncThunk('listings/get', async (page = 0) => {
+    const response = await fetch(`${apiAdress}/public/listings/new/${page}`)    
     const data = response.json()  
     return data
-}) 
+})
+
+export const fetchFilteredListings = createAsyncThunk('listings/filter', async (filters) => {    
+    const response = await fetch(`${apiAdress}/public/listings/filter`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filters)
+    })    
+    const data = response.json()  
+    return data
+})
 
 export const listingsSlice = createSlice({
     name: 'listings',
     initialState: {        
         homepage: {
             status: 'idle',
+            filtered: false,
             data: [],
             error: null
         }               
@@ -23,14 +36,26 @@ export const listingsSlice = createSlice({
     },
     extraReducers(builder) {
         builder
-        .addCase(fetchListings.pending, (state, action) => {
+        .addCase(fetchFilteredListings.pending, (state) => {
             state.homepage.status = 'loading'
+            state.homepage.filtered = true
+        })
+        .addCase(fetchFilteredListings.fulfilled, (state, action) => {
+            state.homepage.status = 'loaded'           
+            state.homepage.data = action.payload    
+        })
+        .addCase(fetchFilteredListings.rejected, (state) => {            
+            state.homepage.status = 'failed'            
+        })
+        .addCase(fetchListings.pending, (state) => {
+            state.homepage.status = 'loading'
+            state.homepage.filtered = false
             })
         .addCase(fetchListings.fulfilled, (state, action) => {
             state.homepage.status = 'loaded'            
             state.homepage.data = action.payload       
         })
-        .addCase(fetchListings.rejected, (state, action) => {            
+        .addCase(fetchListings.rejected, (state) => {            
             state.homepage.status = 'failed'            
         })        
     }

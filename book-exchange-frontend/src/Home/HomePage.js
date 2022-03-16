@@ -3,7 +3,6 @@ import ListingsContainer from "../Listings/ListingsContainer";
 import FilterControl from "./Filter/FilterControl";
 import styled from "styled-components";
 import { SectionHeading } from "../Styles/GlobalStyles";
-import { useDispatch } from "react-redux";
 
 const HomepageHeading = styled(SectionHeading)` 
     margin-bottom: 25px;
@@ -18,18 +17,11 @@ const StyledHomepage = styled.div`
 `
 
 const HomePage = () => {    
-    const dispatch = useDispatch()    
 
     return (
         <StyledHomepage>
-            <FilterControl/>
-            <HomepageHeading>NOVÉ PŘÍSPĚVKY</HomepageHeading>            
-            <ListingsContainer />            
-            <button onClick={() => {
-                dispatch({
-                    type: 'GET_WEBSOCKET_TAGS',
-                    payload: 'a'
-            })}}></button>
+            <FilterControl/>                       
+            <ListingsContainer />             
         </StyledHomepage>
     )
 }

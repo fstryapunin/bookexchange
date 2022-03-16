@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import ListingCard from "../Listings/ListingCard";
 import { fetchListings } from "./listingsSlice";
+import ErrorCard from "../Info/ErrorCard";
 import Loader from '../Loader/Loader'
 import styled from "styled-components";
 
@@ -16,6 +17,7 @@ const LoaderContainer = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
 `
+
 
 const ListingsContainer = () => {
     const dispatch = useDispatch()
@@ -35,11 +37,10 @@ const ListingsContainer = () => {
 
     if (listingStatus === 'loaded') {
         return (
-            <div>
-                <StyledContainer>
-                    {getListings()}
-                </StyledContainer>
-            </div>
+                <>
+                {listings.length > 0 ? <StyledContainer>{getListings()}</StyledContainer > : <ErrorCard text={'Nic nenalezeno'}/>}
+                </>
+            
         )
     } else if (listingStatus === "idle" || listingStatus === "loading") {
         return (
@@ -49,7 +50,7 @@ const ListingsContainer = () => {
         )
     } else {
         return (
-            <h5>Chyba</h5>
+            <ErrorCard text={'Bohužel došlo k chybě'}/>
         )
     }
 }

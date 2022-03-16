@@ -9,7 +9,8 @@ const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl, tokenKey } = require('./config');
 const { listingModel } = require('./models')
-const { body, param, validationResult } = require('express-validator');
+const { body, param, validationResult, checkSchema } = require('express-validator');
+const { parse } = require("pg-connection-string");
 const asyncFs = require('fs').promises
 const ws = require('ws')
 
@@ -18,7 +19,9 @@ const googleClient = new OAuth2Client(googleClientId)
 const db = knex({
    
     client: 'pg',
-    connection : dbUrl,      
+    connection: {
+    ...parse(dbUrl)
+    }      
     
 });
 Model.knex(db)
@@ -143,6 +146,93 @@ app.get('/public/listing/:listingId', param('listingId').escape().toInt(), async
     } 
 })
 
+const filterSchema = {
+    name: {
+        in: 'body',
+        trim: true,
+        escape: true,
+        optional: true
+    },
+    type: {
+        in: 'body',
+        trim: true,
+        escape: true,
+        optional: true
+    },
+    'price.min': {
+        in: 'body',
+        trim: true,
+        escape: true,
+        toInt: true,
+        optional: true
+    },
+    'price.max': {
+        in: 'body',
+        trim: true,
+        escape: true,
+        toInt: true,
+        optional: true
+    },
+    'tags.*.id': {
+        in: 'body',
+        trim: true,
+        escape: true,
+        toInt: true,
+        notEmpty: true,
+        bail: true,
+        optional: true
+    }   
+}
+
+app.post('/public/listings/filter', checkSchema(filterSchema), async (req, res) => {
+    const result = validationResult(req)
+    const filters = req.body    
+    let tagIds;
+    if (filters.tags) {
+        const idArray = filters.tags.map(obj => obj.id)
+        tagIds = idArray
+    }
+
+    if (result.errors.length === 0) {
+        const listings = await
+            listingModel
+                .query()                
+                .withGraphFetched('user')
+                .withGraphFetched('images') 
+                .withGraphJoined('tags')                
+                .where((qb) => {
+                    if (filters.name) {
+                        qb.where('name', 'like', `%${filters.name}%`)
+                    }
+                    if (filters.type) {
+                        qb.where('type', filters.type)
+                    }
+                    if (filters.price) {
+                        qb.where('price', '>=', filters.price.min).andWhere('price', '<=', filters.price.max)
+                    }
+                    if (filters.tags) {
+                        qb.where('tags.id', 'in', tagIds)
+                    }
+                    
+                })
+                
+        
+        const listingIds = listings.map(obj => obj.id)
+        
+        const completeListings = await listingModel
+            .query()
+            .withGraphFetched('user')
+            .withGraphFetched('images') 
+            .withGraphFetched('tags')
+            .where('id', 'in', listingIds)
+        
+       
+        res.status(200).json(completeListings)
+    } else {
+        res.sendStatus(400)
+    }
+})
+
 const upsertUser = async (payload) => {
     
     const firstName = payload.given_name
@@ -214,7 +304,7 @@ app.post('/auth/google/login', async (req, res) => {
     }
 })
 
-app.get('/auth/getAccessToken', cookieAuth, (req, res) => {
+app.get('/auth/getAccessToken', cookieAuth, async (req, res) => {
     const accessToken = jwt.sign(
         {
             id: req.user.id
@@ -229,7 +319,7 @@ app.get('/auth/getAccessToken', cookieAuth, (req, res) => {
    
 })
 
-app.get('/auth/logout', (req, res) => {
+app.get('/auth/logout', async (req, res) => {
     res.clearCookie('token')
     res.sendStatus(200)
 })
@@ -381,10 +471,4 @@ app.post('/new/listing',
             }           
         })    
        
-})
-
-app.get('/public/tags/:name', param('name').escape(), async (req, res) => {
-    const { name } = req.params
-    const data = await db('tags').select('*').whereRaw(`LOWER(text) LIKE LOWER(?)`, [`${name}%`]).orderBy('times_used')    
-    res.json(data)
 })
