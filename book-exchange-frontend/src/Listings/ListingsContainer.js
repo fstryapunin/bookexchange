@@ -22,13 +22,14 @@ const LoaderContainer = styled.div`
 const ListingsContainer = () => {
     const dispatch = useDispatch()
     const listingStatus = useSelector(state => state.listings.homepage.status)
-    const listings = useSelector(state => state.listings.homepage.data)    
+    const listings = useSelector(state => state.listings.homepage.data)
+    const isFiltered = useSelector(state => state.listings.homepage.filtered)
 
     useEffect(() => {
         if (listingStatus === 'idle') {           
             dispatch(fetchListings())
-        }        
-    }, [listingStatus, dispatch])
+        }         
+    }, [listingStatus, isFiltered, dispatch])
     
     const getListings = () => {        
         const listingElements = listings.map(listingObj => <ListingCard key={listingObj.id} data={listingObj}/>)

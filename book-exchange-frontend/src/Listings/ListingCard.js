@@ -15,17 +15,6 @@ const StyledListingName = styled.p`
     font-family: 'Roboto Mono', monospace; 
 `
 
-const StyledUserContainer = styled.div` 
-    padding: 10px 20px 10px 20px;
-`
-
-const StyledUserImage = styled.img` 
-    background-color: var(--dark-gray);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-`
-
 const StyledListingType = styled.p` 
     font-weight: bold;
     margin: 0px 0px 5px 0px;
@@ -38,6 +27,7 @@ const StyledBottomLine = styled.div`
     justify-content: flex-end;
     align-items: center;
     gap: 10px;
+    margin-top: 10px;
 `
 
 const StyledListingPrice = styled.p`
@@ -46,7 +36,7 @@ const StyledListingPrice = styled.p`
 `
 
 const StyledInfoContainer = styled.div` 
-    padding: 15px 25px 25px 25px;
+    padding: 15px 25px 15px 25px;
 `
 
 const StyledListing = styled(Card)`
@@ -107,8 +97,7 @@ const ListingCard = ({ data }) => {
     }
     
     const getTagElements = () => {
-        const elements = data.tags.map(tag => { return <StyledTag>{tag.text}</StyledTag> })
-        console.log(elements)
+        const elements = data.tags.map(tag => { return <StyledTag>{tag.text}</StyledTag> })        
         return elements
     }
 
@@ -134,5 +123,3 @@ const ListingCard = ({ data }) => {
 }
 
 export default ListingCard
-
-//

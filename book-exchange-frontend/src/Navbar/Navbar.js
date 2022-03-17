@@ -9,7 +9,9 @@ const StyledNavbar = styled.div`
     box-sizing: border-box;
     width: 100%;
     border-bottom: 5px solid var(--dark-blue);
-    position: sticky;
+    position: fixed;
+    top: 0;
+    z-index: 2;
     background-color: white;
 `
 
@@ -32,6 +34,9 @@ const LinkContainer = styled.div`
         white-space: nowrap;
     }
 `
+const StyledFiller = styled.div` 
+    height: 82px;
+`
 
 const navLinks = [
     {
@@ -52,7 +57,8 @@ const Navbar = () => {
     })
    
     return (
-      
+        <>
+        <StyledFiller/>
         <StyledNavbar>            
             <LinkContainer>
                 <div id="static-links">
@@ -62,6 +68,7 @@ const Navbar = () => {
                 <GoogleAuth/>
             </LinkContainer>            
         </StyledNavbar>
+        </>   
       
     )
 }

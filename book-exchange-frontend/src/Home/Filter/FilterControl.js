@@ -1,17 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { fetchFilteredListings, fetchListings } from "../../Listings/listingsSlice";
-import { Card, SectionHeading, DisabledButton, PrimaryButton, SecondaryButton } from "../../Styles/GlobalStyles";
+import { Card, PrimaryButton, SecondaryButton } from "../../Styles/GlobalStyles";
+import useCheckMobileScreen from "../../Hooks/useCheckMobile";
 import ListingTag from "../../User/Creator/ListingTag";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
-const StyledNameInput = styled.input` 
+const StyledInput = styled.input` 
     height: 30px;
     box-sizing: border-box;
+`
+
+const StyledNameInput = styled(StyledInput)` 
+   min-width: 130px;   
+   @media(max-width : 439px){
+        box-sizing: border-box;
+        width: 100%;
+    } 
 `
 const StyledFilterControl = styled(Card)` 
     margin-bottom: 25px;
 `
+
+const StyledSearchBarContainerMobile = styled(Card)` 
+    display: flex;
+    justify-content: space-between;  
+    flex-wrap: wrap;  
+    gap: 10px;
+`
+const StyledSearchBarButtonContainer = styled.div` 
+    display: flex;
+    gap: 10px;
+    > button {
+        flex-grow: 1;
+    }
+    @media(max-width : 439px){
+        box-sizing: border-box;
+        width: 100%;
+    }
+`
+
 const StyledTagInput = styled(StyledNameInput)` 
    
 `
@@ -44,6 +72,12 @@ const StyledControlButton = styled(SecondaryButton)`
     box-shadow: none;
 `
 
+const StyledFilterButtonMobile = styled(StyledControlButton)` 
+    width: 100%;
+    box-sizing: border-box;
+    margin: 20px 0px;
+`
+
 const StyledFilterButton = styled(PrimaryButton)` 
     height: 30px;
     margin: 0px;
@@ -51,7 +85,7 @@ const StyledFilterButton = styled(PrimaryButton)`
     justify-content: center;
     align-items: center;
 `
-const StyledPriceInput = styled(StyledNameInput)` 
+const StyledPriceInput = styled(StyledInput)` 
     max-width: 5rem;
 `
 const StyledCancelButton = styled(StyledControlButton)` 
@@ -61,7 +95,7 @@ const StyledTagContainer = styled.div`
     margin-top: 10px; 
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 10px;
 `
 const StyledTagMenu = styled.div` 
     display: flex;
@@ -85,11 +119,70 @@ const EmptyTag = styled.p`
     padding: 5px 10px;
     margin: 0px;
 `
+const StyledFilterModalContainer = styled.div` 
+    background-color: rgba(255,255,255, 0.5);
+    position: fixed;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+`
+const StyledFilterModal = styled.div` 
+    background-color: white;
+    position: fixed;
+    top:0;
+    left: 0;    
+    bottom: 0;
+    padding: 20% 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+`
+const StyledSelect = styled.select` 
+    display: block;
+    width: 170px;
+    box-sizing: border-box;
+    height: 30px;
+    margin: 10px 0px;
+`
+const StyledPriceInputMobiled = styled.div` 
+    display: flex;
+    gap: 5px;
+    align-items: center;
+`
+const StyledTagContainerMobile = styled.div`     
+    margin-top: 10px; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+`
+
+const StyledModalButtonContainer = styled.div` 
+    width: 100%;
+    margin-top: auto;
+    display: flex;
+    box-sizing: border-box;    
+    gap: 10px;
+    > button {
+        flex-grow: 1;
+    }
+`
+
+const StyledModalInputBlock = styled.div` 
+    > input, select, div {
+        box-sizing: border-box;
+        width: 100%;
+    }
+`
 
 const defaultMinPrice = 0
 const defaultMaxPrice = 1000
 
 const FilterControl = () => {
+    const [displayModal, updateDisplayModal] = useState(false)
     const [nameInput, updateNameInput] = useState('')
     const [priceMin, updatePriceMin] = useState(defaultMinPrice)
     const [priceMax, updatePriceMax] = useState(defaultMaxPrice)
@@ -100,7 +193,8 @@ const FilterControl = () => {
     const [tagName, updateTagName] = useState('')
     const tagsStatus =  useSelector(state => state.filter.tags.loadedTags)
     const tagsData = useSelector(state => state.filter.tags.loadedTags)
-    const isFiltered = useSelector(state => state.listings.homepage.filtered)    
+    const isFiltered = useSelector(state => state.listings.homepage.filtered)
+    const isMobile = useCheckMobileScreen()
     const dispatch = useDispatch()    
 
     const handleNameInput = (event) => {
@@ -122,7 +216,9 @@ const FilterControl = () => {
     }
 
     const handleSelectTag = (data) => {
-        updateSelectedTags([...selectedTags, data])
+        if (selectedTags.length < 5) {
+            updateSelectedTags([...selectedTags, data])
+        }
     }
 
     const handleDeselectTag = (data) => {
@@ -182,6 +278,17 @@ const FilterControl = () => {
         }            
     }
 
+    const handleOpenModalClick = () => {
+        //prevent scrolling
+        document.body.style.overflow = 'hidden';
+        updateDisplayModal(true)
+    }
+
+    const handleCloseModalClick = () => {
+        document.body.style.overflow = 'unset';
+        updateDisplayModal(false)
+    }
+
     const handleCancelClick = () => {
         updateDisplayPrice(false)
         updatePriceMin(defaultMinPrice)
@@ -190,10 +297,12 @@ const FilterControl = () => {
         updateSelectedTags([])
         updateNameInput('')
         updateType('all')
+        updateDisplayModal(false)
         //dispatch fetch unfiltered listings
         if (isFiltered) {
             dispatch(fetchListings(0))
         }
+        document.body.style.overflow = 'unset';
     }
 
     const handleSearchClick = () => {
@@ -228,6 +337,7 @@ const FilterControl = () => {
         }        
     }
 
+    if(!isMobile){
     return (
         <StyledFilterControl>
             <StyledControlRow>
@@ -269,6 +379,58 @@ const FilterControl = () => {
             </StyledTagContainer> : null}
         </StyledFilterControl>
     )
+    } else {
+        return (
+            <>
+                
+                <StyledSearchBarContainerMobile>
+                    <StyledNameInput placeholder="Název" value={nameInput} onChange={handleNameInput} />
+                    <StyledSearchBarButtonContainer>
+                        <StyledControlButton onClick={handleSearchClick}>HLEDAT</StyledControlButton>
+                        {isFiltered ? <StyledControlButton onClick={handleCancelClick}>ZRUŠIT</StyledControlButton> : null}
+                    </StyledSearchBarButtonContainer>
+                </StyledSearchBarContainerMobile>               
+                <StyledFilterButtonMobile onClick={handleOpenModalClick}>UPŘESNIT</StyledFilterButtonMobile>
+                {displayModal ?
+                    <StyledFilterModalContainer onClick={handleCloseModalClick} >
+                        <StyledFilterModal onClick={event => event.stopPropagation()}>
+                            <StyledModalInputBlock>
+                            <StyledNameInput placeholder="Název" value={nameInput} onChange={handleNameInput} />
+                            <StyledSelect value={listingType} onChange={(event) => updateType(event.target.value)}>
+                                <option value="all">Všechno</option>
+                                <option value="listing">Nabídka</option>
+                                <option value="demand">Poptávka</option>
+                            </StyledSelect>
+                            <StyledPriceInputMobiled>
+                                <p>Od:</p>
+                                <StyledPriceInput type="number" value={priceMin} onChange={event => handlePriceInput(event.target.value, 'min')}/>
+                                <p>do:</p>
+                                <StyledPriceInput type="number" value={priceMax} onChange={event => handlePriceInput(event.target.value, 'max')}/>
+                                <p>Kč</p>
+                            </StyledPriceInputMobiled>
+                            <StyledTagInputContainer >
+                                <StyledTagMenu tabIndex="0" onBlur={(event) => handleTagInputBlur(event)}>
+                                    <StyledTagInput placeholder="tagy" autoComplete="off" value={tagName} onChange={handleTagNameInput} />
+                                    {tagName.length > 0 ? <StyledTagList>
+                                        {getTagMenuElements()}
+                                    </StyledTagList> : null}
+                                </StyledTagMenu>                            
+                                </StyledTagInputContainer>
+                                {selectedTags.length > 0 ?
+                                    <StyledTagContainerMobile>
+                                        {getSelectedTagElements()}
+                                    </StyledTagContainerMobile> : null}
+                            </StyledModalInputBlock>
+                            <StyledModalButtonContainer>
+                                <StyledControlButton onClick={handleSearchClick}>HLEDAT</StyledControlButton>
+                                {isFiltered? <StyledControlButton onClick={handleCancelClick}>ZRUŠIT</StyledControlButton> : null}
+                            </StyledModalButtonContainer>
+                        </StyledFilterModal>                        
+                    </StyledFilterModalContainer> : null}
+            </>
+        )
+    }
+
 }
 
 export default FilterControl
