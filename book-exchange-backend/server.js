@@ -125,7 +125,7 @@ app.get('/public/listings/new/:page', param('page').escape().toInt(), async (req
     const { page } = req.params
     
     if (Number.isInteger(page) && page >= 0) {
-        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('deleted', false).orderBy('added', 'desc').offset(page * 20).limit(20)         
+        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('deleted', false).orderBy('edited', 'desc').offset(page * 20).limit(20)         
         res.json(listings)        
     } else {
         res.sendStatus(400)
@@ -338,7 +338,7 @@ app.get('/auth/logout', async (req, res) => {
 
 app.post('/user/listings', tokenAuth, async (req, res) => {
     //limit ammount    
-    const userListings = await listingModel.query().withGraphFetched('tags').withGraphFetched('images').select('*').from('listings').where('poster_id', req.user.id).andWhere('deleted', false).orderBy('added', 'desc') 
+    const userListings = await listingModel.query().withGraphFetched('tags').withGraphFetched('images').select('*').from('listings').where('poster_id', req.user.id).andWhere('deleted', false).orderBy('edited', 'desc') 
     res.status(200).json(userListings)
 })
 
@@ -370,6 +370,12 @@ app.post('/user/listing/:listingId', tokenAuth, param('listingId').escape().toIn
     } else {
         res.sendStatus(400)
     }
+})
+
+app.delete('/user/listing/:listingId', tokenAuth, param('listingId').escape().toInt(), async (req, res) => {
+    const { listingId } = req.params
+    const response = await db('listings').where('id', listingId).update('deleted', true).returning('id')
+    res.status(200).json(response)
 })
 
 const upload = multerUploader.array('images', 5)

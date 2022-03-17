@@ -305,6 +305,13 @@ const ListingCreator = () => {
            
     }
 
+    const handleDescriptionChange = (event) => {
+        const value = event.target.value
+        if (value.length < 1000) {
+            updateListingDescription(value)
+        }
+    }
+
     return (
         <CreatorContainer>
             <StyledCreator>            
@@ -332,7 +339,7 @@ const ListingCreator = () => {
                     </TagRow>                  
                 <TextAreaContainer>
                     <label htmlFor="description">Popis</label>
-                    <DescriptionInput name="description" rows="5" autoComplete="off" onChange={(event) => updateListingDescription(event.target.value)} />
+                    <DescriptionInput name="description" rows="5" autoComplete="off" onChange={handleDescriptionChange} />
                 </TextAreaContainer>                
                 <ImageInput />               
                     {getEnableUpload()? <StyledAddButton type='submit'><p>Přidat</p></StyledAddButton> : <StyledDisabledButton onClick={e => e.preventDefault()} ><p>Přidat</p></StyledDisabledButton>}

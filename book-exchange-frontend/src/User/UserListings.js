@@ -14,38 +14,10 @@ const TableHeading = styled.div`
 
 const StyledMessage = styled.h5`
     text-align: center;
-`
-const LabelContainer = styled.div`
-    width:  100%;
-    display: flex;
-    
-    #labels {
-        flex-basis: 80%;
-        flex-grow: 1;
-        display: flex;
-        gap: 10px;
-    }
-    #hidden-buttons{
-        display: flex;
-        flex-grow: 1;
-        gap: 20px;
-        visibility: hidden;
-    }
-    #hidden-buttons > button {
-        flex-grow: 1;
-        flex-basis: 50px;
-    }
-    @media (max-width: 771px) {
-    display: none;
-  }
-`
 
-const GridLabel = styled.h6`
-    color: var(--dark-gray);
-    flex-grow: ${props => props.fr};
-    flex-basis: ${props => props.basis};
-    font-weight: normal;  
-    margin: 20px 0px;
+`
+const StyledListingList = styled.div` 
+    
 `
 
 const UserListings = ({ text, type }) => {
@@ -54,7 +26,7 @@ const UserListings = ({ text, type }) => {
     const listings = useSelector(state => selectUserListings(state.user.listings.data, type))
     
     //get right ammount of jsx elements based on page size (max. ammount of elements on a page) and current page index
-    const getElements = () => {
+    const getListingElements = () => {
         const currentData = listings.slice(pageSize * currentPage, pageSize * currentPage + pageSize)        
         const elements = currentData.map(listingObj => {
             return (<UserListing key={listingObj.id} data={listingObj}/>)
@@ -71,21 +43,9 @@ const UserListings = ({ text, type }) => {
                 {listings.length > pageSize ? <PageControl dataLength={listings.length} pageSize={pageSize} currentPage={currentPage} updateCurrentPage={updateCurrentPage} />: null}
             </TableHeading>
             {listings.length > 0 ?
-                <>
-                <LabelContainer>
-                    <div id="labels">     
-                        <GridLabel fr="0.5" basis="30px">Přidáno</GridLabel>
-                        <GridLabel fr="1" basis="100px">Jméno</GridLabel>
-                        <GridLabel fr="0.5" basis="30px">Aktivní</GridLabel>
-                        <GridLabel fr="0.5" basis="30px">Cena</GridLabel>
-                    </div>   
-                    <div id="hidden-buttons">
-                        <button>Detail</button>
-                        <button>Smazat</button>
-                    </div>
-                </LabelContainer>
-                {getElements()}
-                </>  
+                <StyledListingList>
+                    {getListingElements()}
+                </StyledListingList>  
                 :
                 <StyledMessage>
                    {`Zatím žádné ${text} :(`} 

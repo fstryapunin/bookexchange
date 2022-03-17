@@ -64,3 +64,18 @@ export const SecondaryButton = styled.button`
         margin: 0;
     }
 `
+
+export const DangerButton = styled.button`    
+    box-sizing: border-box;
+    color: var(--light-gray);
+    border: 2px solid var(--error-red);
+    background-color: var(--error-red);
+    font-weight: 600;
+    padding: 10px;    
+    cursor: pointer;
+    white-space: nowrap;   
+    p{
+        margin: 0;
+    } 
+    
+`

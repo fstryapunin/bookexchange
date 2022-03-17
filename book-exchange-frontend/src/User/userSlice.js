@@ -45,8 +45,12 @@ export const fetchUserListings = createAsyncThunk('user/fetchListings', async (a
 
 export const authenticateUser = createAsyncThunk('user/authenticate', async () => {
     const response = await fetch(`${apiAdress}/auth/getAccessToken`, { method: 'GET', credentials: 'include' })
-    const data = response.json()
-    return data
+    if (response.ok) {
+        const data = response.json()
+        return data
+    } else {
+        throw new Error()
+    }
 })
   
 export const unauthenticateUser = createAsyncThunk('user/unathenticate', async () => {  
@@ -65,8 +69,26 @@ export const authenticateUserWithGoogle = createAsyncThunk('user/authenticateGoo
           }
       )
     })
-    const data = response.json()
-    return data
+    if (response.ok) {
+        const data = response.json()
+        return data
+    } else {
+        throw new Error()
+    }
+})
+
+export const deleteUserListing = createAsyncThunk('user/delete/listing', async (id, { getState }) => {   
+    const state = getState()
+    const response = await fetch(`${apiAdress}/user/listing/${parseInt(id)}}`, {
+        method: 'DELETE',
+        headers: {
+            'x-access-token': state.user.auth.token
+        },
+    })
+    if (response.ok) {
+        const data = await response.json()
+        return data
+    }
 })
 
 const initialState = {
@@ -93,47 +115,51 @@ export const userSlice = createSlice({
     reducers: {},
     extraReducers(builder) {
         builder
-        .addCase(fetchUserData.pending, (state, action) => {
-            state.info.status = 'loading'            
-        })
-        .addCase(fetchUserData.fulfilled, (state, action) => {
-            state.info.status = 'loaded'            
-            state.info.data = action.payload
-        })
-        .addCase(fetchUserData.rejected, (state, action) => {            
-            state.info.status = 'failed'
-            state.info.error = action.error
-        })
-        .addCase(fetchUserListings.pending, (state, action) => {
-            state.listings.status = 'loading'            
-        })
-        .addCase(fetchUserListings.fulfilled, (state, action) => {
-            state.listings.status = 'loaded'            
-            state.listings.data = action.payload
-        })
-        .addCase(fetchUserListings.rejected, (state, action) => {            
-            state.listings.status = 'failed'
-            state.listings.error = action.error
-        })
-        .addCase(authenticateUser.pending, (state, action) => {
-            state.auth.status = 'loading'
-        })
-            .addCase(authenticateUser.fulfilled, (state, action) => {           
-            state.auth.status = 'authenticated'        
-            state.auth.token = action.payload.token       
-        })
-        .addCase(authenticateUser.rejected, (state, action) => {
-            state.auth.status = 'unauthenticated'
-            state.auth.error = 401
-        })
-        .addCase(unauthenticateUser.fulfilled, (state, action) => {   
-            //reset set to initial on logout
-            return initialState
-        })
-        .addCase(authenticateUserWithGoogle.fulfilled, (state, action) => {           
-            state.auth.status = 'authenticated'
-            state.auth.token = action.payload.token
-        })        
+            .addCase(fetchUserData.pending, (state, action) => {
+                state.info.status = 'loading'
+            })
+            .addCase(fetchUserData.fulfilled, (state, action) => {
+                state.info.status = 'loaded'
+                state.info.data = action.payload
+            })
+            .addCase(fetchUserData.rejected, (state, action) => {
+                state.info.status = 'failed'
+                state.info.error = action.error
+            })
+            .addCase(fetchUserListings.pending, (state, action) => {
+                state.listings.status = 'loading'
+            })
+            .addCase(fetchUserListings.fulfilled, (state, action) => {
+                state.listings.status = 'loaded'
+                state.listings.data = action.payload
+            })
+            .addCase(fetchUserListings.rejected, (state, action) => {
+                state.listings.status = 'failed'
+                state.listings.error = action.error
+            })
+            .addCase(authenticateUser.pending, (state, action) => {
+                state.auth.status = 'loading'
+            })
+            .addCase(authenticateUser.fulfilled, (state, action) => {
+                state.auth.status = 'authenticated'
+                state.auth.token = action.payload.token
+            })
+            .addCase(authenticateUser.rejected, (state, action) => {
+                state.auth.status = 'unauthenticated'
+                state.auth.error = 401
+            })
+            .addCase(unauthenticateUser.fulfilled, (state, action) => {
+                //reset set to initial on logout
+                return initialState
+            })
+            .addCase(authenticateUserWithGoogle.fulfilled, (state, action) => {
+                state.auth.status = 'authenticated'
+                state.auth.token = action.payload.token
+            })
+            .addCase(deleteUserListing.fulfilled, (state, action) => {
+                const id = parseInt(action.payload[0])
+                state.listings.data = state.listings.data.filter(listing => parseInt(listing.id) !== id)
+            })
     }    
 })
 
