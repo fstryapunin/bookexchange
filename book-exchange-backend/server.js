@@ -181,7 +181,14 @@ const filterSchema = {
         notEmpty: true,
         bail: true,
         optional: true
-    }   
+    },
+    'tags': {
+        isArray: true,
+        notEmpty: true,
+        isLength: {            
+            options: { min: 0, max: 5 },           
+        }
+    }
 }
 
 app.post('/public/listings/filter', checkSchema(filterSchema), async (req, res) => {

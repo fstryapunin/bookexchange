@@ -123,7 +123,7 @@ const ListingCreator = () => {
     
     const handleTagClick = (data, action, custom) => {
         if (action === 'select') {
-            if (selectedTags.length + newTags.length < 10) {
+            if (selectedTags.length + newTags.length < 5) {
                 if (custom) {
                     const nextTags = [...newTags, data]
                     updateNewTags(nextTags)
