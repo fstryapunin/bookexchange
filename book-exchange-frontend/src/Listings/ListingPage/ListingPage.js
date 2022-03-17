@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, PrimaryButton } from "../../Styles/GlobalStyles";
+import ErrorCard from '../../Info/ErrorCard'
 import ListingImages from "./ListingImages";
 import styled from "styled-components";
 import Loader from "../../Loader/Loader";
@@ -192,9 +193,7 @@ const ListingPage = () => {
         )
     } else {
         return (
-            <LoaderContainer>
-                <h1>Chyba</h1>
-            </LoaderContainer>
+            <ErrorCard text="Nic nenalezeno"></ErrorCard>
         )
     }
 }

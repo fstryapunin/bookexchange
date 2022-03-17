@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 import Navbar from "./Navbar/Navbar";
 import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
-import Catalogue from "./Catalogue/Catalogue";
 import ListingPage from "./Listings/ListingPage/ListingPage";
 import ListingEditor from "./User/ListingEditor";
 import RequireAuth from "./User/RequireAuth";
@@ -29,8 +28,8 @@ const Exchange = () => {
         <>            
             <Navbar />           
             <Routes>
-                <Route path="/" element={<HomePage />} />               
-                <Route path="katalog" element={<Catalogue />} />
+                <Route path='*' element={<Error />} />
+                <Route path="/" element={<HomePage />} />                
                 <Route path="listing/:id" element={<ListingPage />} />
                 <Route path="success" element={<Success />} />
                 <Route path="error" element={<Error />}/>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Card } from "../Styles/GlobalStyles";
 import { Link } from 'react-router-dom'
+import { SadEmojiLarge } from "../Styles/GlobalIcons";
 import styled from "styled-components";
 
 const StyledListingName = styled.p`     
@@ -97,7 +98,7 @@ const ListingCard = ({ data }) => {
     }
     
     const getTagElements = () => {
-        const elements = data.tags.map(tag => { return <StyledTag>{tag.text}</StyledTag> })        
+        const elements = data.tags.map(tag => { return <StyledTag key={tag.id}>{tag.text}</StyledTag> })        
         return elements
     }
 
@@ -105,7 +106,10 @@ const ListingCard = ({ data }) => {
         <StyledLink to={`/listing/${data.id}`}>
             <StyledListing>                
                 <StyledImageContainer>
-                    <StyledListingImage src={`${apiAdress}/public/uploads/${data.title_image}`} alt="" />
+                    <StyledListingImage
+                        src={`${apiAdress}/public/uploads/${data.title_image}`}
+                        alt=""                        
+                    />
                 </StyledImageContainer>                
                 <StyledInfoContainer>
                     <StyledListingType>{getTypeText(data.type)}</StyledListingType>

@@ -125,7 +125,7 @@ app.get('/public/listings/new/:page', param('page').escape().toInt(), async (req
     const { page } = req.params
     
     if (Number.isInteger(page) && page >= 0) {
-        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').orderBy('added', 'desc').offset(page * 20).limit(20)         
+        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('deleted', false).orderBy('added', 'desc').offset(page * 20).limit(20)         
         res.json(listings)        
     } else {
         res.sendStatus(400)
@@ -136,7 +136,7 @@ app.get('/public/listing/:listingId', param('listingId').escape().toInt(), async
     const { listingId } = req.params
     if (Number.isInteger(listingId)) {
         const data = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('id', listingId)
-        if (data.length > 0) {
+        if (data.length > 0 && !data[0].deleted) {
             res.json(data[0])
         } else {
             res.sendStatus(404)
@@ -223,8 +223,10 @@ app.post('/public/listings/filter', checkSchema(filterSchema), async (req, res) 
                     if (filters.tags) {
                         qb.where('tags.id', 'in', tagIds)
                     }
+                    qb.where('listings.deleted', '=', false)
                     
                 })
+                
                 
         
         const listingIds = listings.map(obj => obj.id)
@@ -336,7 +338,7 @@ app.get('/auth/logout', async (req, res) => {
 
 app.post('/user/listings', tokenAuth, async (req, res) => {
     //limit ammount    
-    const userListings = await listingModel.query().withGraphFetched('tags').withGraphFetched('images').select('*').from('listings').where('poster_id', req.user.id).orderBy('added', 'desc') 
+    const userListings = await listingModel.query().withGraphFetched('tags').withGraphFetched('images').select('*').from('listings').where('poster_id', req.user.id).andWhere('deleted', false).orderBy('added', 'desc') 
     res.status(200).json(userListings)
 })
 
@@ -357,7 +359,7 @@ app.post('/user/listing/:listingId', tokenAuth, param('listingId').escape().toIn
     if (Number.isInteger(listingId)) {        
         const listing = await listingModel.query().withGraphFetched('tags').withGraphFetched('images').select('*').from('listings').where('id', listingId)
         if(listing.length > 0){
-            if (parseInt(listing[0].poster_id) === req.user.id) {
+            if (parseInt(listing[0].poster_id) === req.user.id && !listing[0].deleted) {
                 res.json(listing[0])
             } else {
                 res.sendStatus(403)

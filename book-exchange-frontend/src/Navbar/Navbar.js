@@ -42,11 +42,7 @@ const navLinks = [
     {
         target: '',
         text: 'DOMŮ'
-    },
-    {
-        target: 'katalog',
-        text: 'KATALOG'
-    }   
+    }  
 ]
 
 const Navbar = () => {
