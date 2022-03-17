@@ -3,8 +3,12 @@ const apiAdress = process.env.REACT_APP_API_ADRESS
 
 export const fetchListings = createAsyncThunk('listings/get', async (page = 0) => {
     const response = await fetch(`${apiAdress}/public/listings/new/${page}`)    
-    const data = response.json()  
-    return data
+    if (response.ok) {
+        const data = response.json()
+        return data
+    } else {
+        throw new Error()
+    }
 })
 
 export const fetchFilteredListings = createAsyncThunk('listings/filter', async (filters) => {    
@@ -14,9 +18,13 @@ export const fetchFilteredListings = createAsyncThunk('listings/filter', async (
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(filters)
-    })    
-    const data = response.json()  
-    return data
+    })
+    if (response.ok) {
+        const data = response.json()
+        return data
+    } else {
+        throw new Error()
+    }
 })
 
 export const listingsSlice = createSlice({

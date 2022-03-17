@@ -14,8 +14,12 @@ export const fetchUserData = createAsyncThunk('user/fetchData', async (arg, { ge
           }
       )
     })
-    const data = response.json()
-    return data
+    if (response.ok) {
+        const data = response.json()
+        return data
+    } else {
+        throw new Error()
+    }
 })
 
 export const fetchUserListings = createAsyncThunk('user/fetchListings', async (arg, {getState}) => {
@@ -31,8 +35,12 @@ export const fetchUserListings = createAsyncThunk('user/fetchListings', async (a
             }
         )
     })
-    const data = response.json()    
-    return data
+    if (response.ok) {
+        const data = response.json()    
+        return data
+    } else {
+        throw new Error()
+    }    
 })
 
 export const authenticateUser = createAsyncThunk('user/authenticate', async () => {

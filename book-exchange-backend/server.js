@@ -182,12 +182,15 @@ const filterSchema = {
         bail: true,
         optional: true
     },
-    'tags': {
-        isArray: true,
-        notEmpty: true,
-        isLength: {            
-            options: { min: 0, max: 5 },           
-        }
+    'tags': {       
+        custom: {
+            options: (value) => {                
+                if (value.length > 5) return false
+                else return true
+            },
+            errorMessage: "Too many tags"
+        },
+        optional: true
     }
 }
 
@@ -236,7 +239,7 @@ app.post('/public/listings/filter', checkSchema(filterSchema), async (req, res) 
        
         res.status(200).json(completeListings)
     } else {
-        res.sendStatus(400)
+        res.status(400).json(result.errors)
     }
 })
 
