@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { fetchFilteredListings, fetchListings } from "../../Listings/listingsSlice";
 import { Card, PrimaryButton, SecondaryButton } from "../../Styles/GlobalStyles";
 import useCheckMobileScreen from "../../Hooks/useCheckMobile";

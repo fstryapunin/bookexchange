@@ -3,7 +3,7 @@ import Navbar from "./Navbar/Navbar";
 import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
 import Catalogue from "./Catalogue/Catalogue";
-import ListingPage from "./Listings/ListingPage";
+import ListingPage from "./Listings/ListingPage/ListingPage";
 import ListingEditor from "./User/ListingEditor";
 import RequireAuth from "./User/RequireAuth";
 import ListingCreator from "./User/Creator/ListingCreator";
