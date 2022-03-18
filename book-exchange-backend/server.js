@@ -125,7 +125,7 @@ app.get('/public/listings/new/:page', param('page').escape().toInt(), async (req
     const { page } = req.params
     
     if (Number.isInteger(page) && page >= 0) {
-        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('deleted', false).orderBy('edited', 'desc').offset(page * 20).limit(20)         
+        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('deleted', false).andWhereNot('status', 'inactive').orderBy('edited', 'desc').offset(page * 20).limit(20)         
         res.json(listings)        
     } else {
         res.sendStatus(400)
