@@ -228,8 +228,8 @@ const ListingCreator = () => {
             price: listingPrice,
             description: listingDescription,
             tags: [...selectedTags, ...newTags],            
-            images: listingImages
-        }        
+            images: listingImages.uploads
+        }      
 
         for (const property in listingObj) { 
             if (listingObj[property]) {
