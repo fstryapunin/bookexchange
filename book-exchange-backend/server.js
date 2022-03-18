@@ -372,10 +372,18 @@ app.post('/user/listing/:listingId', tokenAuth, param('listingId').escape().toIn
     }
 })
 
-app.delete('/user/listing/:listingId', tokenAuth, param('listingId').escape().toInt(), async (req, res) => {
+app.delete('/user/listing/delete/:listingId', tokenAuth, param('listingId').escape().toInt(), async (req, res) => {
     const { listingId } = req.params
     const response = await db('listings').where('id', listingId).update('deleted', true).returning('id')
     res.status(200).json(response)
+})
+
+app.post('/user/listing/update/status', tokenAuth, body('status').escape().notEmpty(), async (req, res) => {
+    const response = await db('listings').update('status', req.body.status).where('id', req.body.id).returning('id')
+    res.status(200).json({
+        id: response,
+        status: req.body.status
+    })
 })
 
 const upload = multerUploader.array('images', 5)

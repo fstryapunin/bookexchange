@@ -77,9 +77,9 @@ export const authenticateUserWithGoogle = createAsyncThunk('user/authenticateGoo
     }
 })
 
-export const deleteUserListing = createAsyncThunk('user/delete/listing', async (id, { getState }) => {   
+export const deleteUserListing = createAsyncThunk('user/listing/delete', async (id, { getState }) => {   
     const state = getState()
-    const response = await fetch(`${apiAdress}/user/listing/${parseInt(id)}}`, {
+    const response = await fetch(`${apiAdress}/user/listing/delete/${parseInt(id)}}`, {
         method: 'DELETE',
         headers: {
             'x-access-token': state.user.auth.token
@@ -88,6 +88,29 @@ export const deleteUserListing = createAsyncThunk('user/delete/listing', async (
     if (response.ok) {
         const data = await response.json()
         return data
+    } else {
+        throw new Error()
+    }
+})
+
+export const updateListingStatus = createAsyncThunk('user/listing/status', async (payload, { getState }) => {
+    const state = getState()
+    const response = await fetch(`${apiAdress}/user/listing/update/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': state.user.auth.token
+        },
+        body: JSON.stringify({
+            status: payload.status,
+            id: payload.id
+        })
+    })
+    if (response.ok) { 
+        const data = await response.json()
+        return data
+    } else {
+        throw new Error()
     }
 })
 
@@ -159,6 +182,13 @@ export const userSlice = createSlice({
             .addCase(deleteUserListing.fulfilled, (state, action) => {
                 const id = parseInt(action.payload[0])
                 state.listings.data = state.listings.data.filter(listing => parseInt(listing.id) !== id)
+            })
+            .addCase(updateListingStatus.fulfilled, (state, action) => {
+                const id = action.payload.id[0]                
+                state.listings.data.forEach(listing => {
+                    if(listing.id === id) listing.status = action.payload.status
+                })              
+                
             })
     }    
 })

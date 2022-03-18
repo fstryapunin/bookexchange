@@ -16,6 +16,12 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--light-gray);
   }
+  input:focus, textarea:focus, select:focus{
+    outline: none !important;
+  }
+  input:hover, textarea:hover, select:hover{
+    outline: none !important;
+}
   
   code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

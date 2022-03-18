@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { DangerButton, SecondaryButton } from "../Styles/GlobalStyles";
 import { useDispatch } from "react-redux";
-import { deleteUserListing } from "./userSlice";
+import { deleteUserListing, updateListingStatus } from "./userSlice";
 import useCheckMobileScreen from "../Hooks/useCheckMobile";
 import styled from "styled-components";
 
@@ -19,7 +19,7 @@ const StyledName = styled.h6`
     font-weight: 400;
     flex-grow: 1;
     flex-basis: 100px;    
-    max-width: 200px;
+    
     min-width: 100px;
     word-break: break-word;
 `
@@ -28,8 +28,7 @@ const StyledTagContainer = styled.div`
     flex-wrap: wrap;
     gap: 10px;
     flex-wrap: wrap;
-    align-items: center;
-    max-width:  400px;
+    align-items: center;    
     flex-grow: 1;
     flex-basis: 100px;
 `
@@ -57,8 +56,7 @@ const StyledButtonContainer = styled.div`
     align-items: center;
     gap: 10px;
     align-items: center;
-    margin-left: auto;
-    flex-grow: 1;
+    margin-left: auto;   
 `
 const StyledButtonContainerMobile = styled.div` 
     display: flex;
@@ -67,7 +65,7 @@ const StyledButtonContainerMobile = styled.div`
     width: 100%;
     > button {
         flex-basis: 50px;
-        flex-grow: 1;
+        flex-grow: 0.5;
     }
 `
 
@@ -90,18 +88,44 @@ const StyledListingMobileContainer = styled(StyledListingContainer)`
     align-items: start;
     
 `
+const StyledStatusSelect = styled.select` 
+    height: 32px;
+    border: 2px solid var(--dark-blue);
+    color: var(--dark-blue);
+    font-weight: 600;
+    font-size: 1rem;    
+`
+const StyledSelectOption = styled.option` 
+    color: black;    
+    background-color: white;
+    padding: 10px;
+    margin: 10px;
+    :checked{
+        color: black;        
+        background-color: white;
+    }    
+`
 
 const UserListing = ({ data }) => {    
+    const [statusInput, updateStatus] = useState(data.status)
     const isMobile = useCheckMobileScreen()
     const dispatch = useDispatch()
     
     const getTagElements = () => {
-        const elements = data.tags.map(tag => <StyledTag>{tag.text}</StyledTag>)
+        const elements = data.tags.map(tag => <StyledTag key={tag.id}>{tag.text}</StyledTag>)
         return elements
     }
 
     const handleDeleteClick = () => {
         dispatch(deleteUserListing(data.id))
+    }
+
+    const handleStatusChange = (event) => {        
+        updateStatus(event.target.value)
+        dispatch(updateListingStatus({
+            id: data.id,
+            status: event.target.value
+        }))
     }
 
     if (isMobile) {
@@ -110,6 +134,11 @@ const UserListing = ({ data }) => {
                 <StyledNameMobile>{data.name}</StyledNameMobile>
                 <StyledTagContainerMobile>{getTagElements()}</StyledTagContainerMobile>            
                 <StyledButtonContainerMobile>
+                    <StyledStatusSelect value={statusInput} onChange={handleStatusChange}>
+                        <StyledSelectOption value="active">Dostupné</StyledSelectOption>
+                        <StyledSelectOption value="engaged">Zamluvené</StyledSelectOption>
+                        <StyledSelectOption value="inactive">Nedostupné</StyledSelectOption>
+                    </StyledStatusSelect>
                     <StyledEditButton><p>Upravit</p></StyledEditButton>
                     <StyledDeleteButton onClick={handleDeleteClick}><p>Smazat</p></StyledDeleteButton>
                 </StyledButtonContainerMobile>
@@ -121,6 +150,11 @@ const UserListing = ({ data }) => {
                 <StyledName>{data.name}</StyledName>
                 <StyledTagContainer>{getTagElements()}</StyledTagContainer>            
                 <StyledButtonContainer>
+                    <StyledStatusSelect defaultValue={data.status} onChange={handleStatusChange}>  
+                        <StyledSelectOption value="active">Dostupné</StyledSelectOption>    
+                        <StyledSelectOption value="engaged">Zamluvené</StyledSelectOption>                        
+                        <StyledSelectOption value="inactive">Nedostupné</StyledSelectOption>                        
+                    </StyledStatusSelect>
                     <StyledEditButton><p>Upravit</p></StyledEditButton>
                     <StyledDeleteButton onClick={handleDeleteClick}><p>Smazat</p></StyledDeleteButton>
                 </StyledButtonContainer>

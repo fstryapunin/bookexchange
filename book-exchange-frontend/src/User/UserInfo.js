@@ -30,7 +30,7 @@ const UserInfo = ({ user }) => {
     return (        
         <Card>            
             <UserValues>
-                <ProfileImage src={user.link}/>
+                <ProfileImage src={user.link} referrerPolicy="no-referrer"/>
                 <div>
                     <UserName>
                         {`${user.firstName} ${user.lastName}`}
