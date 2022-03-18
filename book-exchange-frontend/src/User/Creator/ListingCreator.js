@@ -1,8 +1,9 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { SectionHeading, Card } from "../../Styles/GlobalStyles";
 import { useLocation } from 'react-router-dom'
 import { resetCreator } from "./CreatorSlice";
-import { addListing } from "../../Listings/listingsSlice";
+import { addUserListing, replaceUserListing } from "../userSlice";
+import { addListing, replaceListing } from "../../Listings/listingsSlice";
 import { useSelector, useDispatch } from "react-redux";
 import ImageInput from "./ImageInput";
 import { PrimaryButton, DisabledButton } from "../../Styles/GlobalStyles";
@@ -108,18 +109,24 @@ const ListingCreator = () => {
     const listingImages = useSelector(state => state.creator.images)
       
     const type = (location.state?.type || 'listing')
-    
+    const data = (location.state?.data || null)
+    const isEdit = (location.state?.edit || false)
 
-    const getType = () => {
-        switch (type) {
-            case 'demand':
-                return 'poptávka'
-            case 'listing':
-                return 'nabídka'
-            default:
-                return ''
+    //prefill if linked from edit button
+    useEffect(() => {
+        if (isEdit) {           
+            updateListingName(data.name)
+            updateListingPrice(data.price)
+            updateListingDescription(data.description)
+            updateSelectedTags(data.tags)
+            
         }
-    }
+        //reset creator when leaving page to prevent bugs with image input
+        return () => {
+            dispatch(resetCreator())
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isEdit, data])
     
     const handleTagClick = (data, action, custom) => {
         if (action === 'select') {
@@ -243,48 +250,151 @@ const ListingCreator = () => {
 
     const handleSuccessfulUpload = (data) => {
         dispatch(addListing(data))
+        dispatch(addUserListing(data))
         dispatch(resetCreator())
         navigate('/success')
     }
     
     const handleCreateClick = async (event) => {
-        event.preventDefault()        
-        const listingObj = {
-            name: listingName,
-            price: listingPrice,
-            description: listingDescription,            
-            type: type,
-            titleImage : listingImages.title
-        }          
+        event.preventDefault()
+        if (!isEdit) {            
+            const listingObj = {
+                name: listingName,
+                price: listingPrice,
+                description: listingDescription,
+                type: type,
+                titleImage: listingImages.title
+            }
         
-        const newListing = new FormData()        
+            const newListing = new FormData()
 
-        //append info to form data
-        for (const property in listingObj) { 
-            newListing.append(property, listingObj[property])
-        }
+            //append info to form data
+            for (const property in listingObj) {
+                newListing.append(property, listingObj[property])
+            }
 
-        newListing.append('tags', JSON.stringify(selectedTags))
-        newListing.append('newTags', JSON.stringify(newTags))
+            newListing.append('tags', JSON.stringify(selectedTags))
+            newListing.append('newTags', JSON.stringify(newTags))
 
-        //apend each image to formdata
-        listingImages.uploads.forEach(file => newListing.append('images', file))    
+            //apend each image to formdata
+            listingImages.uploads.forEach(file => newListing.append('images', file))
 
-        const response = await fetch(`${apiAdress}/new/listing`, {
-            method: 'POST',
-            headers: {
-                'x-access-token': token
-            },
-            body: newListing           
-        })
+            const response = await fetch(`${apiAdress}/listing/new`, {
+                method: 'POST',
+                headers: {
+                    'x-access-token': token
+                },
+                body: newListing
+            })
         
-        if (response.ok) {
-            const data = await response.json()
-            handleSuccessfulUpload(data)
-        } else { 
-            //navigate to error page here, clean up state
-            dispatch(resetCreator())
-            navigate('/error')
+            if (response.ok) {
+                const data = await response.json()
+                handleSuccessfulUpload(data)
+                
+            } else {
+                //navigate to error page here, clean up state
+                dispatch(resetCreator())
+                navigate('/error')
+            }
+        } else {            
+            const listingInputs = {
+                name: listingName,
+                price: listingPrice,
+                description: listingDescription,                
+                title_image: listingImages.title
+            }
+            
+            const updatedSimpleInputs = {
+                id: data.id
+            }        
+            
+            //check for changes and append to updated string inputs
+            for (const property in listingInputs){
+                if (listingInputs[property] !== data[property]) {
+                    Object.assign(updatedSimpleInputs, {[property] : listingInputs[property]})
+                }
+            }
+
+            const removedTags = []
+            const assignedTags = []
+            
+            //check if selected tag is in old tags
+            selectedTags.forEach(selectedTag => {
+                const isOld = data.tags.some(oldTag => oldTag.id === selectedTag.id)
+                if (!isOld) {
+                    assignedTags.push(selectedTag)
+                }
+            })
+
+            //check if any old tags where removed
+            data.tags.forEach(oldTag => {
+                const stillExists = selectedTags.some(newTag => newTag.id === oldTag.id)
+                if (!stillExists) {
+                    removedTags.push(oldTag)
+                }
+            })
+
+            const newImages = []
+            const removedImages  = []
+            
+            //add newUploads to new images
+            listingImages.uploads.forEach(upload => {
+                if (upload instanceof File) {
+                    newImages.push(upload)
+                }
+            })
+
+            data.images.forEach(oldImage => {
+                const stillExists = listingImages.uploads.some(upload => oldImage.file_name === upload.file_name)
+                if (!stillExists) {
+                    removedImages.push(oldImage)
+                }
+            })
+
+            const updatedListing = new FormData()
+            
+            //append simple info to form data
+            if (Object.keys(updatedSimpleInputs).length > 0) {
+                updatedListing.append('info', JSON.stringify(updatedSimpleInputs))
+            }
+
+            if (newTags.length > 0) {
+                updatedListing.append('newTags', JSON.stringify(newTags))
+            }
+            if (assignedTags.length > 0) {
+                updatedListing.append('assignedTags', JSON.stringify(assignedTags))
+            }
+            if (removedTags.length > 0) {
+                updatedListing.append('removedTags', JSON.stringify(removedTags))
+            }
+            if (newImages.length > 0) {
+                newImages.forEach(image => {
+                    updatedListing.append('newImages', image)
+                })
+            }
+            if (removedImages.length > 0) {
+                updatedListing.append('removedImages', JSON.stringify(removedImages))
+            }
+
+            const response = await fetch(`${apiAdress}/listing/edit`, {
+                method: 'POST',
+                headers: {
+                    'x-access-token': token
+                },
+                body: updatedListing
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                console.log(data)
+                dispatch(replaceListing(data[0]))
+                dispatch(replaceUserListing(data[0]))
+                dispatch(resetCreator())
+                navigate('/success')
+            } else {
+                dispatch(resetCreator())
+                navigate('/error')
+            }
         }
     }
 
@@ -310,12 +420,55 @@ const ListingCreator = () => {
         if (value.length < 1000) {
             updateListingDescription(value)
         }
+    }   
+
+    const getTitleText = () => {
+        const getEditType = () => {
+            switch (type) {
+                case 'demand':
+                    return 'poptávku'
+                case 'listing':
+                    return 'nabídku'
+                default:
+                    return ''
+            }
+        }
+        const getType = () => {
+            switch (type) {
+                case 'demand':
+                    return 'poptávka'
+                case 'listing':
+                    return 'nabídka'
+                default:
+                    return ''
+            }
+        }
+
+        if (isEdit) {
+            return `UPRAVIT ${getEditType()}`
+        }
+        else return `NOVÁ ${getType()}`
+    }
+
+    const getButtonText = () => {        
+        if (isEdit) return 'Upravit'
+        else return 'Přidat'
+    }
+    
+    const getImageData = () => {
+        if (isEdit) {
+            return {
+                images: data.images,
+                title: data.title_image
+            }
+        }
+        else return null
     }
 
     return (
         <CreatorContainer>
             <StyledCreator>            
-                <CreatorHeading>NOVÁ {getType()}</CreatorHeading>
+                <CreatorHeading>{getTitleText()}</CreatorHeading>
                 <form onSubmit={handleCreateClick}>
                 <StyledInputRow>
                     <InputContainer fr="10" basis="100px">
@@ -339,10 +492,10 @@ const ListingCreator = () => {
                     </TagRow>                  
                 <TextAreaContainer>
                     <label htmlFor="description">Popis</label>
-                    <DescriptionInput name="description" rows="5" autoComplete="off" onChange={handleDescriptionChange} />
+                    <DescriptionInput name="description" rows="5" autoComplete="off" value={listingDescription} onChange={handleDescriptionChange} />
                 </TextAreaContainer>                
-                <ImageInput />               
-                    {getEnableUpload()? <StyledAddButton type='submit'><p>Přidat</p></StyledAddButton> : <StyledDisabledButton onClick={e => e.preventDefault()} ><p>Přidat</p></StyledDisabledButton>}
+                    <ImageInput data={getImageData()} preFill={isEdit}/>               
+                    {getEnableUpload() ? <StyledAddButton type='submit'><p>{getButtonText()}</p></StyledAddButton> : <StyledDisabledButton onClick={e => e.preventDefault()} ><p>{getButtonText()}</p></StyledDisabledButton>}
                 </form>
             </StyledCreator>
         </CreatorContainer>

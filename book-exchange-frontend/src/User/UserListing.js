@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { DangerButton, SecondaryButton } from "../Styles/GlobalStyles";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { removeListing } from "../Listings/listingsSlice";
 import { deleteUserListing, updateListingStatus } from "./userSlice";
 import useCheckMobileScreen from "../Hooks/useCheckMobile";
 import styled from "styled-components";
@@ -110,6 +112,7 @@ const UserListing = ({ data }) => {
     const [statusInput, updateStatus] = useState(data.status)
     const isMobile = useCheckMobileScreen()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     
     const getTagElements = () => {
         const elements = data.tags.map(tag => <StyledTag key={tag.id}>{tag.text}</StyledTag>)
@@ -118,6 +121,7 @@ const UserListing = ({ data }) => {
 
     const handleDeleteClick = () => {
         dispatch(deleteUserListing(data.id))
+        dispatch(removeListing({id:data.id}))
     }
 
     const handleStatusChange = (event) => {        
@@ -126,6 +130,11 @@ const UserListing = ({ data }) => {
             id: data.id,
             status: event.target.value
         }))
+        
+    }
+
+    const handleEditClick = () => {
+        navigate('../profil/creator', {state: {type: data.type, edit: true, data: data}})
     }
 
     if (isMobile) {
@@ -139,7 +148,7 @@ const UserListing = ({ data }) => {
                         <StyledSelectOption value="engaged">Zamluvené</StyledSelectOption>
                         <StyledSelectOption value="inactive">Nedostupné</StyledSelectOption>
                     </StyledStatusSelect>
-                    <StyledEditButton><p>Upravit</p></StyledEditButton>
+                    <StyledEditButton onClick={handleEditClick}><p>Upravit</p></StyledEditButton>
                     <StyledDeleteButton onClick={handleDeleteClick}><p>Smazat</p></StyledDeleteButton>
                 </StyledButtonContainerMobile>
             </StyledListingMobileContainer>
@@ -150,12 +159,12 @@ const UserListing = ({ data }) => {
                 <StyledName>{data.name}</StyledName>
                 <StyledTagContainer>{getTagElements()}</StyledTagContainer>            
                 <StyledButtonContainer>
-                    <StyledStatusSelect defaultValue={data.status} onChange={handleStatusChange}>  
+                    <StyledStatusSelect value={data.status} onChange={handleStatusChange}>  
                         <StyledSelectOption value="active">Dostupné</StyledSelectOption>    
                         <StyledSelectOption value="engaged">Zamluvené</StyledSelectOption>                        
                         <StyledSelectOption value="inactive">Nedostupné</StyledSelectOption>                        
                     </StyledStatusSelect>
-                    <StyledEditButton><p>Upravit</p></StyledEditButton>
+                    <StyledEditButton onClick={handleEditClick}><p>Upravit</p></StyledEditButton>
                     <StyledDeleteButton onClick={handleDeleteClick}><p>Smazat</p></StyledDeleteButton>
                 </StyledButtonContainer>
             </StyledListingContainer>

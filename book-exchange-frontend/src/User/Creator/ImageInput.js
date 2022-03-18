@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { AddIcon } from '../../Styles/GlobalIcons'
 import PreviewImage from './PreviewImage'
-import { uploadImages } from './CreatorSlice';
+import { uploadImages, setTitleImage } from './CreatorSlice';
 import { useSelector, useDispatch } from "react-redux";
 import styled from 'styled-components'
+const apiAdress = process.env.REACT_APP_API_ADRESS
+
 
 const PreviewContainer = styled.div` 
     display: flex;
@@ -45,7 +47,7 @@ const AddImageIcon = styled(AddIcon)`
     fill: var(--dark-blue);
 `
 
-const ImageInput = () => {    
+const ImageInput = ({data}) => {    
     const [imagePreviews, updateImagePreviews] = useState([])    
     const [uiWarning, updateUiWarning] = useState({
         display: false,
@@ -53,6 +55,15 @@ const ImageInput = () => {
     })
     const dispatch = useDispatch()
     const images = useSelector(state => state.creator.images.uploads)    
+
+    useEffect(() => {
+        if (data) {            
+            data.images.forEach(image => Object.assign(image, {name: image.file_name}))
+            dispatch(setTitleImage(data.title))
+            dispatch(uploadImages(data.images))
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const checkUploads = (files) => {
         const checkForDuplicates = (list) => {
@@ -127,13 +138,19 @@ const ImageInput = () => {
     //generate new preview data when uploads change
     useEffect(() => {        
         const newPreviews = []
-        images.forEach(image => {
+
+        const getImageSrc = (image) => {            
+            if (image instanceof File) return URL.createObjectURL(image)
+            else return  `${apiAdress}/public/uploads/${image.file_name}`
+        }
+
+        images.forEach(image => {            
             const previewObj = {
                 name: image.name,
-                src: URL.createObjectURL(image)
+                src: getImageSrc(image)
             }            
-            newPreviews.push(previewObj)
-        });
+            newPreviews.push(previewObj)       
+         });
         updateImagePreviews(newPreviews)
     }, [images]) 
     

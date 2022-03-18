@@ -135,7 +135,16 @@ const initialState = {
 export const userSlice = createSlice({
     name: 'user',
     initialState: { ...initialState },
-    reducers: {},
+    reducers: {
+        addUserListing: (state, action) => {
+            state.listings.data = [action.payload, ...state.listings.data]
+        },
+        replaceUserListing: (state, action) => {
+            const arrWithoutOld = state.listings.data.filter(listing => listing.id !== action.payload.id)
+            const arrWithNew = [action.payload, ...arrWithoutOld]
+            state.listings.data = arrWithNew
+        }
+    },
     extraReducers(builder) {
         builder
             .addCase(fetchUserData.pending, (state, action) => {
@@ -202,5 +211,5 @@ export const selectListingById = (listings, id) => {
     const listing = listings.find(listingObj => listingObj.id === id)
     return listing
 }
-
+export const { addUserListing, replaceUserListing } = userSlice.actions 
 export default userSlice.reducer

@@ -40,6 +40,14 @@ export const listingsSlice = createSlice({
     reducers: {
         addListing: (state, action) => {
             state.homepage.data = [action.payload, ...state.homepage.data]
+        },
+        replaceListing: (state, action) => {
+            const arrWithoutOld = state.homepage.data.filter(listing => listing.id !== action.payload.id)
+            const arrWithNew = [action.payload, ...arrWithoutOld]
+            state.homepage.data = arrWithNew
+        },
+        removeListing: (state, action) => {
+            state.homepage.data = state.homepage.data.filter(listing => listing.id !== action.payload.id)
         }
     },
     extraReducers(builder) {
@@ -70,6 +78,6 @@ export const listingsSlice = createSlice({
    
 })
 
-export const { addListing } = listingsSlice.actions
+export const { addListing, replaceListing, removeListing } = listingsSlice.actions
   
 export default listingsSlice.reducer
