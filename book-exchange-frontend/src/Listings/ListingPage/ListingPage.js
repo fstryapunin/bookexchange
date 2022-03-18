@@ -39,6 +39,15 @@ const StyledTypeHeading = styled.h6`
     color: white;
 `
 
+const StyledPriceHeading = styled.h6` 
+    color: var(--dark-blue);
+    margin: 0;
+    padding: 10px 20px;
+    text-align: center;
+    background-color: var(--dark-blue);
+    color: white;
+`
+
 const StyledListingHeading = styled.h3` 
     margin: 0;
 `
@@ -50,9 +59,9 @@ const StyledDescription = styled.p`
 `
 
 const StyledUserImage = styled.img` 
-    border-radius: 50px;
-    height: 4rem;
-    width: 4rem;
+    border-radius: 50%;
+    height: 3rem;
+    width: 3rem;
 `
 const StyledStatusBar = styled.h6` 
     padding: 10px 20px;
@@ -73,6 +82,7 @@ const StyledUserContainer = styled.div`
     width: 100%;
     padding-top: 20px;
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 10px;
 `
@@ -80,15 +90,9 @@ const StyledUserNameContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: start;
-    > h5 {
+    > h6 {
         margin: 0;
     }
-`
-const StyledMessageButton = styled(PrimaryButton)` 
-    margin: 0;
-    padding: 10px;
-    align-self: end;
-    margin-left: auto;
 `
 
 const StyledTagContainer = styled.div`    
@@ -103,6 +107,12 @@ const StyledTag = styled.h6`
     border-radius: 10px;
     margin: 0;
     padding: 7px 15px 10px 15px;
+`
+
+const StyledMessageButton = styled(PrimaryButton)`
+   padding: 10px;  
+   margin: 0px;  
+   margin-left: auto;
 `
 
 const ListingPage = () => {
@@ -166,9 +176,10 @@ const ListingPage = () => {
                     <StyledTopContainer>
                         <StyledTypeHeading>{getTypeText()}</StyledTypeHeading>
                         {listingData.type === 'listing' ? getStatusBar() : null}
+                        <StyledPriceHeading>{listingData.price} Kč</StyledPriceHeading>
                     </StyledTopContainer>
                 <StyledListingCardInner>                    
-                    <StyledListingHeading>{listingData.name}</StyledListingHeading>
+                    <StyledListingHeading>{listingData.name}</StyledListingHeading>                         
                     <ListingImages images={listingData.images} />
                         <StyledTagContainer>
                             {getTagElements()}
@@ -180,13 +191,11 @@ const ListingPage = () => {
                         <StyledUserContainer>
                             <StyledUserImage referrerPolicy="no-referrer" src={listingData.user.img_link} />
                             <StyledUserNameContainer>
-                                <h5>{listingData.user.first_name}</h5>
-                                <h5>{listingData.user.last_name}</h5>
-                                </StyledUserNameContainer>  
-                                <StyledMessageButton>REAGOVAT</StyledMessageButton>       
-                        </StyledUserContainer>
-                         
-                   
+                                <h6>{listingData.user.first_name}</h6>
+                                <h6>{listingData.user.last_name}</h6>
+                            </StyledUserNameContainer>                                                          
+                            <StyledMessageButton>REAGOVAT</StyledMessageButton>                                                         
+                        </StyledUserContainer>                  
                     </StyledListingCardInner>
                 </StyledListingCard>
             </StyledListingPage>
