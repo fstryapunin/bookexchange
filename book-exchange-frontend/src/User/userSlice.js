@@ -118,6 +118,7 @@ const initialState = {
     auth: {
         status: 'idle',
         token: '',
+        websocket: false,
         error: null
     },
     info: {
@@ -198,6 +199,11 @@ export const userSlice = createSlice({
                     if(listing.id === id) listing.status = action.payload.status
                 })              
                 
+            })
+            .addCase('GOT_WEBSOCKET_AUTHORIZATION', (state, action) => {
+                if (action.payload.status === "success") {
+                    state.auth.websocket = true
+                }             
             })
     }    
 })
