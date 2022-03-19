@@ -28,6 +28,54 @@ class Image extends Model {
   }
 }
 
+class Message extends Model {
+  static get tableName() {
+    return 'messages'
+  }
+  static get idColumn() {
+    return 'id';
+  }
+}
+
+class Conversation extends Model {
+  static get tableName() {
+    return 'coversations';
+  }
+  static get idColumn() {
+      return 'id';
+  }
+  static relationMappings = {
+    creator: {
+      relation: Model.BelongsToOneRelation,
+      modelClass: User,
+      join: {
+        from: 'coversations.creator_id',
+        to: 'users.id'
+      }
+    },
+    users: {
+      relation: Model.HasManyRelation,
+      modelClass: User,
+      join: {
+        from: 'coversations.id',
+        through: {          
+        from: 'user_conversations.conversation_id',
+        to: 'user_conversations.user_id'
+        },
+      to: 'users.id'
+      }
+    },
+    messages: {
+      relation: Model.HasManyRelation,
+      modelClass: Message,
+      join: {
+        from: 'coversations.id',       
+        to: 'messages.conversation_id'
+      }
+    },
+  }
+}
+
 class Listing extends Model {
     static get tableName() {
       return 'listings';
@@ -71,5 +119,6 @@ class Listing extends Model {
 Model.knex(db)
   
 module.exports = {
-  listingModel : Listing
+  listingModel: Listing,
+  conversationModel: Conversation
 };
