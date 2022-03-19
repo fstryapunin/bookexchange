@@ -45,15 +45,37 @@ const tokenAuth = (req, res, next) => {
         const decoded = jwt.verify(token, tokenKey);
         req.user = decoded       
     }
-    catch (err) {
-        console.log(err)
+    catch (err) {        
         return res.status(401).send("Expired access Token");
     }
     
     return next()
 }
 
+const websocketAuth = (token) => {
+    if (!token) {
+        return {
+            status: 'error',
+            text: 'No access token'
+        }
+    }
+    try {
+        const decoded = jwt.verify(token, tokenKey);
+        return {
+            status: 'authorized',
+            user: decoded
+        }      
+    }
+    catch (err) {        
+        return {
+            status: 'error',
+            text: 'Expired token'
+        }
+    }
+}
+
 module.exports = {
     cookieAuth: cookieAuth,
-    tokenAuth: tokenAuth
+    tokenAuth: tokenAuth,
+    websocketAuth: websocketAuth
 }

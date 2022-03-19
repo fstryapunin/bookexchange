@@ -8,7 +8,17 @@ router.get('/listings/new/:page', param('page').escape().toInt(), async (req, re
     const { page } = req.params
     
     if (Number.isInteger(page) && page >= 0) {
-        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphJoined('images').where('images.deleted', false).select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price').where('listings.deleted', false).andWhereNot('listings.status', 'inactive').orderBy('edited', 'desc').offset(page * 20).limit(20)         
+        const listings = await listingModel
+            .query()
+            .withGraphFetched('tags')
+            .withGraphFetched('user')
+            .withGraphJoined('images')
+            .where('images.deleted', false)
+            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price')
+            .where('listings.deleted', false).andWhereNot('listings.status', 'inactive')
+            .orderBy('edited', 'desc')
+            .offset(page * 20)
+            .limit(20)         
         res.json(listings)        
     } else {
         res.sendStatus(400)
@@ -18,7 +28,13 @@ router.get('/listings/new/:page', param('page').escape().toInt(), async (req, re
 router.get('/listing/:listingId', param('listingId').escape().toInt(), async (req, res) => {
     const { listingId } = req.params
     if (Number.isInteger(listingId)) {
-        const data = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphJoined('images').select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price').where('images.deleted', false).andWhere('listings.id', listingId)
+        const data = await listingModel.query()
+            .withGraphFetched('tags')
+            .withGraphFetched('user')
+            .withGraphJoined('images')
+            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price')
+            .where('images.deleted', false)
+            .andWhere('listings.id', listingId)
         if (data.length > 0 && !data[0].deleted) {
             res.json(data[0])
         } else {
@@ -28,7 +44,6 @@ router.get('/listing/:listingId', param('listingId').escape().toInt(), async (re
         res.sendStatus(400)
     } 
 })
-
 
 //schema for checking filter args from request
 const filterSchema = {
