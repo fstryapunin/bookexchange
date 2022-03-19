@@ -96,20 +96,19 @@ router.post('/listings/filter', checkSchema(filterSchema), async (req, res) => {
                 .withGraphFetched('images') 
                 .withGraphJoined('tags')                
                 .where((qb) => {
+                    qb.where('listings.deleted', '=', false)
                     if (filters.name) {
-                        qb.where('name', 'like', `%${filters.name}%`)
+                        qb.andWhere('name', 'like', `%${filters.name}%`)
                     }
                     if (filters.type) {
-                        qb.where('type', filters.type)
+                        qb.andWhere('type', filters.type)
                     }
                     if (filters.price) {
-                        qb.where('price', '>=', filters.price.min).andWhere('price', '<=', filters.price.max)
+                        qb.andWhere('price', '>=', filters.price.min).andWhere('price', '<=', filters.price.max)
                     }
                     if (filters.tags) {
-                        qb.where('tags.id', 'in', tagIds)
-                    }
-                    qb.where('listings.deleted', '=', false)
-                    
+                        qb.andWhere('tags.id', 'in', tagIds)
+                    }                   
                 })
                 
                 
