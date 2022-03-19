@@ -1,10 +1,10 @@
 const express = require('express');
 const knex = require('knex')
-const cors = require('cors')
 const multer = require('multer');
 const jwt = require("jsonwebtoken");
 const { Model } = require('objection');
 const { cookieAuth, tokenAuth } = require('./middleware/auth')
+const {corsMiddleware} = require('./middleware/cors')
 const cookieParser = require('cookie-parser')
 const { OAuth2Client } = require('google-auth-library')
 const { port, googleClientId, dbUrl, tokenKey } = require('./config');
@@ -25,13 +25,6 @@ const db = knex({
     
 });
 Model.knex(db)
-
-const corsConfig = {
-    origin: ['http://localhost:3000', 'https://kepler-x.vercel.app'],
-    methods: "GET,PUT,POST,DELETE, OPTIONS",
-    optionsSuccessStatus: 200,
-    credentials: true
-}
 
 //turn function into a promise
 const promisify = (fn) => new Promise((resolve, reject) => fn(resolve));
@@ -61,7 +54,7 @@ const multerUploader = multer({
     fileFilter: fileFilter,   
 })
 
-app.use(cors(corsConfig))
+app.use(corsMiddleware)
 //parse cookies
 app.use(cookieParser())
 //parse json
@@ -233,7 +226,7 @@ app.post('/public/listings/filter', checkSchema(filterSchema), async (req, res) 
         
         const completeListings = await listingModel
             .query()
-            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image')
+            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price')
             .withGraphFetched('user')
             .withGraphFetched('images') 
             .withGraphFetched('tags')
