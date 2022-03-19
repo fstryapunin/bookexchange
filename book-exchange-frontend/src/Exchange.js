@@ -19,8 +19,13 @@ const Exchange = () => {
     const onLoad = () => {
         if (authStatus === 'idle') {            
             dispatch(authenticateUser())
-        }       
-    }
+        } 
+        if (authStatus === 'authenticated') {
+            dispatch({
+                type: 'AUTHORIZE_WEBSOCKET'                
+            })
+        }
+    }    
 
     useEffect(onLoad, [authStatus, dispatch])          
 

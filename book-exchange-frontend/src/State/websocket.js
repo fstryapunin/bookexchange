@@ -30,12 +30,12 @@ export const createSocketMiddleware = () => {
                         })
 
                         //send websocket message
-                        const getTagsPayload = {
+                        const payload = {
                             type: 'GET_TAGS',
                             text: action.payload
                         }
                     
-                        socket.send(JSON.stringify(getTagsPayload));
+                        socket.send(JSON.stringify(payload));
 
                         return;
                     } else {                        
@@ -48,7 +48,19 @@ export const createSocketMiddleware = () => {
                     }
                 }
                 return;
-            }            
+            }
+            if (action.type === "AUTHORIZE_WEBSOCKET") {
+                if (socket.readyState === 1) {
+                    const token = (store.getState()).user.auth.token
+                    const payload = {
+                        type: 'AUTHORIZE_CLIENT',
+                        token: token
+                    }
+                    socket.send(JSON.stringify(payload))
+                    return
+                }
+                return
+            }
             
             return next(action);
         }
