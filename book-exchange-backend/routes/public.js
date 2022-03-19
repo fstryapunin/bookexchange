@@ -8,7 +8,7 @@ router.get('/listings/new/:page', param('page').escape().toInt(), async (req, re
     const { page } = req.params
     
     if (Number.isInteger(page) && page >= 0) {
-        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price').where('deleted', false).andWhereNot('status', 'inactive').orderBy('edited', 'desc').offset(page * 20).limit(20)         
+        const listings = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphJoined('images').where('images.deleted', false).select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price').where('listings.deleted', false).andWhereNot('listings.status', 'inactive').orderBy('edited', 'desc').offset(page * 20).limit(20)         
         res.json(listings)        
     } else {
         res.sendStatus(400)
