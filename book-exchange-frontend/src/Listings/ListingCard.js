@@ -1,7 +1,6 @@
 import React from "react";
 import { Card } from "../Styles/GlobalStyles";
 import { Link } from 'react-router-dom'
-import { SadEmojiLarge } from "../Styles/GlobalIcons";
 import styled from "styled-components";
 
 const StyledListingName = styled.p`     

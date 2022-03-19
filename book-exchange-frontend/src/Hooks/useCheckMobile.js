@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 
 //react hook taken from stack overflow
 const useCheckMobileScreen = () => {
