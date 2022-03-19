@@ -1,4 +1,5 @@
 const { Model } = require('objection');
+const { db } = require('./middleware/knex')
 
 class User extends Model {
   static get tableName() {
@@ -65,6 +66,9 @@ class Listing extends Model {
       }
     };
 }
+
+//bind objection models to knex db config
+Model.knex(db)
   
 module.exports = {
   listingModel : Listing
