@@ -3,7 +3,6 @@ import Navbar from "./Navbar/Navbar";
 import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
 import ListingPage from "./Listings/ListingPage/ListingPage";
-import ListingEditor from "./User/ListingEditor";
 import RequireAuth from "./User/RequireAuth";
 import ListingCreator from "./User/Creator/ListingCreator";
 import Success from "./Info/Success";
@@ -38,8 +37,7 @@ const Exchange = () => {
                 <Route path="listing/:id" element={<ListingPage />} />
                 <Route path="success" element={<Success />} />
                 <Route path="error" element={<Error />}/>
-                <Route element={<RequireAuth/>}>
-                    <Route path="profil/editor/:id" element={<ListingEditor />} />
+                <Route element={<RequireAuth/>}>                    
                     <Route path="profil" element={<UserProfile />} />
                     <Route path="profil/creator" element={<ListingCreator/>} />
                 </Route>
