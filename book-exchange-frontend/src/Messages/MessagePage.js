@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState } from "react";
 import { Card } from '../Styles/GlobalStyles'
 import Conversation from "./Conversation";
 import { useSelector } from 'react-redux'
@@ -7,22 +7,25 @@ import Loader from "../Loader/Loader";
 import ConversationPreview from "./ConversationPreview";
 import styled from "styled-components";
 
-const StyledMessagesContainer = styled(Card)`       
+const StyledPreviewContainer = styled(Card)`       
     position: relative;  
     display: flex;
     flex-direction: column;
     gap: 20px;  
     height: min-content;
 `
-const StyledMessagePage = styled.div`
-    width: 100%;
+
+const StyledMessagePage = styled.div`    
     box-sizing: border-box;
     max-width: 1140px;    
     margin-left: auto;
     margin-right: auto;
     padding: 25px;
-    display: flex;
-    gap: 20px;
+    display: flex;  
+    gap: 20px;       
+    min-height: calc(100vh - 1.5rem - 50px - 15px);
+    max-height: calc(100vh - 1.5rem - 50px - 15px);
+}
 `
 
 const MessagePage = () => {
@@ -52,9 +55,9 @@ const MessagePage = () => {
         return (
             <StyledMessagePage>
             
-                <StyledMessagesContainer>                    
+                <StyledPreviewContainer>                    
                     {getPreviewElements()}                   
-                </StyledMessagesContainer>
+                </StyledPreviewContainer>
                 <Conversation data={getCurrentConversation()} user={userData} />
             </StyledMessagePage>
         )

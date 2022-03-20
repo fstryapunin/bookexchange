@@ -6,7 +6,7 @@ const StyledLink = styled(Link)`
     text-decoration: none;
     color: ${props => props.$active === true ? 'var(--dark-blue)' : 'var(--dark-gray)'};
     font-weight: 600;
-    font-size: 20px;
+    font-size: 1.5rem;
 `
 
 const NavLink = ({ target, text }) => {

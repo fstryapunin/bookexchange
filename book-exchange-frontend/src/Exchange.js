@@ -13,6 +13,11 @@ import { Routes, Route } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
 import { authenticateUser } from './User/userSlice'
 import { fetchConversations } from "./Messages/messagesSlice";
+import styled from "styled-components";
+
+const StyledAppContainter = styled.div` 
+    min-height: 100%;
+`
 
 const Exchange = () => {
     const authStatus = useSelector(state => state.user.auth.status) 
@@ -34,7 +39,7 @@ const Exchange = () => {
     useEffect(onLoad, [authStatus, dispatch])          
 
     return (
-        <>            
+        <StyledAppContainter>            
             <Navbar />           
             <Routes>
                 <Route path='*' element={<Error />} />
@@ -50,7 +55,7 @@ const Exchange = () => {
                     <Route path="profil/creator" element={<ListingCreator />} />                    
                 </Route>
             </Routes>            
-        </>
+        </StyledAppContainter>
     )    
 }
 

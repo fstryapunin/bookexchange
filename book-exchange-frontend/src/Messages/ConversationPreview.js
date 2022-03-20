@@ -5,7 +5,9 @@ const StyledConversationContainer = styled.div`
     display: flex;
     gap: 10px;    
     height: min-content ;
-    cursor: pointer;    
+    cursor: pointer;   
+    flex-shrink: 0;
+
 `
 const StyledUserImage = styled.img` 
     height: 4rem;
@@ -17,14 +19,18 @@ const StyledUserContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-self: center;
+    overflow: hidden;
 `
 
 const StyledUserName = styled.h6` 
     margin: 0;    
+    white-space: nowrap;
 `
 
 const StyledLastMessage = styled.p` 
     margin: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     color: ${props => props.unread ? 'var(--dark-blue)' : 'inherit'};
     font-weight: ${props => props.unread ? 'bold' : 'inherit'};
 `
@@ -41,6 +47,14 @@ const ConversationPreview = ({ data, user, onClick }) => {
                 return prev
             }
         })
+        
+        if (last.text.length > 15) {
+            let trimmedString = last.text.substring(0, 15);
+            trimmedString = trimmedString + '...'
+            console.log(trimmedString)
+            return trimmedString
+            
+        }
 
         return last.text
     }
@@ -48,7 +62,7 @@ const ConversationPreview = ({ data, user, onClick }) => {
     const hasUnreads =  () => {
         const has = data.messages.some(message => {
             if (message.seen === false && parseInt(message.creator_id) !== user.id) {            
-               
+                
                 return true
             } else {
                 return false

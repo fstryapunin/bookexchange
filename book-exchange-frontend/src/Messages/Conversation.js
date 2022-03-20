@@ -2,16 +2,15 @@ import React, {useEffect} from 'react'
 import { Card } from '../Styles/GlobalStyles'
 import { fetchReadConversation } from './messagesSlice'
 import { useDispatch } from 'react-redux'
+import MessageInput from './MessageInput'
 import styled from 'styled-components'
 
 const StyledConversationContainer = styled(Card)`
-    position: relative;
-    left: 20px;
     flex-grow: 1;
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    flex-direction: column;     
+    position: relative;   
 `
 
 const StyledMessageContainer = styled.div` 
@@ -20,6 +19,14 @@ const StyledMessageContainer = styled.div`
     box-sizing: border-box;
     max-width: 70%;
     align-self: ${props => props.other ? 'flex-start' : 'flex-end'};
+`
+
+const StyledMessagesContainer = styled.div` 
+    display: flex;
+    flex-direction: column-reverse;
+    flex-grow: 1;
+    overflow-y: auto;
+    gap: 10px;
 `
 
 const StyledMessage = styled.p` 
@@ -41,8 +48,7 @@ const Conversation = ({ data, user }) => {
             }
             return false
         })
-        console.log(hasUnreads)
-        console.log(data)
+       
         if (hasUnreads) {
             console.log('ran')
             dispatch(fetchReadConversation(data.id))            
@@ -70,8 +76,11 @@ const Conversation = ({ data, user }) => {
     }
 
     return (
-        <StyledConversationContainer>
-            {getMessageElements()}
+        <StyledConversationContainer>            
+            <StyledMessagesContainer>
+                {getMessageElements()}
+            </StyledMessagesContainer>     
+            <MessageInput/>
         </StyledConversationContainer>
     )
 }
