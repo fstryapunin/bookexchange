@@ -17,6 +17,26 @@ export const fetchConversations = createAsyncThunk('conversations/fetch', async 
     }
 })
 
+export const fetchReadConversation = createAsyncThunk('conversations/read', async (id, {getState}) => {
+    const state = getState()
+    const response = await fetch(`${apiAdress}/messages/read`, {
+        method: 'POST',
+        headers: {
+            'x-access-token': state.user.auth.token,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: id
+        })
+    })
+    if (response.ok) {
+        const data = await response.json()
+        return data
+    } else {
+        throw new Error()
+    }
+})
+
 const initialState = {
     status: 'idle',
     data: [],
@@ -39,6 +59,13 @@ export const messagesSlice = createSlice({
             state.status = 'failed'
             state.error = true
         })
+        .addCase(fetchReadConversation.fulfilled, (state, action) => {
+            const conversationId = action.payload.id
+            const conversationIndex = state.data.findIndex(conversation => parseInt(conversation.id) === parseInt(conversationId))
+            state.data[conversationIndex].messages = action.payload.data
+        }
+            
+        )
     }    
 })
 

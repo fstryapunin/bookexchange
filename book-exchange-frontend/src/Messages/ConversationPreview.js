@@ -29,9 +29,10 @@ const StyledLastMessage = styled.p`
     font-weight: ${props => props.unread ? 'bold' : 'inherit'};
 `
 
-const ConversationPreview = ({ data, user, onClick }) => {   
+const ConversationPreview = ({ data, user, onClick }) => {    
 
-    const otherUser = data.users.find(other => user.id !== other.id)
+    const otherUser = data.users.find(other => user.id !== parseInt(other.id))
+    
     const getLastMessage = () => {
         const last = data.messages.reduce((prev, current) => {
             if (prev.added < current.added) {
@@ -45,13 +46,20 @@ const ConversationPreview = ({ data, user, onClick }) => {
     }
 
     const hasUnreads =  () => {
-        const has = data.messages.some(message => message.seen === false)        
+        const has = data.messages.some(message => {
+            if (message.seen === false && parseInt(message.creator_id) !== user.id) {            
+               
+                return true
+            } else {
+                return false
+            }
+        })        
         return has
     }
 
     return (
         <StyledConversationContainer onClick={() => onClick(data.id)}>
-            <StyledUserImage src={otherUser.img_link} />
+            <StyledUserImage src={otherUser.img_link} referrerPolicy="no-referrer"/>
             <StyledUserContainer>               
                 <StyledUserName>{otherUser.first_name} {otherUser.last_name}</StyledUserName>
                 <StyledLastMessage unread={hasUnreads()}>{getLastMessage()}</StyledLastMessage>

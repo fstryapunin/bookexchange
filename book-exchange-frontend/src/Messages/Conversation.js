@@ -1,5 +1,7 @@
 import React, {useEffect} from 'react'
 import { Card } from '../Styles/GlobalStyles'
+import { fetchReadConversation } from './messagesSlice'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
 const StyledConversationContainer = styled(Card)`
@@ -28,14 +30,25 @@ const StyledMessage = styled.p`
     align-self: center;
 `
 
-const Conversation = ({ data, user }) => {
-   
-    console.log(user)
-    console.log(data)
+const Conversation = ({ data, user }) => {  
+    const dispatch = useDispatch()
+
     useEffect(() => {
         //if has any unreads dispatch seen update
-        
-    }, [])
+        const hasUnreads = data.messages.some(message => {
+            if( message.seen === false && parseInt(message.creator_id) !== user.id){
+               return true
+            }
+            return false
+        })
+        console.log(hasUnreads)
+        console.log(data)
+        if (hasUnreads) {
+            console.log('ran')
+            dispatch(fetchReadConversation(data.id))            
+        }
+
+    }, [data, user, dispatch])
     
 
     const getMessageElements = () => {
