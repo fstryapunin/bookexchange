@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import { selectUserListings } from "./userSlice";
+import { selectUserListings } from "../userSlice";
 import { useSelector } from "react-redux";
-import { Card, SectionHeading } from "../Styles/GlobalStyles";
+import { Card, SectionHeading } from "../../Styles/GlobalStyles";
 import PageControl from "./PageControl";
 import UserListing from './UserListing'
 import styled from "styled-components";

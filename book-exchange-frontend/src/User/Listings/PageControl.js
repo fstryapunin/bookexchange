@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { LeftIcon, RightIcon } from "../Styles/GlobalIcons";
+import { LeftIcon, RightIcon } from "../../Styles/GlobalIcons";
 
 
 const StyledControl = styled.div`

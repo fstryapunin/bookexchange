@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "../Styles/GlobalStyles";
+import { Card } from "../../Styles/GlobalStyles";
 import styled from "styled-components";
 
 const UserValues = styled.div`

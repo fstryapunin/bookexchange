@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { fetchUserData, fetchUserListings } from './userSlice'
 import styled from "styled-components";
 import Loader from "../Loader/Loader";
-import UserInfo from "./UserInfo";
+import UserInfo from "./Profile/UserInfo";
 import MessageView from "../Messages/MessageView";
 import { SecondaryButton } from "../Styles/GlobalStyles";
-import UserListings from "./UserListings";
+import UserListings from "./Listings/UserListings";
 import { useNavigate } from "react-router";
 import LogoutButton from '../Auth/LogoutButton'
 

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { DangerButton, SecondaryButton } from "../Styles/GlobalStyles";
+import { DangerButton, SecondaryButton } from "../../Styles/GlobalStyles";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { removeListing } from "../Listings/listingsSlice";
-import { deleteUserListing, updateListingStatus } from "./userSlice";
-import useCheckMobileScreen from "../Hooks/useCheckMobile";
+import { removeListing } from "../../Listings/listingsSlice";
+import { deleteUserListing, updateListingStatus } from "../userSlice";
+import useCheckMobileScreen from "../../Hooks/useCheckMobile";
 import styled from "styled-components";
 
 const StyledListingContainer = styled.div` 
