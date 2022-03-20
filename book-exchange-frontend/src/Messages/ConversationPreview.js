@@ -51,7 +51,7 @@ const ConversationPreview = ({ data, user, onClick }) => {
         if (last.text.length > 15) {
             let trimmedString = last.text.substring(0, 15);
             trimmedString = trimmedString + '...'
-            console.log(trimmedString)
+           
             return trimmedString
             
         }

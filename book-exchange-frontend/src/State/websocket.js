@@ -61,6 +61,19 @@ export const createSocketMiddleware = () => {
                 }
                 return
             }
+            if (action.type === "SEND_WEBSOCKET_MESSAGE") {
+                if (socket.readyState === 1) {
+                    const token = (store.getState()).user.auth.token
+                    const payload = {
+                        type: "SEND_MESSAGE",
+                        message: action.payload,
+                        token: token                    
+                    }
+                    socket.send(JSON.stringify(payload))
+                    return
+                }
+                return
+            }
             
             return next(action);
         }

@@ -31,8 +31,8 @@ const StyledMessagesContainer = styled.div`
 
 const StyledMessage = styled.p` 
     margin: 0;
-    padding: 5px;
-    border-radius: 5px;   
+    padding: 0.75rem;
+    border-radius: 10px;   
     border: ${props => props.other ? '2px solid var(--medium-gray)' : '2px solid var(--dark-blue)'};
     align-self: center;
 `
@@ -42,16 +42,17 @@ const Conversation = ({ data, user }) => {
 
     useEffect(() => {
         //if has any unreads dispatch seen update
-        const hasUnreads = data.messages.some(message => {
-            if( message.seen === false && parseInt(message.creator_id) !== user.id){
-               return true
-            }
-            return false
-        })
+        if (data) {
+            const hasUnreads = data.messages.some(message => {
+                if (message.seen === false && parseInt(message.creator_id) !== user.id) {
+                    return true
+                }
+                return false
+            })
        
-        if (hasUnreads) {
-            console.log('ran')
-            dispatch(fetchReadConversation(data.id))            
+            if (hasUnreads) {
+                dispatch(fetchReadConversation(data.id))
+            }
         }
 
     }, [data, user, dispatch])
@@ -59,7 +60,7 @@ const Conversation = ({ data, user }) => {
 
     const getMessageElements = () => {
         const sortedMessages = [...data.messages].sort(function(a, b) {
-            return (a.added < b.added) ? -1 : ((a.added > b.added) ? 1 : 0);
+            return (a.added < b.added) ? 1 : ((a.added > b.added) ? -1 : 0);
         })
         const elements = sortedMessages.map(message => {
             
@@ -75,14 +76,36 @@ const Conversation = ({ data, user }) => {
         return elements
     }
 
+    const getOther = () => {
+        const other = data.users.find(other => parseInt(other.id) !== parseInt(user.id))        
+        return other.id
+    }
+
+    const handleSend = (message) => {
+        const toUser = getOther()
+        const messageData = {
+            from: user.id,
+            conversationId: data.id,
+            text: message,
+            to: toUser
+        }
+
+        dispatch({
+            type: 'SEND_WEBSOCKET_MESSAGE',
+            payload: messageData
+        })
+        
+    }
+    
     return (
-        <StyledConversationContainer>            
-            <StyledMessagesContainer>
-                {getMessageElements()}
-            </StyledMessagesContainer>     
-            <MessageInput/>
-        </StyledConversationContainer>
-    )
+            <StyledConversationContainer>
+                <StyledMessagesContainer>
+                    {getMessageElements()}
+                </StyledMessagesContainer>
+                <MessageInput handleSend={handleSend} />
+            </StyledConversationContainer>
+        )
 }
+
 
 export default Conversation

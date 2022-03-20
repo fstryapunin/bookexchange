@@ -16,7 +16,7 @@ router.get('/conversations', tokenAuth, async (req, res) => {
             .andWhere('conversations.deleted', false)
             .where('messages.deleted', false)
             .orderBy('conversations.added', 'desc')
-        console.log(data)
+        
         res.json(data)
     }
     catch (e) {

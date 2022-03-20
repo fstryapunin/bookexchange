@@ -16,6 +16,7 @@ const InputContainer = styled.div`
 const StyledSendIcon = styled(Send)` 
     fill: var(--dark-blue);
     height: 2.5rem;
+    cursor: pointer;
 `
 
 const StyledMessageInput = styled.input` 
@@ -37,6 +38,18 @@ const StyledFiller = styled.div`
 const MessageInput = ({ handleSend }) => {
     const [message, updateMessage] = useState('') 
 
+    const handleMessageInput = (event) => {
+        if (event.target.value.length < 500) {
+            updateMessage(event.target.value)
+        }
+    }
+
+    const handleSendClick = () => {
+        if ((message.trim()).length > 0) {
+            handleSend(message.trim())            
+        }
+    }
+
     return (
         <>
             <StyledFiller>
@@ -44,8 +57,8 @@ const MessageInput = ({ handleSend }) => {
                 <StyledSendIcon/>
             </StyledFiller>
             <InputContainer>
-            <StyledMessageInput />
-            <StyledSendIcon/>
+                <StyledMessageInput value={message} onChange={handleMessageInput}/>
+            <StyledSendIcon onClick={handleSendClick}/>
             </InputContainer>
         </>
         

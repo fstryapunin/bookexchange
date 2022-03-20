@@ -14,12 +14,25 @@ const StyledCard = styled(Card)`
     }
 `
 
+const StyledGrowing = styled(StyledCard)` 
+    flex-grow: 1;
+`
+
 const ErrorCard = ({text}) => {
     return (
         <StyledCard>
             <SadEmojiLarge/>
             <h2>{text}</h2>
         </StyledCard>
+    )
+}
+
+export const ErrorGrowingCard = ({text}) => {
+    return (
+        <StyledGrowing>
+            <SadEmojiLarge/>
+            <h2>{text}</h2>
+        </StyledGrowing>
     )
 }
 

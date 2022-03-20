@@ -115,21 +115,28 @@ const handleWebsocketMessage = async (payload, wss, ws) => {
             
             if (messagerData.status === 'authorized' && messagerData.client.user.id === payload.message.from) {
 
-                const messageData = await handleMessageUpload(payload.message, messagerData.client.user)
-               
+                const messageData = await handleMessageUpload(payload.message, messagerData.client.user)               
                 
                 if (messageData.status === 'success') {
 
                     wss.clients.forEach(client => {
-                        
-                        if (client.user.id === parseInt(payload.message.to)) {
-                            console.log(client.readyState)
+                        const id = client.user.client.user.id
+                        if (id === parseInt(payload.message.to)) {
+                            if (client.readyState === 1) {
+                                client.send(JSON.stringify(
+                                    {
+                                        type: 'GOT_WEBSOCKET_MESSAGE',
+                                        data: messageData.data,
+                                        status: 'success'
+                                    }
+                                ))
+                            }
                         }
                     })
 
-                } else {
-                    return Object.assign(responseObject, messageData)  
                 }
+                return Object.assign(responseObject, messageData) 
+                
 
             } else {
                 return Object.assign(responseObject, {

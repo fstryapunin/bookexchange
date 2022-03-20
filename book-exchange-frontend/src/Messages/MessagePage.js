@@ -3,7 +3,7 @@ import { Card } from '../Styles/GlobalStyles'
 import Conversation from "./Conversation";
 import { useSelector } from 'react-redux'
 import Loader from "../Loader/Loader";
-
+import {ErrorGrowingCard} from '../Info/ErrorCard'
 import ConversationPreview from "./ConversationPreview";
 import styled from "styled-components";
 
@@ -12,7 +12,7 @@ const StyledPreviewContainer = styled(Card)`
     display: flex;
     flex-direction: column;
     gap: 20px;  
-    height: min-content;
+    height: min-content;    
 `
 
 const StyledMessagePage = styled.div`    
@@ -25,7 +25,12 @@ const StyledMessagePage = styled.div`
     gap: 20px;       
     min-height: calc(100vh - 1.5rem - 50px - 15px);
     max-height: calc(100vh - 1.5rem - 50px - 15px);
-}
+
+`
+
+const StyledNoContacts = styled.p` 
+    margin: 0;
+    text-align: center;
 `
 
 const MessagePage = () => {
@@ -51,22 +56,25 @@ const MessagePage = () => {
         }
     }
 
-    if (conversationsStatus === "loaded") {
+    if (conversationsStatus === "loaded" && conversations.length > 0) {
         return (
-            <StyledMessagePage>
-            
-                <StyledPreviewContainer>                    
-                    {getPreviewElements()}                   
+            <StyledMessagePage>            
+                <StyledPreviewContainer>
+                   {getPreviewElements()}
                 </StyledPreviewContainer>
                 <Conversation data={getCurrentConversation()} user={userData} />
             </StyledMessagePage>
         )
-    } else {
+    } else if(conversationsStatus === "loading") {
         return (
             <StyledMessagePage>
                 <Loader/>
             </StyledMessagePage>
         )
+    } else {
+        return(<StyledMessagePage>
+            <ErrorGrowingCard text="Bohužel zatím žádné zprávy"/>
+        </StyledMessagePage>)
     }
 }
 

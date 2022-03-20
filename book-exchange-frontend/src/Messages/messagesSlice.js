@@ -63,9 +63,17 @@ export const messagesSlice = createSlice({
             const conversationId = action.payload.id
             const conversationIndex = state.data.findIndex(conversation => parseInt(conversation.id) === parseInt(conversationId))
             state.data[conversationIndex].messages = action.payload.data
-        }
-            
-        )
+        })
+        .addCase('GOT_WEBSOCKET_MESSAGE', (state, action) => {
+            const messageData = action.payload.data[0]
+            const conversationIndex = state.data.findIndex(convo => convo.id === messageData.conversation_id)
+            state.data[conversationIndex].messages.push(messageData)        
+        })
+        .addCase('SENT_WEBSOCKET_MESSAGE', (state, action) => {
+            const messageData = action.payload.data[0]
+            const conversationIndex = state.data.findIndex(convo => convo.id === messageData.conversation_id)
+            state.data[conversationIndex].messages.push(messageData) 
+        })
     }    
 })
 
