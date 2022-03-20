@@ -7,14 +7,16 @@ const router = express.Router()
 
 router.get('/conversations', tokenAuth, async (req, res) => {
     try { 
+        const userConvoIds = await db('user_conversations').where('user_id', req.user.id).andWhere('deleted', false).pluck('conversation_id')
+        
         const data = await conversationModel.query()
             .withGraphFetched('users')
             .withGraphJoined('messages')
-            .where('conversations.creator_id', req.user.id)
+            .where('conversations.id', 'in', userConvoIds)
             .andWhere('conversations.deleted', false)
             .where('messages.deleted', false)
             .orderBy('conversations.added', 'desc')
-            
+        console.log(data)
         res.json(data)
     }
     catch (e) {

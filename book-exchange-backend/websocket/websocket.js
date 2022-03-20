@@ -1,6 +1,7 @@
 const ws = require('ws')
 const { db } = require('../middleware/knex')
-const {websocketAuth} = require('../middleware/auth')
+const { websocketAuth } = require('../middleware/auth')
+const { promisify } = require('../util/util')
 
 const wss = new ws.WebSocketServer({ noServer: true });
 
@@ -48,6 +49,37 @@ const getClientData = async (payload) => {
             }
 }
 
+const handleMessageUpload = async (message, user) => {
+    
+    try { 
+        
+        if (message.conversationId && message.text && user.id) {
+            const sentMessage = await db('messages').insert({
+                conversation_id: message.conversationId,
+                creator_id: user.id,
+                text: message.text
+            }).returning('*')
+
+            return {
+                status: 'success',
+                data : sentMessage
+            }
+        } else {
+            return {
+                status: 'error',
+                error: 'invalid data'
+            }
+        }
+
+    }
+    catch {
+        return {
+            status: 'error',
+            error: 'database error'
+        }
+    }
+}
+
 const handleWebsocketMessage = async (payload, wss, ws) => {
     const responseObject = {
         type: payload.type        
@@ -75,7 +107,36 @@ const handleWebsocketMessage = async (payload, wss, ws) => {
                 })                
             }            
 
-            return Object.assign(responseObject, {status: 'success'})
+            return Object.assign(responseObject, { status: 'success' })
+        case 'SEND_MESSAGE':
+            responseObject.type = 'SENT_WEBSOCKET_MESSAGE'
+            
+            const messagerData = await getClientData(payload)
+            
+            if (messagerData.status === 'authorized' && messagerData.client.user.id === payload.message.from) {
+
+                const messageData = await handleMessageUpload(payload.message, messagerData.client.user)
+               
+                
+                if (messageData.status === 'success') {
+
+                    wss.clients.forEach(client => {
+                        
+                        if (client.user.id === parseInt(payload.message.to)) {
+                            console.log(client.readyState)
+                        }
+                    })
+
+                } else {
+                    return Object.assign(responseObject, messageData)  
+                }
+
+            } else {
+                return Object.assign(responseObject, {
+                    status: 'error',
+                    error: 'no auth or wrong user'
+                }) 
+            }
         
         default:
 
