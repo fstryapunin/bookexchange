@@ -4,7 +4,6 @@ import { fetchUserData, fetchUserListings } from './userSlice'
 import styled from "styled-components";
 import Loader from "../Loader/Loader";
 import UserInfo from "./Profile/UserInfo";
-import MessageView from "../Messages/MessageView";
 import { SecondaryButton } from "../Styles/GlobalStyles";
 import UserListings from "./Listings/UserListings";
 import { useNavigate } from "react-router";
@@ -27,14 +26,11 @@ const Center = styled.div`
 const FlexContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 25px;
-    div{
-        flex-basis: 300px;
-        flex-grow: 2;
-    }
-    #user-container{
-        flex-grow: 1;
-    }
+    gap: 25px;      
+`
+const StyledUserInfoContainer = styled.div` 
+    flex-basis: 300px;
+    flex-grow: 2;
 `
 
 const ButtonContainer = styled.div`
@@ -80,14 +76,13 @@ const UserProfile = () => {
         return (
             <StyledProfile>
                 <FlexContainer>
-                    <div id="user-container">
+                    <StyledUserInfoContainer>
                         <UserInfo user={userData} />
                         <ButtonContainer>
                             <FlexButton primary={false} margin='0px' onClick={() => handleCreateClick('listing')}><p>PŘIDAT NABÍDKU</p></FlexButton>
                             <FlexButton primary={false} margin='0px' onClick={() => handleCreateClick('demand')}><p>PŘIDAT POPTÁVKU</p></FlexButton>   
                         </ButtonContainer>                     
-                    </div>
-                    <MessageView />
+                    </StyledUserInfoContainer>                    
                 </FlexContainer>
                 <UserListings status={listingsStatus} text="nabídky" type="listing"/>
                 <UserListings status={listingsStatus} text="poptávky" type="demand"/>                

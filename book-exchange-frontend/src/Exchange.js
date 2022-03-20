@@ -4,15 +4,19 @@ import UserProfile from "./User/UserProfile";
 import HomePage from "./Home/HomePage";
 import ListingPage from "./Listings/ListingPage/ListingPage";
 import RequireAuth from "./User/RequireAuth";
+import RequireUser from "./User/RequireUser";
 import ListingCreator from "./User/Creator/ListingCreator";
+import MessagePage from './Messages/MessagePage.js'
 import Success from "./Info/Success";
 import Error from "./Info/Error";
 import { Routes, Route } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
 import { authenticateUser } from './User/userSlice'
+import { fetchConversations } from "./Messages/messagesSlice";
 
 const Exchange = () => {
-    const authStatus = useSelector(state => state.user.auth.status)   
+    const authStatus = useSelector(state => state.user.auth.status) 
+  
     const dispatch = useDispatch()    
     
     const onLoad = () => {
@@ -23,6 +27,7 @@ const Exchange = () => {
             dispatch({
                 type: 'AUTHORIZE_WEBSOCKET'                
             })
+            dispatch(fetchConversations())
         }
     }    
 
@@ -37,9 +42,12 @@ const Exchange = () => {
                 <Route path="listing/:id" element={<ListingPage />} />
                 <Route path="success" element={<Success />} />
                 <Route path="error" element={<Error />}/>
-                <Route element={<RequireAuth/>}>                    
-                    <Route path="profil" element={<UserProfile />} />
-                    <Route path="profil/creator" element={<ListingCreator/>} />
+                <Route element={<RequireAuth />}>       
+                    <Route element={<RequireUser />}> 
+                        <Route path="profil" element={<UserProfile />} />
+                        <Route path="zpravy" element={<MessagePage />} />
+                    </Route>       
+                    <Route path="profil/creator" element={<ListingCreator />} />                    
                 </Route>
             </Routes>            
         </>

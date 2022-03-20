@@ -24,8 +24,7 @@ const Spinner = styled.div`
 
 const Loader = () => {
     return (
-        <Spinner/>
-           
+        <Spinner/>           
     )
 }
 

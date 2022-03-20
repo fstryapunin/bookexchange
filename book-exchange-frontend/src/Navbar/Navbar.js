@@ -51,6 +51,7 @@ const Navbar = () => {
     const links = navLinks.map(linkObj => {
         return <NavLink key={linkObj.text} target={linkObj.target} text={linkObj.text}/>
     })
+    
    
     return (
         <>
@@ -59,6 +60,7 @@ const Navbar = () => {
             <LinkContainer>
                 <div id="static-links">
                 {links}
+                {authStatus === 'authenticated' ? <NavLink target={'zpravy'} text={'ZPRÁVY'} /> : null}        
                 </div>
                 {authStatus === 'authenticated' ? <NavLink target={'profil'} text={'MŮJ ÚČET'} /> : null}
                 <GoogleAuth/>

@@ -4,26 +4,26 @@ import styled from "styled-components";
 
 const UserValues = styled.div`
     display: flex;
+    gap: 15px;
 `
 
-const UserName = styled.h2`
-    font-size: 24px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    margin-top: 0px;   
+const UserName = styled.h2`    
+    word-break: break-word;    
+    margin: 0;   
 `
-const UserEmail = styled.div`
-    font-size: 20px;
+const UserEmail = styled.h5`
+    font-weight: 400;
+    margin: 0px 0px 0px 2px;
 `
 
 const ProfileImage = styled.img`
     background-color: var(--dark-gray);   
     box-sizing: border-box;
     overflow: hidden;
-    border-radius: 5px;
-    margin-right: 15px;
-    min-width: 96px;
-    min-height: 96px;
+    border-radius: 5px;  
+    max-width: 96px;
+    max-height: 96px;
+    flex-grow: 1;
 `
 const UserInfo = ({ user }) => {  
 
