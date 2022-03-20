@@ -17,6 +17,7 @@ router.post('/profile', tokenAuth, async (req, res) => {
     const userData = await db.select('*').from('users').where('id', req.user.id)
     const user = userData[0]    
     const resBody = {
+        id: parseInt(user.id),
         email: user.email,
         firstName: user.first_name,
         lastName: user.last_name,
