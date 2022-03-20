@@ -39,7 +39,7 @@ class Message extends Model {
 
 class Conversation extends Model {
   static get tableName() {
-    return 'coversations';
+    return 'conversations';
   }
   static get idColumn() {
       return 'id';
@@ -49,15 +49,15 @@ class Conversation extends Model {
       relation: Model.BelongsToOneRelation,
       modelClass: User,
       join: {
-        from: 'coversations.creator_id',
+        from: 'conversations.creator_id',
         to: 'users.id'
       }
     },
     users: {
-      relation: Model.HasManyRelation,
+      relation: Model.ManyToManyRelation,
       modelClass: User,
       join: {
-        from: 'coversations.id',
+        from: 'conversations.id',
         through: {          
         from: 'user_conversations.conversation_id',
         to: 'user_conversations.user_id'
@@ -69,7 +69,7 @@ class Conversation extends Model {
       relation: Model.HasManyRelation,
       modelClass: Message,
       join: {
-        from: 'coversations.id',       
+        from: 'conversations.id',       
         to: 'messages.conversation_id'
       }
     },

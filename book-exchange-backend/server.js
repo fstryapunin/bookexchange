@@ -10,6 +10,9 @@ const authRoutes = require('./routes/auth')
 const publicRoutes = require('./routes/public')
 const userRoutes = require('./routes/user')
 const listingRoutes = require('./routes/listing')
+const messageRoutes = require('./routes/messages')
+
+//require wss
 const upgradeConnection = require('./websocket/websocket')
 
 
@@ -30,6 +33,7 @@ app.use('/auth', authRoutes)
 app.use('/public', publicRoutes)
 app.use('/user', userRoutes)
 app.use('/listing', listingRoutes)
+app.use('/messages', messageRoutes)
 
 //listen on port
 const server = app.listen(port, () => console.log('Listening on port', port));
