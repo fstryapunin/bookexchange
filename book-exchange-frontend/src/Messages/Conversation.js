@@ -3,6 +3,7 @@ import { Card } from '../Styles/GlobalStyles'
 import { fetchReadConversation } from './messagesSlice'
 import { useDispatch } from 'react-redux'
 import MessageInput from './MessageInput'
+import Message from './Message'
 import styled from 'styled-components'
 
 const StyledConversationContainer = styled(Card)`
@@ -66,11 +67,7 @@ const Conversation = ({ data, user }) => {
             
             const other = (  user.id === parseInt(message.creator_id) ? false : true)
             return (
-                <StyledMessageContainer key={message.id} other = {other}>
-                    <StyledMessage other = {other}>
-                        {message.text}
-                    </StyledMessage>                    
-                </StyledMessageContainer>
+                <Message key={message.id} message={message} other={other}/>               
             )
         })
         return elements
