@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchListingById } from "../Listings/listingsSlice";
+import { useNavigate } from "react-router-dom";
 import styled, {keyframes} from "styled-components";
 const apiAdress = process.env.REACT_APP_API_ADRESS
 
@@ -53,6 +54,7 @@ const StyledEmbedName = styled.p`
 
 const MessageEmbed = ({ id }) => {   
     const dispatch = useDispatch()  
+    const navigate = useNavigate()
 
     const selectedEmbed = useSelector(state => {        
         const listings = state.listings.homepage.data        
@@ -66,10 +68,14 @@ const MessageEmbed = ({ id }) => {
         }
     },
     [selectedEmbed, dispatch, id])   
+    
+    const handleClick = () => {
+        navigate(`/listing/${id}`)
+    }
 
     if (selectedEmbed) {
         return (
-            <StyledEmbed loaded={true}>
+            <StyledEmbed loaded={true} onClick={handleClick}>
                 <StyledEmbedImage src={`${apiAdress}/public/uploads/${selectedEmbed.title_image}`} />
                     <StyledEmbedInfo>
                         <StyledEmbedName>

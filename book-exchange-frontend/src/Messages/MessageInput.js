@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Send } from '@styled-icons/boxicons-solid/Send'
 
@@ -37,6 +37,21 @@ const StyledFiller = styled.div`
 
 const MessageInput = ({ handleSend }) => {
     const [message, updateMessage] = useState('') 
+
+    const handleKeypress = (event) => {        
+        if (event.key === "Enter") {
+            handleSendClick()
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeypress, false);
+    
+        return () => {
+          document.removeEventListener("keydown", handleKeypress, false);
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);    
 
     const handleMessageInput = (event) => {
         if (event.target.value.length < 500) {
