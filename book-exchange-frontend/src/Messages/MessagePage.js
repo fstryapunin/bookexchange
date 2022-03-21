@@ -28,11 +28,6 @@ const StyledMessagePage = styled.div`
 
 `
 
-const StyledNoContacts = styled.p` 
-    margin: 0;
-    text-align: center;
-`
-
 const MessagePage = () => {
     const [currentConversationId, updateCurrent] = useState(null)
     const conversations = useSelector(state => state.messages.data)

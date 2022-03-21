@@ -2,6 +2,7 @@ import React from "react";
 import GoogleAuth from "../Auth/GoogleAuth";
 import NavLink from "./NavLink";
 import { useSelector } from "react-redux";
+import { selectNewMessageCount } from "../Messages/messagesSlice";
 import styled from 'styled-components'
 
 const StyledNavbar = styled.div`
@@ -25,7 +26,7 @@ const LinkContainer = styled.div`
     gap: 25px;
     #static-links{
         display: flex;
-        gap: 10px
+        gap: 15px
     }    
     #static-links > a{
         white-space: nowrap;
@@ -46,12 +47,21 @@ const navLinks = [
 ]
 
 const Navbar = () => {
+    const user = useSelector(state => state.user.info)    
     const authStatus = useSelector((state) => state.user.auth.status)
+    const newMessages = useSelector(selectNewMessageCount)
+
+
     
     const links = navLinks.map(linkObj => {
         return <NavLink key={linkObj.text} target={linkObj.target} text={linkObj.text}/>
     })
     
+    const getNew = () => {
+        if (user.status === 'loaded' && newMessages > 0) {
+            return ` (${newMessages})`
+        }else return ''
+    }
    
     return (
         <>
@@ -60,7 +70,7 @@ const Navbar = () => {
             <LinkContainer>
                 <div id="static-links">
                 {links}
-                {authStatus === 'authenticated' ? <NavLink target={'zpravy'} text={'ZPRÁVY'} /> : null}        
+                {authStatus === 'authenticated' ? <NavLink target={'zpravy'} text={`ZPRÁVY${getNew()}`} /> : null}        
                 </div>
                 {authStatus === 'authenticated' ? <NavLink target={'profil'} text={'MŮJ ÚČET'} /> : null}
                 <GoogleAuth/>

@@ -77,5 +77,22 @@ export const messagesSlice = createSlice({
     }    
 })
 
+export const selectNewMessageCount = (state) => {
+    const id = state.user.info.data.id    
+    
+    if (state.messages.status !== 'loaded') {
+        return null
+    } else {
+        let count = 0
+
+        state.messages.data.forEach(conversation => {
+            conversation.messages.forEach(message => {
+                if(message.seen === false && parseInt(message.creator_id) !== id) count ++
+            })
+        })
+
+        return count
+    }    
+}
 
 export default messagesSlice.reducer

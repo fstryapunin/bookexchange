@@ -12,6 +12,7 @@ import Error from "./Info/Error";
 import { Routes, Route } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
 import { authenticateUser } from './User/userSlice'
+import { fetchUserData } from "./User/userSlice";
 import { fetchConversations } from "./Messages/messagesSlice";
 import styled from "styled-components";
 
@@ -33,6 +34,7 @@ const Exchange = () => {
                 type: 'AUTHORIZE_WEBSOCKET'                
             })
             dispatch(fetchConversations())
+            dispatch(fetchUserData())
         }
     }    
 

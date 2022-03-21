@@ -46,7 +46,8 @@ const MessageInput = ({ handleSend }) => {
 
     const handleSendClick = () => {
         if ((message.trim()).length > 0) {
-            handleSend(message.trim())            
+            handleSend(message.trim())  
+            updateMessage('')
         }
     }
 
