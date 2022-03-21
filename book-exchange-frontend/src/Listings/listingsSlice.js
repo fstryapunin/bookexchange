@@ -27,6 +27,19 @@ export const fetchFilteredListings = createAsyncThunk('listings/filter', async (
     }
 })
 
+export const fetchListingById = createAsyncThunk('listings/get/id', async (id) => {
+    const response = await fetch(`${apiAdress}/public/listing/${id}`, {
+
+    })    
+    if (response.ok) {
+        const data = response.json()
+        return data
+    } else {
+        throw new Error()
+    }
+})
+
+
 export const listingsSlice = createSlice({
     name: 'listings',
     initialState: {        
@@ -73,10 +86,19 @@ export const listingsSlice = createSlice({
         })
         .addCase(fetchListings.rejected, (state) => {            
             state.homepage.status = 'failed'            
-        })        
+        })
+        .addCase(fetchListingById.fulfilled, (state, action) => {                      
+            state.homepage.data = [...state.homepage.data, action.payload]     
+        })
     }
    
 })
+
+export const selectById = (state) => {
+    
+
+
+}
 
 export const { addListing, replaceListing, removeListing } = listingsSlice.actions
   

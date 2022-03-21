@@ -17,14 +17,14 @@ const Spinner = styled.div`
   border-bottom: 10px solid lightgray;
   border-left: 10px solid var(--dark-blue);
   background: transparent;
-  width: 100px;
-  height: 100px;
+  width: ${props => props.width ? props.width: '100px'};
+  height: ${props => props.height ? props.height : '100px'};
   border-radius: 50%;
 `;
 
 const Loader = () => {
     return (
-        <Spinner/>           
+      <Spinner />           
     )
 }
 

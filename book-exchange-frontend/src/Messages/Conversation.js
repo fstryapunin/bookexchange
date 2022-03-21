@@ -14,28 +14,12 @@ const StyledConversationContainer = styled(Card)`
     position: relative;   
 `
 
-const StyledMessageContainer = styled.div` 
-    display: flex;
-    gap: 10px;
-    box-sizing: border-box;
-    max-width: 70%;
-    align-self: ${props => props.other ? 'flex-start' : 'flex-end'};
-`
-
 const StyledMessagesContainer = styled.div` 
     display: flex;
     flex-direction: column-reverse;
     flex-grow: 1;
     overflow-y: auto;
     gap: 10px;
-`
-
-const StyledMessage = styled.p` 
-    margin: 0;
-    padding: 0.75rem;
-    border-radius: 10px;   
-    border: ${props => props.other ? '2px solid var(--medium-gray)' : '2px solid var(--dark-blue)'};
-    align-self: center;
 `
 
 const Conversation = ({ data, user }) => {  
