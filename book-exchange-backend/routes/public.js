@@ -6,20 +6,22 @@ const router = express.Router()
 
 router.get('/listings/new/:page', param('page').escape().toInt(), async (req, res) => {   
     const { page } = req.params
-    
+    const pageLength = 20
     if (Number.isInteger(page) && page >= 0) {
+        
         const listings = await listingModel
             .query()
             .withGraphFetched('tags')
             .withGraphFetched('user')
             .withGraphJoined('images')
             .where('images.deleted', false)
-            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price')
-            .where('listings.deleted', false).andWhereNot('listings.status', 'inactive')
+            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price')            
             .orderBy('edited', 'desc')
-            .offset(page * 20)
-            .limit(20)         
-        res.json(listings)        
+            .where('listings.deleted', false).andWhereNot('listings.status', 'inactive')            
+            
+        const paginatedListings = listings.splice(pageLength * page, pageLength + pageLength * page)
+        
+        res.json(paginatedListings)        
     } else {
         res.sendStatus(400)
     }
