@@ -15,6 +15,12 @@ const messageRoutes = require('./routes/messages')
 //require wss
 const upgradeConnection = require('./websocket/websocket')
 
+//requie tasks
+const { testTask } = require('./tasks/notifications')
+
+
+/////////////////////////////////////////////////////////////////////
+
 
 const { port } = require('./config');
 
@@ -38,4 +44,8 @@ app.use('/messages', messageRoutes)
 //listen on port
 const server = app.listen(port, () => console.log('Listening on port', port));
 
+//upgrade connection to websocket
 server.on('upgrade', upgradeConnection)
+
+//run scheduled tasks
+testTask.stop()
