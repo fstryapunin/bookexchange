@@ -131,9 +131,7 @@ const handleMessageUpload = async (message, user) => {
                         creator_id: user.id,
                         text: message.text,
                         embedded: message.embedded
-                    })
-
-                    console.log(conversationId)
+                    })                   
 
                     await trx.commit()
 

@@ -9,7 +9,7 @@ const StyledImagesContainer = styled.div`
     box-sizing: border-box;
     gap: 20px;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 30px;    
 `
 const StyledImage = styled.div`
         
