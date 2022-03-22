@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Card, PrimaryButton } from "../../Styles/GlobalStyles";
+import { Card } from "../../Styles/GlobalStyles";
+import ListingReact from "./ListingReact";
+import { useSelector } from "react-redux";
 import ErrorCard from '../../Info/ErrorCard'
 import ListingImages from "./ListingImages";
 import styled from "styled-components";
@@ -109,17 +111,12 @@ const StyledTag = styled.h6`
     padding: 7px 15px 10px 15px;
 `
 
-const StyledMessageButton = styled(PrimaryButton)`
-   padding: 10px;  
-   margin: 0px;  
-   margin-left: auto;
-`
-
 const ListingPage = () => {
     const params = useParams()
     const [status, updateStatus] = useState('idle')
     const [listingData, updateListingData] = useState({})
     const listingId = params.id   
+    const userId = useSelector(state => state.user.info.data.id)
 
     const loadListing = async () => {            
         const response = await fetch(`${apiAdress}/public/listing/${listingId}`)
@@ -162,14 +159,19 @@ const ListingPage = () => {
         return elements
     }
 
+    const getReactionElement = () => {
+        if (userId !== parseInt(listingData.user.id)) {
+            return <ListingReact data={listingData}/>  
+        } else return null
+    }
+
     if (status === 'idle') {
         return (
             <LoaderContainer>
                 <Loader />
             </LoaderContainer>
         )
-    }
-    else if (status === 'loaded') {
+    }else if (status === 'loaded') {
         return (
             <StyledListingPage>
                 <StyledListingCard>
@@ -193,8 +195,8 @@ const ListingPage = () => {
                             <StyledUserNameContainer>
                                 <h6>{listingData.user.first_name}</h6>
                                 <h6>{listingData.user.last_name}</h6>
-                            </StyledUserNameContainer>                                                          
-                            <StyledMessageButton>REAGOVAT</StyledMessageButton>                                                         
+                            </StyledUserNameContainer>                                       
+                            {getReactionElement()}                                          
                         </StyledUserContainer>                  
                     </StyledListingCardInner>
                 </StyledListingCard>
@@ -202,7 +204,9 @@ const ListingPage = () => {
         )
     } else {
         return (
-            <ErrorCard text="Nic nenalezeno"></ErrorCard>
+            <StyledListingPage>
+                <ErrorCard text="Nic nenalezeno"></ErrorCard>
+            </StyledListingPage>
         )
     }
 }

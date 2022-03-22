@@ -10,7 +10,8 @@ export const createSocketMiddleware = () => {
             
             //dispatch response event
             store.dispatch({
-                type : response.type,
+                type: response.type,
+                new: response.new,
                 payload: {
                     status: response.status,
                     data: response.data

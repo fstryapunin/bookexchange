@@ -198,7 +198,7 @@ router.post('/new',
                         
                         await trx.commit()
                         
-                        const newListing = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('id', listingId[0])
+                        const newListing = await listingModel.transaction().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('id', listingId[0])
                         
                         res.status(201).json(newListing[0])
                     }

@@ -65,14 +65,30 @@ export const messagesSlice = createSlice({
             state.data[conversationIndex].messages = action.payload.data
         })
         .addCase('GOT_WEBSOCKET_MESSAGE', (state, action) => {
-            const messageData = action.payload.data[0]
-            const conversationIndex = state.data.findIndex(convo => convo.id === messageData.conversation_id)
-            state.data[conversationIndex].messages.push(messageData)        
+            console.log(action)    
+            if (action.payload.status === 'success') {
+
+                if (action.new) { 
+                    const conversation = action.payload.data[0]
+                    state.data = [conversation, ...state.data]
+                }else {
+                    const messageData = action.payload.data[0]
+                    const conversationIndex = state.data.findIndex(convo => convo.id === messageData.conversation_id)
+                    state.data[conversationIndex].messages.push(messageData)
+                }
+            }    
         })
-        .addCase('SENT_WEBSOCKET_MESSAGE', (state, action) => {
-            const messageData = action.payload.data[0]
-            const conversationIndex = state.data.findIndex(convo => convo.id === messageData.conversation_id)
-            state.data[conversationIndex].messages.push(messageData) 
+        .addCase('SENT_WEBSOCKET_MESSAGE', (state, action) => {             
+            if (action.payload.status === 'success') {
+                if (action.new) { 
+                    const conversation = action.payload.data[0]
+                    state.data = [conversation, ...state.data]
+                } else {
+                    const messageData = action.payload.data[0]
+                    const conversationIndex = state.data.findIndex(convo => convo.id === messageData.conversation_id)
+                    state.data[conversationIndex].messages.push(messageData)
+                }
+            } 
         })
     }    
 })

@@ -1,6 +1,7 @@
 const ws = require('ws')
 const { db } = require('../middleware/knex')
 const { websocketAuth } = require('../middleware/auth')
+const { conversationModel } = require('../models')
 const { promisify } = require('../util/util')
 
 const wss = new ws.WebSocketServer({ noServer: true });
@@ -63,6 +64,101 @@ const handleMessageUpload = async (message, user) => {
             return {
                 status: 'success',
                 data : sentMessage
+            }            
+        } else if (user.id && message.to && message.text) {            
+            const userConversations = await db('user_conversations').select('*').where('user_id', user.id)
+            const adressantConversations = await db('user_conversations').select('*').where('user_id', message.to)
+
+            let userConversation = {status: "none"};
+
+            userConversations.forEach(conversation => {
+                adressantConversations.forEach(addresantConvo => {
+                    if (addresantConvo.conversation_id === conversation.conversation_id) {
+                        if (!conversation.deleted && !addresantConvo.deleted) {
+                            userConversation = { data: conversation, status: 'exists' }
+                        } else {
+                            if (conversation.deleted || addresantConvo.deleted) {
+                                userConversation = { data: conversation, status: 'deleted', by: [user.id, addresantConvo.user_id] }
+                            } 
+                        }                        
+                    }
+                })
+            })
+
+            if (userConversation?.status === 'exists') {
+                const sentMessage = await db('messages').insert({
+                    conversation_id: userConversation.data.conversation_id,
+                    creator_id: user.id,
+                    text: message.text,
+                    embedded: message.embedded
+                }).returning('*')
+                
+                return {
+                    status: 'success',
+                    data : sentMessage
+                } 
+            } else if (userConversation?.status === 'deleted') {                
+                await db('user_conversations').where('user_id', 'in', conversation.by).update('deleted', false)  
+                const sentMessage = await db('messages').insert({
+                    conversation_id: userConversation.data.conversation_id,
+                    creator_id: user.id,
+                    text: message.text,
+                    embedded: message.embedded
+                }).returning('*')
+                
+                return {
+                    status: 'success',
+                    data : sentMessage
+                } 
+            } else {
+                const trx = await promisify(db.transaction.bind(db));  
+                try {
+                    const conversationId = (await trx('conversations').insert({ creator_id: user.id }).returning('id'))[0]
+                    
+                    await trx('user_conversations').insert([
+                        {
+                            user_id: user.id,
+                            conversation_id: conversationId
+                        },
+                        {
+                            user_id: message.to,
+                            conversation_id: conversationId
+                        }
+                    ])
+
+                    await db('messages').insert({
+                        conversation_id: conversationId,
+                        creator_id: user.id,
+                        text: message.text,
+                        embedded: message.embedded
+                    })
+
+                    console.log(conversationId)
+
+                    await trx.commit()
+
+
+                    const conversation = await conversationModel.query()
+                    .withGraphFetched('users')
+                    .withGraphJoined('messages')
+                    .where('conversations.id', conversationId)
+                    .returning('*')        
+                    
+
+                    return {
+                        status: 'success',
+                        new: true,
+                        data : conversation
+                    } 
+                } catch (e) {
+                    console.log(e)
+                    await trx.rollback();
+                    return {
+                        status: 'error',
+                        error: 'db erorr',
+                        text: e
+                    }
+                }
             }
         } else {
             return {
@@ -72,7 +168,8 @@ const handleMessageUpload = async (message, user) => {
         }
 
     }
-    catch {
+    catch (e) {
+        console.log(e)
         return {
             status: 'error',
             error: 'database error'
@@ -117,7 +214,7 @@ const handleWebsocketMessage = async (payload, wss, ws) => {
 
                 const messageData = await handleMessageUpload(payload.message, messagerData.client.user)               
                 
-                if (messageData.status === 'success') {
+                if (messageData?.status === 'success') {
 
                     wss.clients.forEach(client => {
                         const id = client.user.client.user.id
@@ -126,6 +223,7 @@ const handleWebsocketMessage = async (payload, wss, ws) => {
                                 client.send(JSON.stringify(
                                     {
                                         type: 'GOT_WEBSOCKET_MESSAGE',
+                                        new: messageData.new,
                                         data: messageData.data,
                                         status: 'success'
                                     }
@@ -135,7 +233,10 @@ const handleWebsocketMessage = async (payload, wss, ws) => {
                     })
 
                 }
-                return Object.assign(responseObject, messageData) 
+
+                
+                return Object.assign(responseObject, messageData, {new : messageData.new})
+                
                 
 
             } else {

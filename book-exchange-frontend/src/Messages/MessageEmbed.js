@@ -51,10 +51,15 @@ const StyledEmbedName = styled.p`
     margin: 0;
     font-weight: bolder;
 `
+const StyledContext = styled.p` 
+    margin: 0px 0px 0.75rem;
+    color: var(--dark-gray);
+`
 
-const MessageEmbed = ({ id }) => {   
+const MessageEmbed = ({ id }) => {
     const dispatch = useDispatch()  
     const navigate = useNavigate()
+    const userId = useSelector(state => state.user.info.data.id)
 
     const selectedEmbed = useSelector(state => {        
         const listings = state.listings.homepage.data        
@@ -74,8 +79,11 @@ const MessageEmbed = ({ id }) => {
     }
 
     if (selectedEmbed) {
+        
         return (
-            <StyledEmbed loaded={true} onClick={handleClick}>
+            <>
+            { parseInt(selectedEmbed.user.id) === userId ? <StyledContext>Reagoval na :</StyledContext> : null}
+            <StyledEmbed loaded={true} onClick={handleClick}>                
                 <StyledEmbedImage src={`${apiAdress}/public/uploads/${selectedEmbed.title_image}`} />
                     <StyledEmbedInfo>
                         <StyledEmbedName>
@@ -83,6 +91,7 @@ const MessageEmbed = ({ id }) => {
                     </StyledEmbedName>
                 </StyledEmbedInfo>
             </StyledEmbed>
+            </>
         )
     } else {
         return (
