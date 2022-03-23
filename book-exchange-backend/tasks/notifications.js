@@ -1,7 +1,7 @@
 var cron = require('node-cron');
 const { messageModel } = require('../models')
 
-const notificationTask = cron.schedule('*/5 * * * * *', async () => {
+const notificationTask = cron.schedule('* */5 * * * *', async () => {
     try {
 
         const dateNow = new Date()       

@@ -1,6 +1,5 @@
 const express = require('express');
 
-
 //require middlewares
 const {corsMiddleware} = require('./middleware/cors')
 const cookieParser = require('cookie-parser')
@@ -15,7 +14,7 @@ const messageRoutes = require('./routes/messages')
 //require wss
 const upgradeConnection = require('./websocket/websocket')
 
-//requie tasks
+//require tasks
 const { notificationTask } = require('./tasks/notifications')
 
 /////////////////////////////////////////////////////////////////////
