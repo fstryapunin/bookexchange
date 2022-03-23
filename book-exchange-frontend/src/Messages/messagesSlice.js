@@ -65,7 +65,7 @@ export const messagesSlice = createSlice({
             state.data[conversationIndex].messages = action.payload.data
         })
         .addCase('GOT_WEBSOCKET_MESSAGE', (state, action) => {
-            console.log(action)    
+                
             if (action.payload.status === 'success') {
 
                 if (action.new) { 

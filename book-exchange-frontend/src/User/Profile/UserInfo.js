@@ -24,6 +24,7 @@ const ProfileImage = styled.img`
     border-radius: 5px;  
     width: 96px;
     height: 96px;    
+    flex-shrink: 0;
 `
 const UserInfo = ({ user }) => {  
 

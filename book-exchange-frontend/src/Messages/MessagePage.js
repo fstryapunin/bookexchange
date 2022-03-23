@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useCheckMobileScreen from "../Hooks/useCheckMobile";
 import { Card } from '../Styles/GlobalStyles'
 import Conversation from "./Conversation";
 import { useSelector } from 'react-redux'
@@ -12,7 +13,8 @@ const StyledPreviewContainer = styled(Card)`
     display: flex;
     flex-direction: column;
     gap: 20px;  
-    height: min-content;    
+    height: min-content;   
+    flex-grow: 1; 
 `
 
 const StyledMessagePage = styled.div`    
@@ -33,6 +35,7 @@ const MessagePage = () => {
     const conversations = useSelector(state => state.messages.data)
     const conversationsStatus = useSelector(state => state.messages.status)
     const userData = useSelector(state => state.user.info.data)    
+    const isMobile = useCheckMobileScreen()
 
     const getPreviewElements = () => {
         const elements = conversations.map(conversation => <ConversationPreview key={conversation.id} data={conversation} user={userData} onClick={handlePreviewClick}/>)
@@ -52,14 +55,32 @@ const MessagePage = () => {
     }
 
     if (conversationsStatus === "loaded" && conversations.length > 0) {
-        return (
-            <StyledMessagePage>            
-                <StyledPreviewContainer>
-                   {getPreviewElements()}
-                </StyledPreviewContainer>
-                <Conversation data={getCurrentConversation()} user={userData} />
-            </StyledMessagePage>
-        )
+        if (!isMobile) {
+            return (
+                <StyledMessagePage>
+                    <StyledPreviewContainer>
+                        {getPreviewElements()}
+                    </StyledPreviewContainer>
+                    <Conversation data={getCurrentConversation()} user={userData} />
+                </StyledMessagePage>
+            )
+        } else {
+            if (!currentConversationId) {
+                return (
+                    <StyledMessagePage>
+                    <StyledPreviewContainer>
+                        {getPreviewElements()}
+                    </StyledPreviewContainer>                   
+                    </StyledMessagePage>
+                )
+            } else {
+                return (
+                    <StyledMessagePage>                        
+                        <Conversation data={getCurrentConversation()} user={userData} mobile={true} reset={() => updateCurrent(null)}/>
+                    </StyledMessagePage>
+                ) 
+            }
+        }
     } else if(conversationsStatus === "loading") {
         return (
             <StyledMessagePage>
@@ -67,9 +88,11 @@ const MessagePage = () => {
             </StyledMessagePage>
         )
     } else {
-        return(<StyledMessagePage>
-            <ErrorGrowingCard text="Bohužel zatím žádné zprávy"/>
-        </StyledMessagePage>)
+        return (
+            <StyledMessagePage>
+                <ErrorGrowingCard text="Bohužel zatím žádné zprávy"/>
+            </StyledMessagePage>
+        )
     }
 }
 

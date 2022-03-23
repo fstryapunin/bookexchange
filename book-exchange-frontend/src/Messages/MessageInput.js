@@ -39,19 +39,19 @@ const MessageInput = ({ handleSend }) => {
     const [message, updateMessage] = useState('') 
 
     const handleKeypress = (event) => {        
-        if (event.key === "Enter") {
+        if (event.key === "Enter") {            
             handleSendClick()
         }
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         document.addEventListener("keydown", handleKeypress, false);
     
         return () => {
           document.removeEventListener("keydown", handleKeypress, false);
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);    
+    }, []);  */  
 
     const handleMessageInput = (event) => {
         if (event.target.value.length < 500) {
@@ -60,7 +60,7 @@ const MessageInput = ({ handleSend }) => {
     }
 
     const handleSendClick = () => {
-        if ((message.trim()).length > 0) {
+        if ((message.trim()).length > 0) {            
             handleSend(message.trim())  
             updateMessage('')
         }
@@ -73,7 +73,7 @@ const MessageInput = ({ handleSend }) => {
                 <StyledSendIcon/>
             </StyledFiller>
             <InputContainer>
-                <StyledMessageInput value={message} onChange={handleMessageInput}/>
+                <StyledMessageInput value={message} onChange={handleMessageInput} onKeyPress={handleKeypress}/>
             <StyledSendIcon onClick={handleSendClick}/>
             </InputContainer>
         </>

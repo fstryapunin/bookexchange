@@ -13,6 +13,11 @@ const StyledConversationContainer = styled(Card)`
     display: flex;
     flex-direction: column;     
     position: relative;   
+    padding-top: 0;
+`
+
+const StyledConversationContainerMobile = styled(StyledConversationContainer)` 
+    margin: -30px -25px -25px -25px;
 `
 
 const StyledMessagesContainer = styled.div` 
@@ -23,7 +28,7 @@ const StyledMessagesContainer = styled.div`
     gap: 10px;
 `
 
-const Conversation = ({ data, user }) => {  
+const Conversation = ({ data, user, mobile, reset }) => {  
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -83,15 +88,27 @@ const Conversation = ({ data, user }) => {
         
     }
     
-    return (
+    if (!mobile) {
+        return (
             <StyledConversationContainer>
-                <ConversationInfo user={getOther(true)}/>
+                <ConversationInfo user={getOther(true)} />
                 <StyledMessagesContainer>
                     {getMessageElements()}
                 </StyledMessagesContainer>
                 <MessageInput handleSend={handleSend} />
             </StyledConversationContainer>
         )
+    } else {
+        return (
+        <StyledConversationContainerMobile>
+            <ConversationInfo user={getOther(true)} reset={reset}/>
+            <StyledMessagesContainer>
+                {getMessageElements()}
+            </StyledMessagesContainer>
+            <MessageInput handleSend={handleSend} />
+        </StyledConversationContainerMobile>
+        )
+    }
 }
 
 

@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 
-//react hook taken from stack overflow
+//react hook taken from https://stackoverflow.com/questions/39435395/reactjs-how-to-determine-if-the-application-is-being-viewed-on-mobile-or-deskto
+//user - https://stackoverflow.com/users/11043429/volobot-advanced-systems
+
 const useCheckMobileScreen = () => {
     const [width, setWidth] = useState(window.innerWidth);
     const handleWindowSizeChange = () => {
