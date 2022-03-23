@@ -120,5 +120,6 @@ Model.knex(db)
   
 module.exports = {
   listingModel: Listing,
-  conversationModel: Conversation
+  conversationModel: Conversation,
+  messageModel: Message
 };

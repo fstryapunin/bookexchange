@@ -205,7 +205,7 @@ router.post('/new',
                     catch (e) {  
                         console.log(e)
                         await trx.rollback();
-                        res.json('failed listing upload')
+                        res.status(400).json('failed listing upload')
                         //clean up images
                         req.files.forEach(file => asyncFs.unlink(`../public/uploads/${file.filename}`))                       
                     }                   
