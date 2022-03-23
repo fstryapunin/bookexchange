@@ -10,6 +10,15 @@ class User extends Model {
   }
 }
 
+class Addressate extends Model {
+  static get tableName() {
+    return 'users';
+  }
+  static get idColumn() {
+    return 'id';
+  }
+}
+
 class Tag extends Model {
   static get tableName() {
     return 'tags';
@@ -39,6 +48,14 @@ class Message extends Model {
     user: {
       relation: Model.BelongsToOneRelation,
       modelClass: User,
+      join: {
+        from: 'messages.creator_id',
+        to: 'users.id'
+      }
+    },
+    addressate: {
+      relation: Model.BelongsToOneRelation,
+      modelClass: Addressate,
       join: {
         from: 'messages.addressant',
         to: 'users.id'

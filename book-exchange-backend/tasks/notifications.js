@@ -11,7 +11,7 @@ const generateAddresateList = (messages) => {
 }
 
 const messageNotificationTask = cron.schedule('*/5 * * * * *', async () => {
-    /*try {
+    try {
 
         const dateNow = new Date()       
         dateNow.setMinutes(dateNow.getMinutes() - 5)
@@ -20,17 +20,18 @@ const messageNotificationTask = cron.schedule('*/5 * * * * *', async () => {
         const newMessages = await messageModel
             .query()
             .withGraphFetched('user')
+            .withGraphFetched('addressate')
             .where('messages.added', '>', dateISO)
             .andWhere('messages.deleted', false)
             .andWhere('messages.notification_sent', false)
             .andWhere('messages.seen', false)
             .orderBy('messages.added', 'desc')
        
-        
+        console.log(newMessages[0])
        
     } catch(e) {
         console.log(e)
-    }*/
+    }
     
 });
   
