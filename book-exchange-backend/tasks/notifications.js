@@ -1,8 +1,17 @@
 var cron = require('node-cron');
 const { messageModel } = require('../models')
 
-const notificationTask = cron.schedule('* */5 * * * *', async () => {
-    try {
+const generateAddresateList = (messages) => {
+    const list = []
+    messages.forEach(message => {
+        list.forEach(user => {
+            if(user.id){}
+        })
+    });
+}
+
+const messageNotificationTask = cron.schedule('*/5 * * * * *', async () => {
+    /*try {
 
         const dateNow = new Date()       
         dateNow.setMinutes(dateNow.getMinutes() - 5)
@@ -10,21 +19,22 @@ const notificationTask = cron.schedule('* */5 * * * *', async () => {
         
         const newMessages = await messageModel
             .query()
-            .where('added', '>', dateISO)
-            .andWhere('deleted', false)
-            .andWhere('notification_sent', false)
-            .andWhere('seen', false)
-            .orderBy('added', 'desc')
+            .withGraphFetched('user')
+            .where('messages.added', '>', dateISO)
+            .andWhere('messages.deleted', false)
+            .andWhere('messages.notification_sent', false)
+            .andWhere('messages.seen', false)
+            .orderBy('messages.added', 'desc')
        
         
        
     } catch(e) {
         console.log(e)
-    }
+    }*/
     
 });
   
 
 module.exports = {
-    notificationTask : notificationTask
+    messageNotificationTask : messageNotificationTask
 }

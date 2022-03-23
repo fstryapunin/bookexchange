@@ -35,6 +35,16 @@ class Message extends Model {
   static get idColumn() {
     return 'id';
   }
+  static relationMappings = {
+    user: {
+      relation: Model.BelongsToOneRelation,
+      modelClass: User,
+      join: {
+        from: 'messages.addressant',
+        to: 'users.id'
+      }
+    }
+  }
 }
 
 class Conversation extends Model {

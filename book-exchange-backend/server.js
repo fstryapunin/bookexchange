@@ -15,7 +15,7 @@ const messageRoutes = require('./routes/messages')
 const upgradeConnection = require('./websocket/websocket')
 
 //require tasks
-const { notificationTask } = require('./tasks/notifications')
+const { messageNotificationTask } = require('./tasks/notifications')
 
 /////////////////////////////////////////////////////////////////////
 
@@ -46,4 +46,4 @@ const server = app.listen(port, () => console.log('Listening on port', port));
 server.on('upgrade', upgradeConnection)
 
 //run scheduled tasks
-notificationTask.start()
+messageNotificationTask.start()

@@ -58,6 +58,7 @@ const handleMessageUpload = async (message, user) => {
             const sentMessage = await db('messages').insert({
                 conversation_id: message.conversationId,
                 creator_id: user.id,
+                addressant: message.to,
                 text: message.text
             }).returning('*')
 
@@ -90,6 +91,7 @@ const handleMessageUpload = async (message, user) => {
                     conversation_id: userConversation.data.conversation_id,
                     creator_id: user.id,
                     text: message.text,
+                    addressant: message.to,
                     embedded: message.embedded
                 }).returning('*')
                 
@@ -102,6 +104,7 @@ const handleMessageUpload = async (message, user) => {
                 const sentMessage = await db('messages').insert({
                     conversation_id: userConversation.data.conversation_id,
                     creator_id: user.id,
+                    addressant: message.to,
                     text: message.text,
                     embedded: message.embedded
                 }).returning('*')
@@ -130,6 +133,7 @@ const handleMessageUpload = async (message, user) => {
                         conversation_id: conversationId,
                         creator_id: user.id,
                         text: message.text,
+                        addressant: message.to,
                         embedded: message.embedded
                     })                   
 
