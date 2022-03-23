@@ -14,6 +14,7 @@ const UserName = styled.h2`
 const UserEmail = styled.h5`
     font-weight: 400;
     margin: 0px 0px 0px 2px;
+    word-break: break-all;
 `
 
 const ProfileImage = styled.img`
@@ -21,9 +22,8 @@ const ProfileImage = styled.img`
     box-sizing: border-box;
     overflow: hidden;
     border-radius: 5px;  
-    max-width: 96px;
-    max-height: 96px;
-    flex-grow: 1;
+    width: 96px;
+    height: 96px;    
 `
 const UserInfo = ({ user }) => {  
 
