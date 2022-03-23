@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
 import { Card } from '../Styles/GlobalStyles'
 import { fetchReadConversation } from './messagesSlice'
+import ConversationInfo from './ConversationInfo'
 import { useDispatch } from 'react-redux'
 import MessageInput from './MessageInput'
 import Message from './Message'
@@ -57,9 +58,13 @@ const Conversation = ({ data, user }) => {
         return elements
     }
 
-    const getOther = () => {
-        const other = data.users.find(other => parseInt(other.id) !== parseInt(user.id))        
-        return other.id
+    const getOther = (full) => {
+        const other = data.users.find(other => parseInt(other.id) !== parseInt(user.id))    
+        if (!full) {
+            return other.id
+        } else {
+            return other
+        }
     }
 
     const handleSend = (message) => {
@@ -80,6 +85,7 @@ const Conversation = ({ data, user }) => {
     
     return (
             <StyledConversationContainer>
+                <ConversationInfo user={getOther(true)}/>
                 <StyledMessagesContainer>
                     {getMessageElements()}
                 </StyledMessagesContainer>
