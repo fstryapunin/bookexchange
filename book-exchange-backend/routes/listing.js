@@ -198,14 +198,14 @@ router.post('/new',
                         
                         await trx.commit()
                         
-                        const newListing = await listingModel.transaction().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('id', listingId[0])
+                        const newListing = await listingModel.query().withGraphFetched('tags').withGraphFetched('user').withGraphFetched('images').select('*').from('listings').where('id', listingId[0])
                         
                         res.status(201).json(newListing[0])
                     }
-                    catch (e) {     
+                    catch (e) {  
                         console.log(e)
                         await trx.rollback();
-                        res.sendStatus(500).json('failed listing upload')
+                        res.json('failed listing upload')
                         //clean up images
                         req.files.forEach(file => asyncFs.unlink(`../public/uploads/${file.filename}`))                       
                     }                   
