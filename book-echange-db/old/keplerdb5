@@ -20,15 +20,15 @@ SET row_security = off;
 
 --
 -- TOC entry 2908 (class 1262 OID 49227)
--- Name: keplerexchange; Type: DATABASE; Schema: -; Owner: postgres
+-- Name: keplerdb; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE keplerexchange WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_United States.1251' LC_CTYPE = 'English_United States.1251';
+CREATE DATABASE keplerdb WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_United States.1251' LC_CTYPE = 'English_United States.1251';
 
 
-ALTER DATABASE keplerexchange OWNER TO postgres;
+ALTER DATABASE keplerdb OWNER TO postgres;
 
-\connect keplerexchange
+\connect keplerdb
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
