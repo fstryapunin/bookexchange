@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, current  } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk  } from '@reduxjs/toolkit'
 const apiAdress = process.env.REACT_APP_API_ADRESS
 
 export const fetchListings = createAsyncThunk('listings/get', async (page = 0) => {
