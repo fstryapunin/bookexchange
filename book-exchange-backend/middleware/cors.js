@@ -1,7 +1,8 @@
 const cors = require('cors')
+const { corsOrigins } = require('../config.js')
 
 const corsConfig = {
-    origin: ['http://localhost:3000', 'https://kepler-x.vercel.app'],
+    origin: corsOrigins,
     methods: "GET,PUT,POST,DELETE, OPTIONS",
     optionsSuccessStatus: 200,
     credentials: true
