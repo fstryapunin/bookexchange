@@ -15,7 +15,7 @@ router.get('/listings/new/:page', param('page').escape().toInt(), async (req, re
             .withGraphFetched('user')
             .withGraphJoined('images')
             .where('images.deleted', false)
-            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price')            
+            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price', 'listings.added')            
             .orderBy('edited', 'desc')
             .where('listings.deleted', false).andWhereNot('listings.status', 'inactive')            
             
@@ -34,7 +34,7 @@ router.get('/listing/:listingId', param('listingId').escape().toInt(), async (re
             .withGraphFetched('tags')
             .withGraphFetched('user')
             .withGraphJoined('images')
-            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price')
+            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price', 'listings.added')
             .where('images.deleted', false)
             .andWhere('listings.id', listingId)
         if (data.length > 0 && !data[0].deleted) {
@@ -134,7 +134,7 @@ router.post('/listings/filter', checkSchema(filterSchema), async (req, res) => {
         
         const completeListings = await listingModel
             .query()
-            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price')
+            .select('listings.id', 'listings.name', 'listings.type', 'listings.description', 'listings.status', 'listings.title_image', 'listings.price', 'listings.added')
             .withGraphFetched('user')
             .withGraphFetched('images') 
             .withGraphFetched('tags')
