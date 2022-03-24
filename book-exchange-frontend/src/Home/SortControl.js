@@ -80,8 +80,7 @@ const SortControl = () => {
     const listings = useSelector(state => state.listings.homepage.data)
     const dispatch = useDispatch()
 
-    const handleOptionClick = (option) => {
-        console.log(option)
+    const handleOptionClick = (option) => {        
         if (option.type === 'date') {
             const sorted = [...listings].sort((a, b) => {                
                 if (a.added > b.added) {
@@ -97,8 +96,7 @@ const SortControl = () => {
             })
             dispatch(setOrder(sorted))            
         } 
-        if (option.type === 'price') {
-            console.log(listings)
+        if (option.type === 'price') {            
             const sorted = [...listings].sort((a, b) => {                
                 if (parseInt(a.price) > parseInt(b.price)) {
                     if (option.value === 'max') return -1;

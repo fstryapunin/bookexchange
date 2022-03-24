@@ -160,7 +160,7 @@ const ListingPage = () => {
     }
 
     const getReactionElement = () => {
-        if (userId !== parseInt(listingData.user.id)) {
+        if (userId !== parseInt(listingData.user.id) && listingData.status === "active") {
             return <ListingReact data={listingData}/>  
         } else return null
     }
