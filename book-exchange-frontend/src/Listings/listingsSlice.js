@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, current  } from '@reduxjs/toolkit'
 const apiAdress = process.env.REACT_APP_API_ADRESS
 
 export const fetchListings = createAsyncThunk('listings/get', async (page = 0) => {
@@ -45,10 +45,11 @@ export const listingsSlice = createSlice({
     initialState: {        
         homepage: {
             status: 'idle',
-            filtered: false,
+            filtered: false,            
             data: [],
             error: null
-        }               
+        },
+        sort: 'Od nejnovějšího'
     },
     reducers: {
         addListing: (state, action) => {
@@ -61,6 +62,12 @@ export const listingsSlice = createSlice({
         },
         removeListing: (state, action) => {
             state.homepage.data = state.homepage.data.filter(listing => listing.id !== action.payload.id)
+        },
+        setOrder: (state, action) => {
+            state.homepage.data = action.payload
+        },
+        setSort: (state, action) => {
+            state.sort = action.payload
         }
     },
     extraReducers(builder) {
@@ -71,7 +78,8 @@ export const listingsSlice = createSlice({
         })
         .addCase(fetchFilteredListings.fulfilled, (state, action) => {
             state.homepage.status = 'loaded'           
-            state.homepage.data = action.payload    
+            state.homepage.data = action.payload   
+            state.sort = 'Od nejnovějšího'
         })
         .addCase(fetchFilteredListings.rejected, (state) => {            
             state.homepage.status = 'failed'            
@@ -82,7 +90,8 @@ export const listingsSlice = createSlice({
             })
         .addCase(fetchListings.fulfilled, (state, action) => {
             state.homepage.status = 'loaded'            
-            state.homepage.data = action.payload       
+            state.homepage.data = action.payload   
+            state.sort = 'Od nejnovějšího'
         })
         .addCase(fetchListings.rejected, (state) => {            
             state.homepage.status = 'failed'            
@@ -100,6 +109,6 @@ export const selectById = (state) => {
 
 }
 
-export const { addListing, replaceListing, removeListing } = listingsSlice.actions
+export const { addListing, replaceListing, removeListing, setOrder, setSort } = listingsSlice.actions
   
 export default listingsSlice.reducer

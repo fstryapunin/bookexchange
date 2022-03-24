@@ -2,6 +2,7 @@ import React from "react";
 import ListingsContainer from "../Listings/ListingsContainer";
 import FilterControl from "./Filter/FilterControl";
 import styled from "styled-components";
+import SortControl from "./SortControl";
 
 const StyledHomepage = styled.div`
     max-width: 1140px;
@@ -15,7 +16,8 @@ const HomePage = () => {
 
     return (
         <StyledHomepage>
-            <FilterControl/>                       
+            <FilterControl />   
+            <SortControl />
             <ListingsContainer />             
         </StyledHomepage>
     )
