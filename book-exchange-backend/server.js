@@ -46,4 +46,4 @@ const server = app.listen(port, () => console.log('Listening on port', port));
 server.on('upgrade', upgradeConnection)
 
 //run scheduled tasks
-messageNotificationTask.stop()
+messageNotificationTask.start()
