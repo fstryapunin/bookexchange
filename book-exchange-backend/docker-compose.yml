@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  server:
+    restart: always
+    build: .
+    depends_on:
+      - postgres
+    ports: 
+      - "4000:3001"
+    env_file:
+      - .env
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=08122001f
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=keplerexchange
+    volumes:
+      - ./database/keplerexchange_plain.sql:/docker-entrypoint-initdb.d/keplerexchange_plain.sql
+    ports:
+      - "5432:5432"
+  
