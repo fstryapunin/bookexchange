@@ -7,6 +7,8 @@ services:
       - postgres
     ports: 
       - "4000:3001"
+    volumes:
+      - image-upload:/server/public/uploads
     env_file:
       - .env
   postgres:
@@ -17,7 +19,10 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=keplerexchange
     volumes:
-      - ./database/keplerexchange_plain.sql:/docker-entrypoint-initdb.d/keplerexchange_plain.sql
+      - ./database/keplerexchange_plain.sql:/docker-entrypoint-initdb.d/keplerexchange_plain.sql     
+      - database:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-  
+volumes:
+  image-upload:
+  database:
