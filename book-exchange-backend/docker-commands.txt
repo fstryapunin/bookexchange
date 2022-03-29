@@ -1,4 +1,3 @@
-build
-docker build . -t saltyfedor/kxchange-backend
-run
+compose and run:
+
 docker compose up
