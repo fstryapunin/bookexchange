@@ -67,7 +67,7 @@ const ListingReact = ({ data }) => {
 
     return (
         <>
-            {!displaySend ? <StyledMessageButton onClick={() => updateSend(true)}>REAGOVAT</StyledMessageButton> : null}
+            {!displaySend && userId ? <StyledMessageButton onClick={() => updateSend(true)}>REAGOVAT</StyledMessageButton> : null}
             {displaySend ?
                 <StyledInputContainer>
                     <StyledMessageInput value={messageInput} placeholder={placeholderText} onChange={(event) => updateMessageInput(event.target.value)} />
