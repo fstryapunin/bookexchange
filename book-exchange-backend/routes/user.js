@@ -19,9 +19,9 @@ router.post('/profile', tokenAuth, async (req, res) => {
     const resBody = {
         id: parseInt(user.id),
         email: user.email,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        link: user.img_link
+        first_name: user.first_name,
+        last_name: user.last_name,
+        img_link: user.img_link
     }
     res.status(200).json(resBody)
 })
