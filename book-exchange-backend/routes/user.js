@@ -14,16 +14,20 @@ router.post('/listings', tokenAuth, async (req, res) => {
 })
 
 router.post('/profile', tokenAuth, async (req, res) => {
-    const userData = await db.select('*').from('users').where('id', req.user.id)
-    const user = userData[0]    
-    const resBody = {
-        id: parseInt(user.id),
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        img_link: user.img_link
+    if (req.user.id) {
+        const userData = await db.select('*').from('users').where('id', req.user.id)
+        const user = userData[0]
+        const resBody = {
+            id: user.id,
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            img_link: user.img_link
+        }
+        res.status(200).json(resBody)
+    } else {
+        res.json(400)
     }
-    res.status(200).json(resBody)
 })
 
 router.post('/listing/:listingId', tokenAuth, param('listingId').escape().toInt(), async (req, res) => {
