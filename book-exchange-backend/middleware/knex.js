@@ -1,3 +1,7 @@
+const pg = require('pg')
+pg.types.setTypeParser(20, 'text', parseInt)
+
+
 const knex = require('knex')
 const { parse } = require("pg-connection-string");
 const { dbUrl } = require('../config');
