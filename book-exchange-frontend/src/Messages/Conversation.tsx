@@ -42,7 +42,7 @@ const Conversation: React.FC<IProps> = ({ data, user, mobile, reset }) => {
         //if has any unreads dispatch seen update
         if (data) {
             const hasUnreads = data.messages.some((message: Message) => {
-                if (message.seen === false && parseInt(message.creator_id as string) !== user.id) {
+                if (message.seen === false && message.creator_id !== user.id) {
                     return true
                 }
                 return false
@@ -62,7 +62,7 @@ const Conversation: React.FC<IProps> = ({ data, user, mobile, reset }) => {
         })
         const elements = sortedMessages.map(message => {
             
-            const other = (  user.id === parseInt(message.creator_id as string) ? false : true)
+            const other = (  user.id === message.creator_id ? false : true)
             return (
                 <Message key={message.id} message={message} other={other}/>               
             )
@@ -71,7 +71,7 @@ const Conversation: React.FC<IProps> = ({ data, user, mobile, reset }) => {
     }
 
     const getOther = (full: boolean) => {
-        const other = data.users.find(other => parseInt(other.id as string) !== parseInt(user.id as string))    
+        const other = data.users.find(other => other.id !== user.id)    
         if (!full) {
             return other?.id
         } else {

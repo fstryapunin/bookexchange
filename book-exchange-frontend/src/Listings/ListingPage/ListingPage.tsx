@@ -162,7 +162,7 @@ const ListingPage: React.FC = () => {
     }
 
     const getReactionElement = () => {
-        if (userId !== parseInt(listingData?.user?.id as string) && listingData?.status === "active") {
+        if (userId !== listingData?.user?.id && listingData?.status === "active") {
             return <ListingReact data={listingData}/>  
         } else return null
     }

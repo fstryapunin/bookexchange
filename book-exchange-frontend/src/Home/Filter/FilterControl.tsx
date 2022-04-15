@@ -178,14 +178,14 @@ const StyledModalInputBlock = styled.div`
     }
 `
 
-const defaultMinPrice = 0
-const defaultMaxPrice = 1000
+const defaultMinPrice = ''
+const defaultMaxPrice = ''
 
 const FilterControl: React.FC = () => {
     const [displayModal, updateDisplayModal] = useState<boolean>(false)
     const [nameInput, updateNameInput] = useState<string>('')
-    const [priceMin, updatePriceMin] = useState<string | number>(defaultMinPrice)
-    const [priceMax, updatePriceMax] = useState<string | number>(defaultMaxPrice)
+    const [priceMin, updatePriceMin] = useState<string>(defaultMinPrice)
+    const [priceMax, updatePriceMax] = useState<string>(defaultMaxPrice)
     const [listingType, updateType] = useState<string>('all')
     const [selectedTags, updateSelectedTags] = useState<Tag[]>([])
     const [displayPriceFilter, updateDisplayPrice] = useState<boolean>(false)
@@ -262,25 +262,25 @@ const FilterControl: React.FC = () => {
         }        
     }
 
-    const handlePriceInput = (value: number, type: string) => {        
+    const handlePriceInput = (value: string, type: string) => { 
+        const intValue = parseInt(value)
         switch (type) {
             case 'min':
-                if (isNaN(value)) {
-                    console.log('here')
+                if (isNaN(intValue)) {                    
                     updatePriceMin('')
                     break;
                 }
-                if (value > 0) {
+                if (intValue > 0) {
                     
                     updatePriceMin(value)
                 }
                 break;
             case 'max':
-                if (isNaN(value)) {
+                if (isNaN(intValue)) {
                     updatePriceMax('')
                     break;
                 }
-                if (value > 0) {                   
+                if (intValue > 0) {                   
                     updatePriceMax(value)
                 }
                 break;
@@ -325,7 +325,7 @@ const FilterControl: React.FC = () => {
             Object.assign(filters, { name: nameInput})
         }
         if(listingType !== 'all'){ Object.assign(filters, { type: listingType }) }
-        if (displayPriceFilter && (parseInt(priceMin as string) > 0 || parseInt(priceMax as string) > 0)) {
+        if (displayPriceFilter && (parseInt(priceMin) > 0 || parseInt(priceMax) > 0)) {
             Object.assign(filters, {
                 price: {
                     min: priceMin,
@@ -370,9 +370,9 @@ const FilterControl: React.FC = () => {
             {displayPriceFilter ?
                 <StyledPriceInputContainer>
                     <p>Od:</p>
-                    <StyledPriceInput type="number" value={priceMin} onChange={event => handlePriceInput(parseInt(event.target.value), 'min')}/>
+                    <StyledPriceInput type="number" value={priceMin} onChange={event => handlePriceInput(event.target.value, 'min')}/>
                     <p>do:</p>
-                    <StyledPriceInput type="number" value={priceMax} onChange={event => handlePriceInput(parseInt(event.target.value), 'max')}/>
+                    <StyledPriceInput type="number" value={priceMax} onChange={event => handlePriceInput(event.target.value, 'max')}/>
                     <p>Kč</p>
                     <StyledCancelButton onClick={() => { updateDisplayPrice(false); updatePriceMin(defaultMinPrice); updatePriceMax(defaultMaxPrice) }}>ZRUŠIT</StyledCancelButton>
                 </StyledPriceInputContainer> : null}
@@ -414,9 +414,9 @@ const FilterControl: React.FC = () => {
                             </StyledSelect>
                             <StyledPriceInputMobiled>
                                 <p>Od:</p>
-                                <StyledPriceInput type="number" value={priceMin} onChange={event => handlePriceInput(parseInt(event.target.value), 'min')}/>
+                                <StyledPriceInput type="number" value={priceMin} onChange={event => handlePriceInput(event.target.value, 'min')}/>
                                 <p>do:</p>
-                                <StyledPriceInput type="number" value={priceMax} onChange={event => handlePriceInput(parseInt(event.target.value), 'max')}/>
+                                <StyledPriceInput type="number" value={priceMax} onChange={event => handlePriceInput(event.target.value, 'max')}/>
                                 <p>Kč</p>
                             </StyledPriceInputMobiled>
                             <StyledTagInputContainer >

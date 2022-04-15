@@ -1,15 +1,15 @@
 
 
 interface Tag {    
-    id: string | number,
+    id: number,
     text: string,
-    creator_id: string | number,
-    times_used:string | number,
+    creator_id: number,
+    times_used: number,
     added: string    
 }
 
 interface User {
-    id: string | number,
+    id: number,
     email: string,
     first_name: string,
     last_name: string,
@@ -17,22 +17,22 @@ interface User {
 }
 
 interface ListingImage {
-    id: string | number,
+    id: number,
     file_name: string,
-    listing_id: string | number,
-    user_id: string | number,
+    listing_id: number,
+    user_id: number,
     added: string,
     deleted: boolean
 }
 
 interface Listing {
-    id: string | number,
+    id: number,
     name: string,
     type: string,
     description: string,
     status: 'active' | 'engaged' | 'inactive',
     title_image: string,
-    price: string | number,
+    price: number,
     added: string,
     tags?: Tag[],
     user?: User,
@@ -49,20 +49,20 @@ interface NewListing {
 
 interface Message {
     added: string,
-    addressant: number | string,
-    conversation_id: number | string,
+    addressant: number,
+    conversation_id: number,
     deleted: boolean,
-    embedded: string | number | null,
-    id: number | string,
+    embedded: number | null,
+    id: number,
     notification_sent: boolean,
     seen: boolean,
     text: string,
-    creator_id: string | number
+    creator_id: number
 }
 
 interface Conversation {
-    id: number | string,
-    creator_id: number | string,
+    id: number,
+    creator_id: number,
     deleted: boolean,
     added: string,
     messages: Message[],

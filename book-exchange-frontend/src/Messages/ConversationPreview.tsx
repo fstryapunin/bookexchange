@@ -47,7 +47,7 @@ interface IProps {
 
 const ConversationPreview: React.FC<IProps> = ({ data, user, onClick }) => {    
 
-    const otherUser = data.users.find(other => user.id !== parseInt(other.id as string))
+    const otherUser = data.users.find(other => user.id !== other.id)
     
     const getLastMessage = () => {
         const last = data.messages.reduce((prev, current) => {
@@ -71,7 +71,7 @@ const ConversationPreview: React.FC<IProps> = ({ data, user, onClick }) => {
 
     const hasUnreads =  () => {
         const has = data.messages.some(message => {
-            if (message.seen === false && parseInt(message.creator_id as string) !== user.id) {            
+            if (message.seen === false && message.creator_id !== user.id) {            
                 
                 return true
             } else {

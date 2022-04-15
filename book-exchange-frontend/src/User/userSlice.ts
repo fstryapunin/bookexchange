@@ -168,7 +168,7 @@ export const userSlice = createSlice({
     },
     extraReducers(builder) {
         builder
-            .addCase(fetchUserData.pending, (state, action) => {
+            .addCase(fetchUserData.pending, (state) => {
                 state.info.status = 'loading'
             })
             .addCase(fetchUserData.fulfilled, (state, action) => {
@@ -179,7 +179,7 @@ export const userSlice = createSlice({
                 state.info.status = 'failed'
                 state.info.error = action.error
             })
-            .addCase(fetchUserListings.pending, (state, action) => {
+            .addCase(fetchUserListings.pending, (state) => {
                 state.listings.status = 'loading'
             })
             .addCase(fetchUserListings.fulfilled, (state, action) => {
@@ -190,18 +190,18 @@ export const userSlice = createSlice({
                 state.listings.status = 'failed'
                 state.listings.error = action.error
             })
-            .addCase(authenticateUser.pending, (state, action) => {
+            .addCase(authenticateUser.pending, (state) => {
                 state.auth.status = 'loading'
             })
             .addCase(authenticateUser.fulfilled, (state, action) => {
                 state.auth.status = 'authenticated'
                 state.auth.token = action.payload.token
             })
-            .addCase(authenticateUser.rejected, (state, action) => {
+            .addCase(authenticateUser.rejected, (state) => {
                 state.auth.status = 'unauthenticated'
                 state.auth.error = 401
             })
-            .addCase(unauthenticateUser.fulfilled, (state, action) => {
+            .addCase(unauthenticateUser.fulfilled, () => {
                 //reset set to initial on logout
                 return initialState
             })
@@ -211,7 +211,7 @@ export const userSlice = createSlice({
             })
             .addCase(deleteUserListing.fulfilled, (state, action: any) => {
                 const id = parseInt(action.payload[0])
-                state.listings.data = state.listings.data.filter(listing => parseInt(listing.id as string) !== id)
+                state.listings.data = state.listings.data.filter(listing => listing.id !== id)
             })
             .addCase(updateListingStatus.fulfilled, (state, action: any) => {
                 const id = action.payload.id[0]                
@@ -233,7 +233,7 @@ export const selectUserListings = (listings: Listing[], type: string) => {
     return filteredListings    
 }
 
-export const selectListingById = (listings: Listing[], id: string | number) => {
+export const selectListingById = (listings: Listing[], id: number) => {
     const listing = listings.find(listingObj => listingObj.id === id)
     return listing
 }

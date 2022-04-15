@@ -103,11 +103,11 @@ const SortControl: React.FC = () => {
         } 
         if (option.type === 'price') {            
             const sorted = [...listings].sort((a, b) => {                
-                if (parseInt(a.price as string) > parseInt(b.price as string)) {
+                if (a.price > b.price) {
                     if (option.value === 'max') return -1;
                     if(option.value === 'min') return 1;
                   }
-                  if (parseInt(a.price as string) < parseInt(b.price as string)) {
+                  if (a.price < b.price) {
                     if (option.value === 'max') return 1;
                     if(option.value === 'min') return -1;                  
                 }   

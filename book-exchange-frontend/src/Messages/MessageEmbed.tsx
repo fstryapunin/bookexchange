@@ -83,7 +83,7 @@ const MessageEmbed: React.FC<{id: number | string}> = ({ id }) => {
         
         return (
             <>
-            { parseInt(selectedEmbed.user?.id as string) === userId ? <StyledContext>Reagoval na :</StyledContext> : null}
+            { selectedEmbed.user?.id === userId ? <StyledContext>Reagoval na :</StyledContext> : null}
             <StyledEmbed loaded={true} onClick={handleClick}>                
                 <StyledEmbedImage src={`${apiAdress}/public/uploads/${selectedEmbed.title_image}`} />
                     <StyledEmbedInfo>

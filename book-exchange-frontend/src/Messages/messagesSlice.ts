@@ -19,7 +19,7 @@ export const fetchConversations = createAsyncThunk<Conversation[], void, { state
 })
 
 interface IReadConvo{
-    id: string | number,
+    id: number,
     data: Message[]
 }
 
@@ -73,7 +73,7 @@ export const messagesSlice = createSlice({
         })
         .addCase(fetchReadConversation.fulfilled, (state, action) => {
             const conversationId = action.payload.id
-            const conversationIndex = state.data.findIndex(conversation => parseInt(conversation.id as string) === parseInt(conversationId as string))
+            const conversationIndex = state.data.findIndex(conversation => conversation.id === conversationId)
             state.data[conversationIndex].messages = action.payload.data
         })
         .addCase('GOT_WEBSOCKET_MESSAGE', (state, action: any) => {          
@@ -114,7 +114,7 @@ export const selectNewMessageCount = (state: RootState) => {
 
         state.messages.data.forEach(conversation => {
             conversation.messages.forEach(message => {
-                if(message.seen === false && parseInt(message.creator_id as string) !== id) count ++
+                if(message.seen === false && message.creator_id !== id) count ++
             })
         })
 
